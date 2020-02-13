@@ -1,0 +1,14 @@
+{
+  "name": "cubic-world",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "serve": "parcel index.html"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-alpha.3.2"
+  },
+  "dependencies": {
+    "three": "^0.113.2"
+  }
+}
