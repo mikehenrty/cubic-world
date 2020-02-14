@@ -1,13 +1,16 @@
 import * as THREE from 'three';
+import Time from './Time';
 
 const ASPECT_RATIO = window.innerWidth / window.innerHeight;
-const SCREEN_WIDTH = 100;
+const SCREEN_WIDTH = 200;
 const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
 const BOX_SIZE = 50;
+const CUBE_ROTATION_SPEED = 1.0;
 
 export default class Engine {
 
   constructor() {
+    this.time = new Time();
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera( 70, ASPECT_RATIO, 0.8, 1600 );
@@ -50,9 +53,10 @@ export default class Engine {
   }
 
   animate() {
-    this.cube.rotation.x -= 0.04;
-    this.cube.position.setZ(this.cube.position.getComponent(2) - 3);
-    this.camera.position.setZ(this.camera.position.getComponent(2) - 3);
+    const delta = this.time.tick();
+    this.cube.rotation.x -= (delta / 16) * CUBE_ROTATION_SPEED * 0.05;
+    this.cube.position.setZ(this.cube.position.getComponent(2) -  2 * (delta / 16));
+    this.camera.position.setZ(this.camera.position.getComponent(2) - 2 * (delta / 16));
     requestAnimationFrame( this.animate );
     this.renderer.render( this.scene, this.camera );
   }
@@ -65,6 +69,7 @@ export default class Engine {
     document.body.appendChild(this.renderer.domElement);
     this.renderer.domElement.style.transform = `scale(${scale})`;
 
+    this.time.start();
     this.animate();
   }
 }
