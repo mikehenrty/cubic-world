@@ -3,13 +3,31 @@ import * as THREE from 'three';
 const BOX_SIZE = 50;
 const CUBE_ROTATION_SPEED = 1.0;
 
+const COLOR_BLACK = 'black';
+const COLOR_RED = 'red';
+const COLOR_BLUE = 'blue';
+const COLOR_GREEN = 'honeydew';
+const COLOR_YELLOW = 'yellow';
+const COLOR_PURPLE = 'violet';
+
+const CUBE_COLORS = [
+  COLOR_BLACK,
+  COLOR_RED,
+  COLOR_BLUE,
+  COLOR_GREEN,
+  COLOR_YELLOW,
+  COLOR_PURPLE,
+]
+
 export default class Cube {
   constructor() {
     var geometry = new THREE.BoxGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE);
+
+    let colors = CUBE_COLORS.slice(0);
     for ( var i = 0; i < geometry.faces.length; i+=2 ) {
-      const color = Math.random() * 0xffffff;
-      geometry.faces[ i ].color.setHex( color );
-      geometry.faces[ i + 1 ].color.setHex( color );
+      const color = colors.pop();
+      geometry.faces[ i ].color.setStyle( color );
+      geometry.faces[ i + 1 ].color.setStyle( color );
     }
     var material = new THREE.MeshBasicMaterial( {
       color: 0xffffff,
