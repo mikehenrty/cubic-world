@@ -1,11 +1,10 @@
 import * as THREE from 'three';
 import Time from './Time';
+import Cube from './Cube';
 
 const ASPECT_RATIO = window.innerWidth / window.innerHeight;
 const SCREEN_WIDTH = 200;
 const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
-const BOX_SIZE = 50;
-const CUBE_ROTATION_SPEED = 1.0;
 
 export default class Engine {
 
@@ -17,19 +16,8 @@ export default class Engine {
     this.camera.position.set( 130, 400, 300 );
     this.camera.lookAt( 20, -100, -150 );
 
-    var geometry = new THREE.BoxGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE);
-    for ( var i = 0; i < geometry.faces.length; i+=2 ) {
-      const color = Math.random() * 0xffffff;
-      geometry.faces[ i ].color.setHex( color );
-      geometry.faces[ i + 1 ].color.setHex( color );
-    }
-    var material = new THREE.MeshBasicMaterial( {
-      color: 0xffffff,
-      vertexColors: THREE.FaceColors,
-    });
-    this.cube = new THREE.Mesh( geometry, material );
-    this.cube.position.set(0, BOX_SIZE / 2, 0);
-    this.scene.add( this.cube );
+    this.cube = new Cube();
+    this.scene.add( this.cube.getMesh() );
 
     /*
     const color = 0xFFFFFF;
@@ -54,8 +42,7 @@ export default class Engine {
 
   animate() {
     const delta = this.time.tick();
-    this.cube.rotation.x -= (delta / 16) * CUBE_ROTATION_SPEED * 0.05;
-    this.cube.position.setZ(this.cube.position.getComponent(2) -  2 * (delta / 16));
+    this.cube.update(delta);
     this.camera.position.setZ(this.camera.position.getComponent(2) - 2 * (delta / 16));
     requestAnimationFrame( this.animate );
     this.renderer.render( this.scene, this.camera );
