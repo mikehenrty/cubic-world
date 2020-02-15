@@ -42,8 +42,10 @@ export default class Engine {
 
   animate() {
     const delta = this.time.tick();
+    const lastCubeZ = this.cube.mesh.position.z;
     this.cube.update(delta);
-    this.camera.position.setZ(this.camera.position.getComponent(2) - 2 * (delta / 16));
+    const deltaCubeZ = this.cube.mesh.position.z - lastCubeZ;
+    this.camera.position.z += deltaCubeZ;
     requestAnimationFrame( this.animate );
     this.renderer.render( this.scene, this.camera );
   }
