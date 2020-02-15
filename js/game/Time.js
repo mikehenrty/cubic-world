@@ -1,6 +1,6 @@
 // Keep past deltas for FPS calculation.
 // Higher REMEMBER numbers will be slower but more stable.
-const REMEMBER = 5;
+const REMEMBER = 30;
 
 export default class Time {
   constructor() {
@@ -9,7 +9,7 @@ export default class Time {
   }
 
   getNewTime() {
-    return Date.now();
+    return performance.now();
   }
 
   getCurrentTime() {
@@ -20,9 +20,23 @@ export default class Time {
     return this.pastTimes[1] || this.startTime;
   }
 
+  getAverageFPS() {
+    const deltas = new Array(REMEMBER - 1);
+    for (let i = 0; i < REMEMBER - 1; i++) {
+      deltas[i] = this.pastTimes[i] - this.pastTimes[i + 1];
+    }
+    return deltas.reduce((accum, delta) => (
+      accum + delta / (REMEMBER - 1)
+    ), 0)
+  }
+
   start() {
     this.startTime = this.getNewTime();
     this.pastTimes[0] = this.startTime;
+
+    setInterval(() => {
+      console.log('FPS::', this.getAverageFPS());
+    }, 1000);
   }
 
   // Shift the times back and add the current one.
