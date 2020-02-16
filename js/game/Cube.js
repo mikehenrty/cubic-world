@@ -1,9 +1,7 @@
 import * as THREE from 'three';
 
 const BOX_SIZE = 50;
-const CUBE_ROTATION_SPEED = 1.0;
-
-const FLIP_DURATION = 500;
+const FLIP_DURATION = 600;
 
 const COLOR_BLACK = 'black';
 const COLOR_RED = 'red';
@@ -42,6 +40,7 @@ THREE.Object3D.prototype.rotateAroundWorldAxis = function() {
 
 export default class Cube {
   constructor() {
+
     var geometry = new THREE.BoxGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE);
 
     let colors = CUBE_COLORS.slice(0);
@@ -60,6 +59,8 @@ export default class Cube {
     // Setup rotation.
     this.axis = new THREE.Vector3(0, 0, 1);
     this.pivot = new THREE.Vector3(BOX_SIZE / 2, 0, 0);
+    this.rotation = 0;
+    this.rotateClockwise = true;
   }
 
   getMesh() {
@@ -67,11 +68,20 @@ export default class Cube {
   }
 
   update(delta) {
+    let rotate = (Math.PI / 2) * (delta / FLIP_DURATION)
+    if (this.rotateClockwise) {
+      rotate *= -1;
+    }
+    this.rotation += rotate;
+
+    if (this.rotation > 0 || this.rotation < -Math.PI / 2) {
+      this.rotateClockwise = !this.rotateClockwise;
+    }
+
     this.mesh.rotateAroundWorldAxis(
       this.pivot,
       this.axis,
-      CUBE_ROTATION_SPEED * Math.PI * delta / 1000,
+      rotate,
     );
-    this.mesh.position.setZ(this.mesh.position.getComponent(2) -  2 * (delta / 16));
   }
 }
