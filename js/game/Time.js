@@ -25,7 +25,7 @@ export default class Time {
     for (let i = 0; i < REMEMBER - 1; i++) {
       deltas[i] = this.pastTimes[i] - this.pastTimes[i + 1];
     }
-    return deltas.reduce((accum, delta) => (
+    return 1000 / deltas.reduce((accum, delta) => (
       accum + delta / (REMEMBER - 1)
     ), 0)
   }
