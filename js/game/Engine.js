@@ -17,7 +17,7 @@ export default class Engine {
     this.camera.lookAt( 20, -100, -150 );
 
     this.cube = new Cube();
-    this.scene.add( this.cube.getMesh() );
+    this.scene.add( this.cube.getObject3D() );
 
     /*
     const color = 0xFFFFFF;
