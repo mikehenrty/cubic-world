@@ -22,11 +22,11 @@ export function monkeyPathRotateWorld() {
 }
 
 
-export function createCubeMoveAnimation( trackName, period, axis ) {
+export function createCubeMoveAnimation( trackName, period, axis, backward ) {
   const from = new THREE.Quaternion();
   const to = new THREE.Quaternion();
   from.setFromAxisAngle( axis, 0 );
-  to.setFromAxisAngle( axis, -Math.PI / 2 );
+  to.setFromAxisAngle( axis, ( backward ? 1 : -1 ) * Math.PI / 2 );
 
   const times = [ 0, period ];
   const values = [ ...from.toArray(), ...to.toArray() ];

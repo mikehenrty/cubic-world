@@ -3,7 +3,7 @@ import { createCubeMoveAnimation } from './animation';
 
 const BOX_SIZE = 50;
 const HALF_BOX = Math.round(BOX_SIZE / 2); // For convenience.
-const FLIP_DURATION = 2000;
+const FLIP_DURATION = 1500;
 
 const COLOR_BLACK = 'black';
 const COLOR_RED = 'red';
@@ -21,16 +21,46 @@ const CUBE_COLORS = [
   COLOR_PURPLE,
 ];
 
+const DIR_AHEAD = 'AHEAD';
+const DIR_LEFT = 'LEFT';
+const DIR_RIGHT = 'RIGHT';
+const DIR_BACK = 'BACK';
+
 const PIVOTS = {
-  RIGHT: new THREE.Vector3(HALF_BOX, 0, 0),
+  AHEAD: new THREE.Vector3(0, 0, -HALF_BOX),
   LEFT:  new THREE.Vector3(-HALF_BOX, 0, 0),
-  AHEAD: new THREE.Vector3(0, 0, HALF_BOX),
-  BACK:  new THREE.Vector3(0, 0, -HALF_BOX),
+  RIGHT: new THREE.Vector3(HALF_BOX, 0, 0),
+  BACK:  new THREE.Vector3(0, 0, HALF_BOX),
 };
 
 const AXES = {
-  RIGHT_LEFT: new THREE.Vector3(0, 0, 1),
   AHEAD_BACK: new THREE.Vector3(1, 0, 0),
+  RIGHT_LEFT: new THREE.Vector3(0, 0, 1),
+}
+
+const CLIPS = {
+  AHEAD: createCubeMoveAnimation(
+    'ahead.quaternion',
+    FLIP_DURATION,
+    AXES.AHEAD_BACK
+  ),
+  LEFT: createCubeMoveAnimation(
+    'left.quaternion',
+    FLIP_DURATION,
+    AXES.RIGHT_LEFT,
+    true
+  ),
+  RIGHT: createCubeMoveAnimation(
+    'right.quaternion',
+    FLIP_DURATION,
+    AXES.RIGHT_LEFT,
+  ),
+  BACK: createCubeMoveAnimation(
+    'back.quaternion',
+    FLIP_DURATION,
+    AXES.AHEAD_BACK,
+    true
+  ),
 }
 
 export default class Cube {
@@ -52,25 +82,36 @@ export default class Cube {
     this.group = new THREE.Group();
     // this.group.position.copy();
     // this.group.position.add(PIVOTS.AHEAD);
-    this.group.attach(this.mesh);
+    this.group.add(this.mesh);
     this.mesh.position.set(0, HALF_BOX, 0);
 
-    this.group.position.add(PIVOTS.BACK);
-    this.mesh.position.sub(PIVOTS.BACK);
-
-    this.clip = createCubeMoveAnimation(
-      '.quaternion',
-      FLIP_DURATION,
-      AXES.AHEAD_BACK
-    );
-
     this.mixer = new THREE.AnimationMixer(this.group);
+    this.actions = {
+      AHEAD: this.mixer.clipAction(CLIPS.AHEAD).setLoop(THREE.LoopOnce),
+      LEFT: this.mixer.clipAction(CLIPS.LEFT).setLoop(THREE.LoopOnce),
+      RIGHT: this.mixer.clipAction(CLIPS.RIGHT).setLoop(THREE.LoopOnce),
+      BACK: this.mixer.clipAction(CLIPS.BACK).setLoop(THREE.LoopOnce),
+    };
 
-    this.action = this.mixer.clipAction(this.clip);
-    this.action.setLoop(THREE.LoopPingPong);
-    this.action.play();
+    this.mixer.addEventListener('finished', this.moveFinish.bind(this));
 
-    this.mixer.addEventListener('finished', e => this.reset(e));
+    this.movingDirection = false;
+    this.move(DIR_AHEAD);
+  }
+
+  move(direction) {
+    this.movingDirection = direction;
+    this.group.position.add(PIVOTS[direction]);
+    this.mesh.position.sub(PIVOTS[direction]);
+    this.actions[direction].play();
+  }
+
+  moveFinish(e) {
+    console.log('got e', e);
+    const direction = this.movingDirection;
+    this.group.position.sub(PIVOTS[direction]);
+    this.mesh.position.add(PIVOTS[direction]);
+    this.actions[direction].stop();
   }
 
   getObject3D() {
@@ -79,24 +120,5 @@ export default class Cube {
 
   update(delta) {
     this.mixer.update(delta);
-  }
-
-  reset(e) {
-    console.log('got e', e);
-    this.group.position.sub(PIVOTS.BACK);
-    this.mesh.position.add(PIVOTS.BACK);
-
-    this.group.position.add(PIVOTS.BACK);
-    this.mesh.position.sub(PIVOTS.BACK);
-
-    this.clip = createCubeMoveAnimation(
-      '.quaternion',
-      FLIP_DURATION,
-      AXES.AHEAD_BACK
-    );
-
-    this.action = this.mixer.clipAction(this.clip);
-    this.action.setLoop(THREE.LoopPingPong);
-    this.action.play();
   }
 }
