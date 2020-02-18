@@ -67,7 +67,7 @@ export default class Cube {
     this.mixer = new THREE.AnimationMixer(this.group);
 
     this.action = this.mixer.clipAction(this.clip);
-    this.action.setLoop(THREE.LoopOnce);
+    this.action.setLoop(THREE.LoopPingPong);
     this.action.play();
 
     this.mixer.addEventListener('finished', e => this.reset(e));
