@@ -83,8 +83,8 @@ export default class Cube {
 
   reset(e) {
     console.log('got e', e);
-    this.group.position.sub(PIVOTS.RIGHT);
-    this.mesh.position.add(PIVOTS.RIGHT);
+    this.group.position.sub(PIVOTS.BACK);
+    this.mesh.position.add(PIVOTS.BACK);
 
     this.group.position.add(PIVOTS.BACK);
     this.mesh.position.sub(PIVOTS.BACK);
@@ -96,7 +96,7 @@ export default class Cube {
     );
 
     this.action = this.mixer.clipAction(this.clip);
-    this.action.setLoop(THREE.LoopOnce);
+    this.action.setLoop(THREE.LoopPingPong);
     this.action.play();
   }
 }
