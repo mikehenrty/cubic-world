@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import Time from './Time';
-import Cube from './Cube';
-import Input from './Input';
+import Time from './controllers/Time';
+import Input from './controllers/Input';
+import Cube from './objects/Cube';
 
 const ASPECT_RATIO = window.innerWidth / window.innerHeight;
 const SCREEN_WIDTH = 100;
@@ -58,7 +58,6 @@ export default class Engine {
     this.cube.mesh.getWorldPosition(this.v);
     // TODO: how to move the camera?
     this.camera.lookAt(this.v);
-    //
     this.renderer.render( this.scene, this.camera );
   }
 
