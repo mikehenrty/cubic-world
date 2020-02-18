@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import Time from './Time';
 import Cube from './Cube';
+import Input from './Input';
 
 const ASPECT_RATIO = window.innerWidth / window.innerHeight;
-const SCREEN_WIDTH = 200;
+const SCREEN_WIDTH = 600;
 const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
 
 export default class Engine {
@@ -39,19 +40,24 @@ export default class Engine {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
+
+    this.input = new Input();
+    this.input.onUp = this.cube.move.bind(this.cube, 'AHEAD');
+    this.input.onDown = this.cube.move.bind(this.cube, 'BACK');
+    this.input.onLeft = this.cube.move.bind(this.cube, 'LEFT');
+    this.input.onRight = this.cube.move.bind(this.cube, 'RIGHT');
+
     this.animate = this.animate.bind(this);
   }
 
   animate() {
-    const delta = this.time.tick();
-    this.cube.mesh.getWorldPosition(this.v);
-    const lastCubeZ = this.v.z;
-    this.cube.update(delta);
-    this.cube.mesh.getWorldPosition(this.v);
-    const deltaCubeZ = this.v.z - lastCubeZ;
-    this.camera.position.z += deltaCubeZ;
-    this.camera.lookAt(this.v);
     requestAnimationFrame( this.animate );
+
+    const delta = this.time.tick();
+    this.cube.update(delta);
+    // TODO: how to move the camera?
+    // this.camera.lookAt(this.v);
+    //
     this.renderer.render( this.scene, this.camera );
   }
 

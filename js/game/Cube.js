@@ -3,7 +3,7 @@ import { createCubeMoveAnimation } from './animation';
 
 const BOX_SIZE = 50;
 const HALF_BOX = Math.round(BOX_SIZE / 2); // For convenience.
-const FLIP_DURATION = 1500;
+const FLIP_DURATION = 300;
 
 const COLOR_BLACK = 'black';
 const COLOR_RED = 'red';
@@ -36,6 +36,14 @@ const PIVOTS = {
   RIGHT: new THREE.Vector3(HALF_BOX, 0, 0),
   BACK:  new THREE.Vector3(0, 0, HALF_BOX),
 };
+
+const MOVES = {
+  AHEAD: new THREE.Vector2(0, 1),
+  LEFT: new THREE.Vector2(-1, 0),
+  RIGHT: new THREE.Vector2(1, 0),
+  BACK: new THREE.Vector2(0, -1),
+};
+
 
 const AXES = {
   AHEAD_BACK: new THREE.Vector3(1, 0, 0),
@@ -73,11 +81,14 @@ export default class Cube {
     this.q = new THREE.Quaternion();
     this.v = new THREE.Vector3();
 
+    // Our position on the playing surface.
+    this.position = new THREE.Vector2();
+
     this.initMesh();
     this.initGroupMesh();
     this.initMixer();
-this.movingDirection = false;
-    this.move(DIR_AHEAD);
+
+    this.lastMoveDirection = false;
   }
 
   initMesh() {
@@ -117,33 +128,43 @@ this.movingDirection = false;
     this.mixer.addEventListener('finished', this.moveFinish.bind(this));
   }
 
+  getRandomDirection() {
+    return DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
+  }
+
   move(direction) {
-    this.movingDirection = direction;
+    console.log(direction, 'group x z', this.group.position.x, this.group.position.z);
+    this.lastMoveDirection = direction;
+    this.group.remove(this.mesh);
     this.group.position.add(PIVOTS[direction]);
-    this.mesh.position.sub(PIVOTS[direction]);
+    // this.mesh.position.sub(PIVOTS[direction]);
+    this.group.attach(this.mesh);
+    console.log(direction, 'after x z', this.group.position.x, this.group.position.z);
     this.actions[direction].play();
   }
 
   moveFinish(e) {
     console.log('got e', e);
-    const direction = this.movingDirection;
-    this.group.position.sub(PIVOTS[direction]);
-    this.mesh.position.add(PIVOTS[direction]);
+    const direction = this.lastMoveDirection;
 
-    this.mesh.getWorldPosition(this.v);
+    console.log('position before', this.position);
+    this.position.add(MOVES[direction]);
+    console.log('position after', this.position);
+    const posX = this.position.x * BOX_SIZE;
+    // Z coordinate in world space is stored in the Y coord in the Vec2.
+    const posZ = -this.position.y * BOX_SIZE;
+
     this.mesh.getWorldQuaternion(this.q);
+    this.q.normalize();
 
+    // Remove the mesh and set it's world coords.
     this.group.remove(this.mesh);
-    this.mesh.position.copy(this.v);
+    this.mesh.position.set(posX, HALF_BOX, posZ);
     this.mesh.setRotationFromQuaternion(this.q);
-    this.actions[direction].stop();
-    this.group.position.copy(this.v);
-    this.initGroupMesh();
 
-    setTimeout(() => {
-      // Move a random direction.
-      this.move(DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)]);
-    }, 200);
+    this.actions[direction].stop();
+    this.group.position.set(posX, 0, posZ);
+    this.group.attach(this.mesh);
   }
 
   getObject3D() {
