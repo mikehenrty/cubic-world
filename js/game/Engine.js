@@ -9,6 +9,8 @@ const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
 export default class Engine {
 
   constructor() {
+    this.v = new THREE.Vector3();
+
     this.time = new Time();
     this.scene = new THREE.Scene();
 
@@ -42,10 +44,13 @@ export default class Engine {
 
   animate() {
     const delta = this.time.tick();
-    const lastCubeZ = this.cube.mesh.position.z;
+    this.cube.mesh.getWorldPosition(this.v);
+    const lastCubeZ = this.v.z;
     this.cube.update(delta);
-    const deltaCubeZ = this.cube.mesh.position.z - lastCubeZ;
+    this.cube.mesh.getWorldPosition(this.v);
+    const deltaCubeZ = this.v.z - lastCubeZ;
     this.camera.position.z += deltaCubeZ;
+    this.camera.lookAt(this.v);
     requestAnimationFrame( this.animate );
     this.renderer.render( this.scene, this.camera );
   }

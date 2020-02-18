@@ -26,6 +26,10 @@ const DIR_LEFT = 'LEFT';
 const DIR_RIGHT = 'RIGHT';
 const DIR_BACK = 'BACK';
 
+const DIRECTIONS = [
+  DIR_AHEAD, DIR_LEFT, DIR_RIGHT, DIR_BACK
+];
+
 const PIVOTS = {
   AHEAD: new THREE.Vector3(0, 0, -HALF_BOX),
   LEFT:  new THREE.Vector3(-HALF_BOX, 0, 0),
@@ -65,6 +69,18 @@ const CLIPS = {
 
 export default class Cube {
   constructor() {
+    // Reusable objects.
+    this.q = new THREE.Quaternion();
+    this.v = new THREE.Vector3();
+
+    this.initMesh();
+    this.initGroupMesh();
+    this.initMixer();
+this.movingDirection = false;
+    this.move(DIR_AHEAD);
+  }
+
+  initMesh() {
     var geometry = new THREE.BoxGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE);
 
     let colors = CUBE_COLORS.slice(0);
@@ -78,13 +94,18 @@ export default class Cube {
       vertexColors: THREE.FaceColors,
     });
     this.mesh = new THREE.Mesh( geometry, material );
+  }
 
-    this.group = new THREE.Group();
-    // this.group.position.copy();
-    // this.group.position.add(PIVOTS.AHEAD);
-    this.group.add(this.mesh);
-    this.mesh.position.set(0, HALF_BOX, 0);
+  initGroupMesh() {
+    if (!this.group) {
+      this.group = new THREE.Group();
+    }
 
+    this.group.attach(this.mesh);
+    this.mesh.position.setY(HALF_BOX);
+  }
+
+  initMixer() {
     this.mixer = new THREE.AnimationMixer(this.group);
     this.actions = {
       AHEAD: this.mixer.clipAction(CLIPS.AHEAD).setLoop(THREE.LoopOnce),
@@ -94,9 +115,6 @@ export default class Cube {
     };
 
     this.mixer.addEventListener('finished', this.moveFinish.bind(this));
-
-    this.movingDirection = false;
-    this.move(DIR_AHEAD);
   }
 
   move(direction) {
@@ -111,7 +129,21 @@ export default class Cube {
     const direction = this.movingDirection;
     this.group.position.sub(PIVOTS[direction]);
     this.mesh.position.add(PIVOTS[direction]);
+
+    this.mesh.getWorldPosition(this.v);
+    this.mesh.getWorldQuaternion(this.q);
+
+    this.group.remove(this.mesh);
+    this.mesh.position.copy(this.v);
+    this.mesh.setRotationFromQuaternion(this.q);
     this.actions[direction].stop();
+    this.group.position.copy(this.v);
+    this.initGroupMesh();
+
+    setTimeout(() => {
+      // Move a random direction.
+      this.move(DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)]);
+    }, 200);
   }
 
   getObject3D() {
