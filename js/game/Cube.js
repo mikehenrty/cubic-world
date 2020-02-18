@@ -88,7 +88,7 @@ export default class Cube {
     this.initGroupMesh();
     this.initMixer();
 
-    this.lastMoveDirection = false;
+    this.lastMove = false;
   }
 
   initMesh() {
@@ -133,8 +133,12 @@ export default class Cube {
   }
 
   move(direction) {
+    if (this.lastMove && this.actions[this.lastMove].isRunning()) {
+      console.log('ignoring while others are running');
+      return;
+    }
     console.log(direction, 'group x z', this.group.position.x, this.group.position.z);
-    this.lastMoveDirection = direction;
+    this.lastMove = direction;
     this.group.remove(this.mesh);
     this.group.position.add(PIVOTS[direction]);
     // this.mesh.position.sub(PIVOTS[direction]);
@@ -145,7 +149,7 @@ export default class Cube {
 
   moveFinish(e) {
     console.log('got e', e);
-    const direction = this.lastMoveDirection;
+    const direction = this.lastMove;
 
     console.log('position before', this.position);
     this.position.add(MOVES[direction]);
