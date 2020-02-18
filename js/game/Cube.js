@@ -3,7 +3,7 @@ import { createCubeMoveAnimation } from './animation';
 
 const BOX_SIZE = 50;
 const HALF_BOX = Math.round(BOX_SIZE / 2); // For convenience.
-const FLIP_DURATION = 300;
+const FLIP_DURATION = 250;
 
 const COLOR_BLACK = 'black';
 const COLOR_RED = 'red';
@@ -77,9 +77,8 @@ const CLIPS = {
 
 export default class Cube {
   constructor() {
-    // Reusable objects.
+    // Reusable quaternion.
     this.q = new THREE.Quaternion();
-    this.v = new THREE.Vector3();
 
     // Our position on the playing surface.
     this.position = new THREE.Vector2();
@@ -105,15 +104,12 @@ export default class Cube {
       vertexColors: THREE.FaceColors,
     });
     this.mesh = new THREE.Mesh( geometry, material );
+    this.mesh.position.set(0, HALF_BOX, 0);
   }
 
   initGroupMesh() {
-    if (!this.group) {
-      this.group = new THREE.Group();
-    }
-
+    this.group = new THREE.Group();
     this.group.attach(this.mesh);
-    this.mesh.position.setY(HALF_BOX);
   }
 
   initMixer() {
@@ -137,29 +133,21 @@ export default class Cube {
       console.log('ignoring while others are running');
       return;
     }
-    console.log(direction, 'group x z', this.group.position.x, this.group.position.z);
     this.lastMove = direction;
-    this.group.remove(this.mesh);
     this.group.position.add(PIVOTS[direction]);
-    // this.mesh.position.sub(PIVOTS[direction]);
     this.group.attach(this.mesh);
-    console.log(direction, 'after x z', this.group.position.x, this.group.position.z);
+    this.mesh.position.sub(PIVOTS[direction]);
     this.actions[direction].play();
   }
 
   moveFinish(e) {
-    console.log('got e', e);
     const direction = this.lastMove;
 
-    console.log('position before', this.position);
     this.position.add(MOVES[direction]);
-    console.log('position after', this.position);
     const posX = this.position.x * BOX_SIZE;
-    // Z coordinate in world space is stored in the Y coord in the Vec2.
     const posZ = -this.position.y * BOX_SIZE;
 
     this.mesh.getWorldQuaternion(this.q);
-    this.q.normalize();
 
     // Remove the mesh and set it's world coords.
     this.group.remove(this.mesh);

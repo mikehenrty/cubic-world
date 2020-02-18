@@ -4,7 +4,7 @@ import Cube from './Cube';
 import Input from './Input';
 
 const ASPECT_RATIO = window.innerWidth / window.innerHeight;
-const SCREEN_WIDTH = 600;
+const SCREEN_WIDTH = 100;
 const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
 
 export default class Engine {
@@ -15,7 +15,7 @@ export default class Engine {
     this.time = new Time();
     this.scene = new THREE.Scene();
 
-    this.camera = new THREE.PerspectiveCamera( 70, ASPECT_RATIO, 0.8, 1600 );
+    this.camera = new THREE.PerspectiveCamera( 70, ASPECT_RATIO, 0.8, 2000 );
     this.camera.position.set( 130, 400, 300 );
     this.camera.lookAt( 20, -100, -150 );
 
@@ -55,8 +55,9 @@ export default class Engine {
 
     const delta = this.time.tick();
     this.cube.update(delta);
+    this.cube.mesh.getWorldPosition(this.v);
     // TODO: how to move the camera?
-    // this.camera.lookAt(this.v);
+    this.camera.lookAt(this.v);
     //
     this.renderer.render( this.scene, this.camera );
   }
