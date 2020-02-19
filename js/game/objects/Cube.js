@@ -7,8 +7,20 @@ import {
   getClips,
   getPivotOffset,
   getMoveOffset,
+  getColorForSide,
+  getStartingOrientation,
   BOX_SIZE,
-  HALF_BOX
+  HALF_BOX,
+  SIDE_TOP,
+  SIDE_FRONT,
+  SIDE_RIGHT,
+  SIDE_LEFT,
+  SIDE_BACK,
+  SIDE_BOTTOM,
+  DIR_AHEAD,
+  DIR_LEFT,
+  DIR_RIGHT,
+  DIR_BACK
 } from './cube-helper';
 
 export default class Cube {
@@ -16,8 +28,17 @@ export default class Cube {
     // Reusable quaternion.
     this.q = new THREE.Quaternion();
 
-    // Our position on the playing surface.
+    // Set up position and orientation on the playing surface.
+    const starting = getStartingOrientation();
+    this.top = starting[SIDE_TOP];
+    this.bottom = starting[SIDE_BOTTOM];
+    this.left = starting[SIDE_LEFT];
+    this.right = starting[SIDE_RIGHT];
+    this.front = starting[SIDE_FRONT];
+    this.back = starting[SIDE_BACK];
     this.position = new THREE.Vector2();
+
+    // Populate scene.
     this.mesh = getMesh();
     this.pivot = getPivot(this.mesh);
     this.mixer = getMixer(this.pivot, this.moveFinish.bind(this));
@@ -55,6 +76,50 @@ export default class Cube {
     this.actions[direction].stop();
     this.pivot.position.set(posX, 0, posZ);
     this.pivot.attach(this.mesh);
+
+    this.rotateModel(direction);
+    console.log('top', getColorForSide(this.top), 'back', getColorForSide(this.back));
+  }
+
+  rotateModel(direction) {
+    switch(direction) {
+      case DIR_AHEAD:
+        [
+          this.top, this.front, this.bottom, this.back
+        ] = [
+          this.back, this.top, this.front, this.bottom
+        ];
+        break;
+
+      case DIR_LEFT:
+        [
+          this.top, this.left, this.bottom, this.right
+        ] = [
+          this.right, this.top, this.left, this.bottom
+        ];
+        break;
+
+      case DIR_RIGHT:
+        [
+          this.top, this.left, this.bottom, this.right
+        ] = [
+          this.left, this.bottom, this.right, this.top
+        ];
+        break;
+
+      case DIR_BACK:
+        [
+          this.top, this.front, this.bottom, this.back
+        ] = [
+          this.front, this.bottom, this.back, this.top
+        ];
+        break;
+
+      default:
+        console.log('unrecognized direction', direction);
+        break;
+    }
+
   }
 
   getObject3D() {

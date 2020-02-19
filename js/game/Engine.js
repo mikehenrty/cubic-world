@@ -47,11 +47,11 @@ export default class Engine {
     this.input.onLeft = this.cube.move.bind(this.cube, 'LEFT');
     this.input.onRight = this.cube.move.bind(this.cube, 'RIGHT');
 
-    this.animate = this.animate.bind(this);
+    this.update = this.update.bind(this);
   }
 
-  animate() {
-    requestAnimationFrame( this.animate );
+  update() {
+    requestAnimationFrame( this.update );
 
     const delta = this.time.tick();
     this.cube.update(delta);
@@ -70,6 +70,6 @@ export default class Engine {
     this.renderer.domElement.style.transform = `scale(${scale})`;
 
     this.time.start();
-    this.animate();
+    this.update();
   }
 }
