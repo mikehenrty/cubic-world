@@ -33,14 +33,13 @@ const SIDE_COLORS = {
   5: COLOR_RED,
   6: COLOR_BLACK,
 }
-
 const STARTING_ORIENTATION = {
-  TOP: SIDE_THREE,
-  FRONT: SIDE_SIX,
-  RIGHT: SIDE_ONE,
+  TOP: SIDE_ONE,
+  FRONT: SIDE_THREE,
+  RIGHT: SIDE_FIVE,
   LEFT: SIDE_TWO,
-  BACK: SIDE_FIVE,
-  BOTTOM: SIDE_FOUR,
+  BACK: SIDE_FOUR,
+  BOTTOM: SIDE_SIX,
 }
 
 const CUBE_COLORS = [
@@ -117,18 +116,29 @@ export function getMesh() {
     vertexColors: THREE.FaceColors,
   });
 
-  geometry.faces[ 0 ].color.setStyle( SIDE_COLORS[SIDE_ONE] );
-  geometry.faces[ 1 ].color.setStyle( SIDE_COLORS[SIDE_ONE] );
+  // Right side.
+  geometry.faces[ 0 ].color.setStyle( SIDE_COLORS[SIDE_FIVE] );
+  geometry.faces[ 1 ].color.setStyle( SIDE_COLORS[SIDE_FIVE] );
+
+  // Left side.
   geometry.faces[ 2 ].color.setStyle( SIDE_COLORS[SIDE_TWO] );
   geometry.faces[ 3 ].color.setStyle( SIDE_COLORS[SIDE_TWO] );
-  geometry.faces[ 4 ].color.setStyle( SIDE_COLORS[SIDE_THREE] );
-  geometry.faces[ 5 ].color.setStyle( SIDE_COLORS[SIDE_THREE] );
-  geometry.faces[ 6 ].color.setStyle( SIDE_COLORS[SIDE_FOUR] );
-  geometry.faces[ 7 ].color.setStyle( SIDE_COLORS[SIDE_FOUR] );
-  geometry.faces[ 8 ].color.setStyle( SIDE_COLORS[SIDE_FIVE] );
-  geometry.faces[ 9 ].color.setStyle( SIDE_COLORS[SIDE_FIVE] );
-  geometry.faces[ 10 ].color.setStyle( SIDE_COLORS[SIDE_SIX] );
-  geometry.faces[ 11 ].color.setStyle( SIDE_COLORS[SIDE_SIX] );
+
+  // Top side.
+  geometry.faces[ 4 ].color.setStyle( SIDE_COLORS[SIDE_ONE] );
+  geometry.faces[ 5 ].color.setStyle( SIDE_COLORS[SIDE_ONE] );
+
+  // Bottom side.
+  geometry.faces[ 6 ].color.setStyle( SIDE_COLORS[SIDE_SIX] );
+  geometry.faces[ 7 ].color.setStyle( SIDE_COLORS[SIDE_SIX] );
+
+  // Back side.
+  geometry.faces[ 8 ].color.setStyle( SIDE_COLORS[SIDE_FOUR] );
+  geometry.faces[ 9 ].color.setStyle( SIDE_COLORS[SIDE_FOUR] );
+
+  // Front side.
+  geometry.faces[ 10 ].color.setStyle( SIDE_COLORS[SIDE_THREE] );
+  geometry.faces[ 11 ].color.setStyle( SIDE_COLORS[SIDE_THREE] );
 
   // Make sure to position box above z-x plane.
   const mesh = new THREE.Mesh( geometry, material );
