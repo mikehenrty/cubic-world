@@ -152,7 +152,8 @@ export function createCubeMoveAnimation( trackName, period, axis, backward ) {
   const from = new THREE.Quaternion();
   const to = new THREE.Quaternion();
   from.setFromAxisAngle( axis, 0 );
-  to.setFromAxisAngle( axis, ( backward ? 1 : -1 ) * Math.PI / 2 );
+  // HACK: 1.9333 is from eye-balling it, otherwise cube wouldn't rotate enough.
+  to.setFromAxisAngle( axis, ( backward ? 1 : -1 ) * Math.PI / 1.93333 );
 
   const times = [ 0, period ];
   const values = [ ...from.toArray(), ...to.toArray() ];
