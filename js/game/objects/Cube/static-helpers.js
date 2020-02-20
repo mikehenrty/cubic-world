@@ -59,76 +59,6 @@ const CUBE_COLORS = [
 ];
 
 const PI_OVER_TWO = Math.PI / 2;
-
-/*
-function _getQuat(top, back) {
-  let q = new THREE.Quaternion();
-
-  let axis = new THREE.Vector3();
-  let angle = 0;
-
-  let quats = [];
-
-  axis.set(0, 1, 0);
-  axis.set(1, 0, 0);
-  axis.set(0, 0, 1);
-
-  if (top === SIDE_ONE) {
-
-
-
-  
-    switch(back) {
-      case SIDE_THREE:
-        // Default, no rotation.
-        break;
-      case SIDE_TWO:
-        angle = PI_OVER_TWO;
-        break;
-      case SIDE_FIVE:
-        angle = -PI_OVER_TWO;
-        break;
-      case SIDE_FOUR:
-        angle = Math.PI;
-        break;
-    }
-
-    q.setFromAxisAngle(axis, angle);
-
-  } else if (top === SIDE_TWO) {
-
-    switch(top) {
-      case 1:
-        // Default.
-        // axis.set(0, 1, 0);
-        break;
-
-      case 2:
-        axis.set(0, 0, -1);
-        angle = PI_OVER_TWO;
-        break
-
-      case 6:
-        axis.set(0, 0, -1);
-        angle = Math.PI;
-        break
-
-      default:
-        console.log('unrecognized top', top);
-    }
-  }
-
-  q.setFromAxisAngle(axis, angle);
-  return q;
-}
-
-const QUATERNIONS_TOP_BACK = {
-  '1_3': _getQuat(1, 3),
-  '2_3': _getQuat(2, 3),
-  '6_3': _getQuat(6, 3),
-};
-*/
-
 const DIRECTIONS = [
   DIR_AHEAD, DIR_LEFT, DIR_RIGHT, DIR_BACK
 ];
@@ -231,6 +161,70 @@ export function getMixer(root, finishHandler) {
   return mixer;
 }
 
+export function getAllQuaternionsForCube() {
+  const newQuat = () => new THREE.Quaternion();
+  const degToRad = deg => deg * Math.PI / 180;
+  let axis = new THREE.Vector3();
+
+  // Map keys are format "(top)_(back)".
+  let map = {};
+
+  // The following was heaily derived:
+  // https://www.euclideanspace.com/maths/discrete/groups/categorise/finite/cube/index.htm
+
+  // Z axis.
+  axis.set(0, 0, 1);
+  map['1_3'] = newQuat().setFromAxisAngle(axis, 0); // Default position.
+  map['5_3'] = newQuat().setFromAxisAngle(axis, PI_OVER_TWO);
+  map['6_3'] = newQuat().setFromAxisAngle(axis, Math.PI);
+  map['2_3'] = newQuat().setFromAxisAngle(axis, -PI_OVER_TWO);
+
+  // X axis.
+  axis.set(1, 0, 0);
+  map['4_1'] = newQuat().setFromAxisAngle(axis, PI_OVER_TWO);
+  map['6_4'] = newQuat().setFromAxisAngle(axis, Math.PI);
+  map['3_6'] = newQuat().setFromAxisAngle(axis, -PI_OVER_TWO);
+
+  // Y axis.
+  axis.set(0, 1, 0);
+  map['1_2'] = newQuat().setFromAxisAngle(axis, PI_OVER_TWO);
+  map['1_4'] = newQuat().setFromAxisAngle(axis, Math.PI);
+  map['1_5'] = newQuat().setFromAxisAngle(axis, -PI_OVER_TWO);
+
+  // Rotate about opposite vertices.
+  axis.set(1, 1, 1).normalize();
+  map['3_5'] = newQuat().setFromAxisAngle(axis, degToRad(-120));
+  map['5_1'] = newQuat().setFromAxisAngle(axis, degToRad(120));
+
+  axis.set(1, -1, 1).normalize();
+  map['2_6'] = newQuat().setFromAxisAngle(axis, degToRad(-120));
+  map['4_5'] = newQuat().setFromAxisAngle(axis, degToRad(120));
+
+  axis.set(-1, -1, 1).normalize();
+  map['4_2'] = newQuat().setFromAxisAngle(axis, degToRad(-120));
+  map['5_6'] = newQuat().setFromAxisAngle(axis, degToRad(120));
+
+  axis.set(-1, 1, 1).normalize();
+  map['2_1'] = newQuat().setFromAxisAngle(axis, degToRad(-120));
+  map['3_2'] = newQuat().setFromAxisAngle(axis, degToRad(120));
+
+  // Rotate about opposite parallel lines.
+  axis.set(0, 1, 1).normalize();
+  map['3_1'] = newQuat().setFromAxisAngle(axis, Math.PI);
+  axis.set(1, 0, 1).normalize();
+  map['6_5'] = newQuat().setFromAxisAngle(axis, Math.PI);
+  axis.set(0, -1, 1).normalize();
+  map['4_6'] = newQuat().setFromAxisAngle(axis, Math.PI);
+  axis.set(-1, 0, 1).normalize();
+  map['6_2'] = newQuat().setFromAxisAngle(axis, Math.PI);
+  axis.set(1, 1, 0).normalize();
+  map['5_4'] = newQuat().setFromAxisAngle(axis, Math.PI);
+  axis.set(-1, 1, 0).normalize();
+  map['2_4'] = newQuat().setFromAxisAngle(axis, Math.PI);
+
+  return map;
+}
+
 export function createCubeMoveAnimation( trackName, period, axis, backward ) {
   const from = new THREE.Quaternion();
   const to = new THREE.Quaternion();
@@ -269,10 +263,6 @@ export function getMoveOffset(direction) {
 
 export function getColorForSide(sideNum) {
   return SIDE_COLORS[sideNum];
-}
-
-export function getTopBackQuaternion(top, back) {
-  return QUATERNIONS_TOP_BACK[`${top}_${back}`];
 }
 
 export function getRandomDirection() {

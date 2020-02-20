@@ -1,43 +1,17 @@
 import * as THREE from 'three';
+import Model from './Model';
 import {
   getMesh,
   getPivot,
   getMixer,
   getActions,
-  getClips,
   getPivotOffset,
-  getMoveOffset,
-  getColorForSide,
-  getTopBackQuaternion,
-  getStartingOrientation,
-  BOX_SIZE,
   HALF_BOX,
-  SIDE_TOP,
-  SIDE_FRONT,
-  SIDE_RIGHT,
-  SIDE_LEFT,
-  SIDE_BACK,
-  SIDE_BOTTOM,
-  DIR_AHEAD,
-  DIR_LEFT,
-  DIR_RIGHT,
-  DIR_BACK
-} from './cube-helper';
+} from './static-helpers';
 
 export default class Cube {
   constructor() {
-    // Reusable quaternion.
-    this.q = new THREE.Quaternion();
-
-    // Set up position and orientation on the playing surface.
-    const starting = getStartingOrientation();
-    this.top = starting[SIDE_TOP];
-    this.bottom = starting[SIDE_BOTTOM];
-    this.left = starting[SIDE_LEFT];
-    this.right = starting[SIDE_RIGHT];
-    this.front = starting[SIDE_FRONT];
-    this.back = starting[SIDE_BACK];
-    this.position = new THREE.Vector2();
+    this.model = new Model();
 
     // Populate scene.
     this.mesh = getMesh();
@@ -64,77 +38,22 @@ export default class Cube {
   moveFinish(e) {
     const direction = this.lastMove;
 
-    this.rotateModel(direction);
-
-    /*
-    const tbq = getTopBackQuaternion(this.top, this.back);
-    if (tbq) {
-      this.q = tbq;
-    } else {
-      this.mesh.getWorldQuaternion(this.q);
-    }
-    */
-
-    this.mesh.getWorldQuaternion(this.q);
-
-    // Update position model.
-    this.position.add(getMoveOffset(direction));
-    const posX = this.position.x * BOX_SIZE;
-    const posZ = -this.position.y * BOX_SIZE;
-
+    // Update our model of the cube, so we can use to correct
+    // rotation rounding errors.
+    this.model.update(direction);
+    const { x, z } = this.model.getPosition();
 
     // Remove the mesh and set it's world coords.
     this.pivot.remove(this.mesh);
-    this.mesh.position.set(posX, HALF_BOX, posZ);
-    this.mesh.setRotationFromQuaternion(this.q);
+    this.mesh.position.set(x, HALF_BOX, z);
+
+    // Use our pre-generated list of 24 static quaternions
+    // to orient our cube properly with the grid.
+    this.mesh.setRotationFromQuaternion(this.model.getStaticQuaternion());
 
     this.actions[direction].stop();
-    this.pivot.position.set(posX, 0, posZ);
+    this.pivot.position.set(x, 0, z);
     this.pivot.attach(this.mesh);
-
-    console.log('top', getColorForSide(this.top), this.top);
-    console.log('back', getColorForSide(this.back), this.back);
-  }
-
-  rotateModel(direction) {
-    switch(direction) {
-      case DIR_AHEAD:
-        [
-          this.top, this.front, this.bottom, this.back
-        ] = [
-          this.back, this.top, this.front, this.bottom
-        ];
-        break;
-
-      case DIR_LEFT:
-        [
-          this.top, this.left, this.bottom, this.right
-        ] = [
-          this.right, this.top, this.left, this.bottom
-        ];
-        break;
-
-      case DIR_RIGHT:
-        [
-          this.top, this.left, this.bottom, this.right
-        ] = [
-          this.left, this.bottom, this.right, this.top
-        ];
-        break;
-
-      case DIR_BACK:
-        [
-          this.top, this.front, this.bottom, this.back
-        ] = [
-          this.front, this.bottom, this.back, this.top
-        ];
-        break;
-
-      default:
-        console.log('unrecognized direction', direction);
-        break;
-    }
-
   }
 
   getObject3D() {
