@@ -65,7 +65,7 @@ export default class Engine {
 
     this.cube.mesh.getWorldPosition(this.v);
     this.camera.position.setZ(this.v.z + CAMERA_DISTANCE);
-    // this.camera.lookAt(this.v);
+    this.camera.lookAt(this.v);
 
     this.renderer.render( this.scene, this.camera );
   }
