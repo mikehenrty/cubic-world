@@ -1,4 +1,4 @@
-const INPUT_THRESHOLD = 5;
+const INPUT_THRESHOLD = 10;
 
 export default class Input {
   constructor() {
@@ -48,9 +48,15 @@ export default class Input {
     const deltaY = touch.clientY - this.lastY;
     if (Math.abs(deltaX) > INPUT_THRESHOLD) {
       deltaX > 0 ? this.onRight() : this.onLeft();
+      this.lastX = touch.clientX;
     } else if (Math.abs(deltaY) > INPUT_THRESHOLD) {
       deltaY > 0 ? this.onDown() : this.onUp();
+      this.lastY = touch.clientY;
     }
+  }
+
+  isHolding() {
+    return !(this.lastX === 0 && this.lastY === 0);
   }
 
   handleKeydown(e) {

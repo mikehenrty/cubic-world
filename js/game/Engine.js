@@ -27,6 +27,7 @@ export default class Engine {
     this.camera.lookAt( 20, -100, -CAMERA_DISTANCE );
 
     this.cube = new Cube();
+    this.cube.onMoveFinish = this.onMove.bind(this);
     this.scene.add( this.cube.getObject3D() );
 
     /*
@@ -55,6 +56,14 @@ export default class Engine {
     this.input.onRight = this.cube.move.bind(this.cube, 'RIGHT');
 
     this.update = this.update.bind(this);
+  }
+
+  onMove(direction) {
+    setTimeout(() => {
+      if (this.input.isHolding()) {
+        this.cube.move(direction);
+      }
+    }, 10)
   }
 
   update() {

@@ -54,6 +54,8 @@ export default class Cube {
     this.actions[direction].stop();
     this.pivot.position.set(x, 0, z);
     this.pivot.attach(this.mesh);
+
+    this.onMoveFinish && this.onMoveFinish(direction);
   }
 
   getObject3D() {
