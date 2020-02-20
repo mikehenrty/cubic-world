@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import Time from './controllers/Time';
 import Input from './controllers/Input';
-import Cube from './objects/Cube';
+import Cube from './objects/Cube/';
 
 const ASPECT_RATIO = window.innerWidth / window.innerHeight;
-const SCREEN_WIDTH = 100;
+const SCREEN_WIDTH = 200;
 const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
 
 export default class Engine {

@@ -25,6 +25,12 @@ export const COLOR_GREEN = 'green';
 export const COLOR_YELLOW = 'yellow';
 export const COLOR_PURPLE = 'violet';
 
+export const DIR_AHEAD = 'AHEAD';
+export const DIR_LEFT = 'LEFT';
+export const DIR_RIGHT = 'RIGHT';
+export const DIR_BACK = 'BACK';
+
+
 const SIDE_COLORS = {
   1: COLOR_PURPLE,
   2: COLOR_YELLOW,
@@ -33,12 +39,13 @@ const SIDE_COLORS = {
   5: COLOR_RED,
   6: COLOR_BLACK,
 }
+
 const STARTING_ORIENTATION = {
   TOP: SIDE_ONE,
-  FRONT: SIDE_THREE,
+  FRONT: SIDE_FOUR,
   RIGHT: SIDE_FIVE,
   LEFT: SIDE_TWO,
-  BACK: SIDE_FOUR,
+  BACK: SIDE_THREE,
   BOTTOM: SIDE_SIX,
 }
 
@@ -51,10 +58,76 @@ const CUBE_COLORS = [
   COLOR_PURPLE,
 ];
 
-export const DIR_AHEAD = 'AHEAD';
-export const DIR_LEFT = 'LEFT';
-export const DIR_RIGHT = 'RIGHT';
-export const DIR_BACK = 'BACK';
+const PI_OVER_TWO = Math.PI / 2;
+
+/*
+function _getQuat(top, back) {
+  let q = new THREE.Quaternion();
+
+  let axis = new THREE.Vector3();
+  let angle = 0;
+
+  let quats = [];
+
+  axis.set(0, 1, 0);
+  axis.set(1, 0, 0);
+  axis.set(0, 0, 1);
+
+  if (top === SIDE_ONE) {
+
+
+
+  
+    switch(back) {
+      case SIDE_THREE:
+        // Default, no rotation.
+        break;
+      case SIDE_TWO:
+        angle = PI_OVER_TWO;
+        break;
+      case SIDE_FIVE:
+        angle = -PI_OVER_TWO;
+        break;
+      case SIDE_FOUR:
+        angle = Math.PI;
+        break;
+    }
+
+    q.setFromAxisAngle(axis, angle);
+
+  } else if (top === SIDE_TWO) {
+
+    switch(top) {
+      case 1:
+        // Default.
+        // axis.set(0, 1, 0);
+        break;
+
+      case 2:
+        axis.set(0, 0, -1);
+        angle = PI_OVER_TWO;
+        break
+
+      case 6:
+        axis.set(0, 0, -1);
+        angle = Math.PI;
+        break
+
+      default:
+        console.log('unrecognized top', top);
+    }
+  }
+
+  q.setFromAxisAngle(axis, angle);
+  return q;
+}
+
+const QUATERNIONS_TOP_BACK = {
+  '1_3': _getQuat(1, 3),
+  '2_3': _getQuat(2, 3),
+  '6_3': _getQuat(6, 3),
+};
+*/
 
 const DIRECTIONS = [
   DIR_AHEAD, DIR_LEFT, DIR_RIGHT, DIR_BACK
@@ -133,12 +206,12 @@ export function getMesh() {
   geometry.faces[ 7 ].color.setStyle( SIDE_COLORS[SIDE_SIX] );
 
   // Back side.
-  geometry.faces[ 8 ].color.setStyle( SIDE_COLORS[SIDE_FOUR] );
-  geometry.faces[ 9 ].color.setStyle( SIDE_COLORS[SIDE_FOUR] );
+  geometry.faces[ 8 ].color.setStyle( SIDE_COLORS[SIDE_THREE] );
+  geometry.faces[ 9 ].color.setStyle( SIDE_COLORS[SIDE_THREE] );
 
   // Front side.
-  geometry.faces[ 10 ].color.setStyle( SIDE_COLORS[SIDE_THREE] );
-  geometry.faces[ 11 ].color.setStyle( SIDE_COLORS[SIDE_THREE] );
+  geometry.faces[ 10 ].color.setStyle( SIDE_COLORS[SIDE_FOUR] );
+  geometry.faces[ 11 ].color.setStyle( SIDE_COLORS[SIDE_FOUR] );
 
   // Make sure to position box above z-x plane.
   const mesh = new THREE.Mesh( geometry, material );
@@ -196,6 +269,10 @@ export function getMoveOffset(direction) {
 
 export function getColorForSide(sideNum) {
   return SIDE_COLORS[sideNum];
+}
+
+export function getTopBackQuaternion(top, back) {
+  return QUATERNIONS_TOP_BACK[`${top}_${back}`];
 }
 
 export function getRandomDirection() {

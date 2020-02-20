@@ -8,6 +8,7 @@ import {
   getPivotOffset,
   getMoveOffset,
   getColorForSide,
+  getTopBackQuaternion,
   getStartingOrientation,
   BOX_SIZE,
   HALF_BOX,
@@ -52,6 +53,7 @@ export default class Cube {
       console.log('ignoring while others are running');
       return;
     }
+
     this.lastMove = direction;
     this.pivot.position.add(getPivotOffset(direction));
     this.pivot.attach(this.mesh);
@@ -62,11 +64,24 @@ export default class Cube {
   moveFinish(e) {
     const direction = this.lastMove;
 
+    this.rotateModel(direction);
+
+    /*
+    const tbq = getTopBackQuaternion(this.top, this.back);
+    if (tbq) {
+      this.q = tbq;
+    } else {
+      this.mesh.getWorldQuaternion(this.q);
+    }
+    */
+
+    this.mesh.getWorldQuaternion(this.q);
+
+    // Update position model.
     this.position.add(getMoveOffset(direction));
     const posX = this.position.x * BOX_SIZE;
     const posZ = -this.position.y * BOX_SIZE;
 
-    this.mesh.getWorldQuaternion(this.q);
 
     // Remove the mesh and set it's world coords.
     this.pivot.remove(this.mesh);
@@ -77,8 +92,8 @@ export default class Cube {
     this.pivot.position.set(posX, 0, posZ);
     this.pivot.attach(this.mesh);
 
-    this.rotateModel(direction);
-    console.log('top', getColorForSide(this.top), 'back', getColorForSide(this.back));
+    console.log('top', getColorForSide(this.top), this.top);
+    console.log('back', getColorForSide(this.back), this.back);
   }
 
   rotateModel(direction) {
