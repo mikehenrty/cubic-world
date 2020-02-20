@@ -2,10 +2,17 @@ import * as THREE from 'three';
 import Time from './controllers/Time';
 import Input from './controllers/Input';
 import Cube from './objects/Cube/';
+import { BOX_SIZE } from './objects/Cube/static-helpers';
 
 const ASPECT_RATIO = window.innerWidth / window.innerHeight;
 const SCREEN_WIDTH = 200;
 const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
+
+const LEVEL_SIZE = 101;
+const GRID_DIVISIONS = LEVEL_SIZE;
+const GRID_SIZE = LEVEL_SIZE * BOX_SIZE;
+
+const CAMERA_DISTANCE = 400;
 
 export default class Engine {
 
@@ -17,7 +24,7 @@ export default class Engine {
 
     this.camera = new THREE.PerspectiveCamera( 70, ASPECT_RATIO, 0.8, 2000 );
     this.camera.position.set( 130, 400, 300 );
-    this.camera.lookAt( 20, -100, -150 );
+    this.camera.lookAt( 20, -100, -CAMERA_DISTANCE );
 
     this.cube = new Cube();
     this.scene.add( this.cube.getObject3D() );
@@ -30,7 +37,7 @@ export default class Engine {
     this.scene.add(light);
     */
 
-    var gridHelper = new THREE.GridHelper( 100000, 2001 );
+    var gridHelper = new THREE.GridHelper( GRID_SIZE, LEVEL_SIZE);
     this.scene.add( gridHelper );
 
     var ambientLight = new THREE.AmbientLight( 0x606060 );
@@ -55,9 +62,11 @@ export default class Engine {
 
     const delta = this.time.tick();
     this.cube.update(delta);
+
     this.cube.mesh.getWorldPosition(this.v);
-    // TODO: how to move the camera?
-    this.camera.lookAt(this.v);
+    this.camera.position.setZ(this.v.z + CAMERA_DISTANCE);
+    // this.camera.lookAt(this.v);
+
     this.renderer.render( this.scene, this.camera );
   }
 
