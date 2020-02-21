@@ -1,12 +1,15 @@
 import * as THREE from 'three';
 import { BOX_SIZE, HALF_BOX } from '../Cube/static-helpers';
+import Squares from './Squares.js';
 
-const BOARD_DEPTH = 101;
-const BOARD_WIDTH = 7
+export const BOARD_DEPTH = 101;
+export const BOARD_WIDTH = 7
 const LINE_COLOR = 0x888888;
 
 export default class Board {
   constructor() {
+    this.squares = new Squares();
+
     const pixelWidth = BOARD_WIDTH * BOX_SIZE;
     const pixelDepth = BOARD_DEPTH * BOX_SIZE;
     const color =  new THREE.Color(LINE_COLOR);
@@ -38,6 +41,7 @@ export default class Board {
     var material = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors } );
 
     this.lines = new THREE.LineSegments( geometry, material );
+    this.lines.attach(this.squares.getObject3D());
   }
 
   getObject3D() {
