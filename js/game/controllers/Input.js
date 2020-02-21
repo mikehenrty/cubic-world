@@ -39,7 +39,6 @@ export default class Input {
   handleCancel(e) {
     this.lastX = 0;
     this.lastY = 0;
-    alert(e);
   }
 
   handleMove(e) {
