@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import Time from './controllers/Time';
 import Input from './controllers/Input';
 import Cube from './objects/Cube/';
+import Board from './objects/Board/';
 import { BOX_SIZE } from './objects/Cube/static-helpers';
 
 const ASPECT_RATIO = window.innerWidth / window.innerHeight;
@@ -22,7 +23,7 @@ export default class Engine {
     this.time = new Time();
     this.scene = new THREE.Scene();
 
-    this.camera = new THREE.PerspectiveCamera( 70, ASPECT_RATIO, 0.8, 2000 );
+    this.camera = new THREE.PerspectiveCamera( 70, ASPECT_RATIO, 0.8, 5000 );
     this.camera.position.set( 130, 400, 300 );
     this.camera.lookAt( 20, -100, -CAMERA_DISTANCE );
 
@@ -38,8 +39,8 @@ export default class Engine {
     this.scene.add(light);
     */
 
-    var gridHelper = new THREE.GridHelper( GRID_SIZE, LEVEL_SIZE);
-    this.scene.add( gridHelper );
+    this.board = new Board();
+    this.scene.add( this.board.getObject3D() );
 
     var ambientLight = new THREE.AmbientLight( 0x606060 );
     this.scene.add( ambientLight );
