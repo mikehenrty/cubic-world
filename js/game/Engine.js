@@ -13,7 +13,10 @@ const LEVEL_SIZE = 101;
 const GRID_DIVISIONS = LEVEL_SIZE;
 const GRID_SIZE = LEVEL_SIZE * BOX_SIZE;
 
-const CAMERA_DISTANCE = 400;
+const CAMERA_DISTANCE = 350;
+const CAMERA_LATERAL_OFFSET = 110;
+const CAMERA_HEIGHT = 300;
+const CAMERA_LOOK_DISTANCE = 6 * BOX_SIZE;
 
 export default class Engine {
 
@@ -24,7 +27,9 @@ export default class Engine {
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera( 70, ASPECT_RATIO, 0.8, 5000 );
-    this.camera.position.set( 130, 400, 300 );
+    this.camera.position.set( CAMERA_LATERAL_OFFSET, CAMERA_HEIGHT, -CAMERA_DISTANCE );
+    this.cameraOffset = new THREE.Vector3(0, 0, -CAMERA_DISTANCE);
+    this.cameraLookAt = new THREE.Vector3();
     this.camera.lookAt( 20, -100, -CAMERA_DISTANCE );
 
     this.cube = new Cube();
@@ -75,7 +80,9 @@ export default class Engine {
 
     this.cube.mesh.getWorldPosition(this.v);
     this.camera.position.setZ(this.v.z + CAMERA_DISTANCE);
-    this.camera.lookAt(this.v);
+    //this.camera.position.setX(this.v.x + CAMERA_LATERAL_OFFSET);
+    this.cameraLookAt.addVectors(this.v, this.cameraOffset);
+    this.camera.lookAt(this.cameraLookAt);
 
     this.renderer.render( this.scene, this.camera );
   }
