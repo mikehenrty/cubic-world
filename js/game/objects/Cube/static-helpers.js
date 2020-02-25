@@ -31,7 +31,7 @@ export const DIR_RIGHT = 'RIGHT';
 export const DIR_BACK = 'BACK';
 
 
-const SIDE_COLORS = {
+export const SIDE_COLORS = {
   1: COLOR_PURPLE,
   2: COLOR_YELLOW,
   3: COLOR_GREEN,
@@ -48,15 +48,6 @@ const STARTING_ORIENTATION = {
   BACK: SIDE_THREE,
   BOTTOM: SIDE_SIX,
 }
-
-const CUBE_COLORS = [
-  COLOR_BLACK,
-  COLOR_RED,
-  COLOR_BLUE,
-  COLOR_GREEN,
-  COLOR_YELLOW,
-  COLOR_PURPLE,
-];
 
 const PI_OVER_TWO = Math.PI / 2;
 const DIRECTIONS = [

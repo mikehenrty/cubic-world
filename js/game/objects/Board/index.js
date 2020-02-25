@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import { BOX_SIZE, HALF_BOX } from '../Cube/static-helpers';
 import Squares from './Squares.js';
 
-export const BOARD_DEPTH = 101;
-export const BOARD_WIDTH = 7
+export const BOARD_DEPTH = 11;
+export const BOARD_WIDTH = 5
 const LINE_COLOR = 0x888888;
 
 export default class Board {
