@@ -3,7 +3,13 @@ import Time from './controllers/Time';
 import Input from './controllers/Input';
 import Cube from './objects/Cube/';
 import Board from './objects/Board/';
-import { BOX_SIZE } from './objects/Cube/static-helpers';
+import {
+  BOX_SIZE,
+  DIR_AHEAD,
+  DIR_LEFT,
+  DIR_RIGHT,
+  DIR_BACK
+} from './objects/Cube/static-helpers';
 
 const ASPECT_RATIO = window.innerWidth / window.innerHeight;
 const SCREEN_WIDTH = 200;
@@ -56,12 +62,18 @@ export default class Engine {
 
 
     this.input = new Input();
-    this.input.onUp = this.cube.move.bind(this.cube, 'AHEAD');
-    this.input.onDown = this.cube.move.bind(this.cube, 'BACK');
-    this.input.onLeft = this.cube.move.bind(this.cube, 'LEFT');
-    this.input.onRight = this.cube.move.bind(this.cube, 'RIGHT');
+    this.input.onUp = this.initiateMove.bind(this, DIR_AHEAD);
+    this.input.onDown = this.initiateMove.bind(this, DIR_BACK);
+    this.input.onLeft = this.initiateMove.bind(this, DIR_LEFT);
+    this.input.onRight = this.initiateMove.bind(this, DIR_RIGHT);
 
     this.update = this.update.bind(this);
+  }
+
+  initiateMove(direction) {
+    if (this.board.canMove(direction, this.cube.getPositionVec())) {
+      this.cube.move(direction);
+    }
   }
 
   onMove(direction) {
@@ -69,7 +81,7 @@ export default class Engine {
       if (this.input.isHolding()) {
         this.cube.move(direction);
       }
-    }, 10)
+    }, 10);
   }
 
   update() {

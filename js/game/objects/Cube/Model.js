@@ -37,10 +37,10 @@ export default class Model {
     return this.quaternions[`${this.top}_${this.back}`];
   }
 
-  getPosition() {
+  getXZPosition(position = this.position) {
     return {
-      x: this.position.x * BOX_SIZE,
-      z: -this.position.y * BOX_SIZE,
+      x: position.x * BOX_SIZE,
+      z: -position.y * BOX_SIZE,
     };
   }
 

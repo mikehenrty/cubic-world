@@ -22,6 +22,11 @@ export default class Cube {
     this.lastMove = false;
   }
 
+  getPositionVec() {
+    // Raw position is stored in normal x/y coords.
+    return this.model.position;
+  }
+
   move(direction) {
     if (this.lastMove && this.actions[this.lastMove].isRunning()) {
       console.log('ignoring while others are running');
@@ -41,7 +46,7 @@ export default class Cube {
     // Update our model of the cube, so we can use to correct
     // rotation rounding errors.
     this.model.update(direction);
-    const { x, z } = this.model.getPosition();
+    const { x, z } = this.model.getXZPosition();
 
     // Remove the mesh and set it's world coords.
     this.pivot.remove(this.mesh);
