@@ -48,13 +48,13 @@ export default class Input {
   }
 
   handleEnd(e) {
+    this.release();
     this.lastX = 0;
     this.lastY = 0;
   }
 
   handleCancel(e) {
-    this.lastX = 0;
-    this.lastY = 0;
+    this.handleEnd(e);
   }
 
   handleMove(e) {
