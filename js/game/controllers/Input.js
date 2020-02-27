@@ -2,6 +2,7 @@ const INPUT_THRESHOLD = 20;
 
 export default class Input {
   constructor() {
+    this.held = false;
     this.lastX = 0;
     this.lastY = 0;
 
@@ -11,6 +12,7 @@ export default class Input {
     this.onRight = null;
 
     this.handleKeydown = this.handleKeydown.bind(this);
+    this.handleKeyup = this.handleKeyup.bind(this);
     this.handleStart = this.handleStart.bind(this);
     this.handleEnd = this.handleEnd.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
@@ -23,9 +25,23 @@ export default class Input {
     el.addEventListener("touchmove", this.handleMove, false);
 
     document.addEventListener('keydown', this.handleKeydown);
+    document.addEventListener('keyup', this.handleKeyup);
+  }
+
+  press() {
+    this.held = true;
+  }
+
+  release() {
+    this.held = false;
+  }
+
+  isHolding() {
+    return this.held;
   }
 
   handleStart(e) {
+    this.press();
     const touch = e.changedTouches[0];
     this.lastX = touch.clientX;
     this.lastY = touch.clientY;
@@ -54,14 +70,17 @@ export default class Input {
     }
   }
 
-  isHolding() {
-    return !(this.lastX === 0 && this.lastY === 0);
+  handleKeyup(e) {
+    this.release();
   }
 
   handleKeydown(e) {
     if (e.repeat) {
       return;
     }
+
+    this.press();
+
     switch(e.key) {
       case 'ArrowUp':
         this.onUp && this.onUp();
