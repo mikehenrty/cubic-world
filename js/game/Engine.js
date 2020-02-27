@@ -12,7 +12,7 @@ import {
 } from '/js/game/constants';
 
 const ASPECT_RATIO = window.innerWidth / window.innerHeight;
-const SCREEN_WIDTH = 200;
+const SCREEN_WIDTH = 100;
 const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
 
 const LEVEL_SIZE = 101;
