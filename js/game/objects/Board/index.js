@@ -6,16 +6,16 @@ import {
   BOARD_WIDTH,
 } from '/js/game/constants';
 import { getMoveOffset } from '/js/game/objects/Cube/static-helpers';
-import BoardModel from './Model';
 import Squares from './Squares';
 import Grid from './Grid';
 
 const LINE_COLOR = 0x888888;
 
 export default class Board {
-  constructor() {
+  constructor(model) {
     this.v2 = new THREE.Vector2();
-    this.model = new BoardModel();
+
+    this.model = model;
     this.squares = new Squares(this.model);
     this.grid = new Grid();
 

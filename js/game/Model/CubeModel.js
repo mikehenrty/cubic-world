@@ -1,5 +1,9 @@
 import * as THREE from 'three';
-import { getAllQuaternionsForCube, getMoveOffset } from './static-helpers';
+import {
+  getAllQuaternionsForCube,
+  getMoveOffset,
+} from '/js/game/objects/Cube/static-helpers';
+
 import {
   SIDE_TOP,
   SIDE_FRONT,
@@ -34,6 +38,10 @@ export default class CubeModel {
 
   getStaticQuaternion() {
     return this.quaternions[`${this.top}_${this.back}`];
+  }
+
+  getXYPosition() {
+    return this.position;
   }
 
   getXZPosition(position = this.position) {

@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import CubeModel from './Model';
 import { HALF_BOX } from '/js/game/constants';
 import {
   getMesh,
@@ -10,8 +9,8 @@ import {
 } from './static-helpers';
 
 export default class Cube {
-  constructor() {
-    this.model = new CubeModel();
+  constructor(model) {
+    this.model = model;
 
     // Populate scene.
     this.mesh = getMesh();
@@ -23,8 +22,8 @@ export default class Cube {
   }
 
   getPositionVec() {
-    // Raw position is stored in normal x/y coords.
-    return this.model.position;
+    // X/Y coords are more intuitive that x/-z, so we use the former here.
+    return this.model.getCubeXYPosition();
   }
 
   move(direction) {
@@ -45,8 +44,8 @@ export default class Cube {
 
     // Update our model of the cube, so we can use to correct
     // rotation rounding errors.
-    this.model.update(direction);
-    const { x, z } = this.model.getXZPosition();
+    this.model.updateCube(direction);
+    const { x, z } = this.model.getCubeXZPosition();
 
     // Remove the mesh and set it's world coords.
     this.pivot.remove(this.mesh);
@@ -54,7 +53,7 @@ export default class Cube {
 
     // Use our pre-generated list of 24 static quaternions
     // to orient our cube properly with the grid.
-    this.mesh.setRotationFromQuaternion(this.model.getStaticQuaternion());
+    this.mesh.setRotationFromQuaternion(this.model.getCubeStaticQaternion());
 
     this.actions[direction].stop();
     this.pivot.position.set(x, 0, z);

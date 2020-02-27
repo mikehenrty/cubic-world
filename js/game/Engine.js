@@ -3,6 +3,7 @@ import Time from './controllers/Time';
 import Input from './controllers/Input';
 import Cube from './objects/Cube/';
 import Board from './objects/Board/';
+import Model from './Model/';
 import {
   BOX_SIZE,
   DIR_AHEAD,
@@ -34,9 +35,15 @@ export default class Engine {
     this.cameraLookAt = new THREE.Vector3();
     this.camera.lookAt( 20, -100, -CAMERA_DISTANCE );
 
-    this.cube = new Cube();
+    // The model tracks cube and board positioning.
+    this.model = new Model();
+
+    this.cube = new Cube( this.model );
     this.cube.onMoveFinish = this.onMoveFinish.bind(this);
     this.scene.add( this.cube.getObject3D() );
+
+    this.board = new Board( this.model );
+    this.scene.add( this.board.getObject3D() );
 
     /*
     const color = 0xFFFFFF;
@@ -45,9 +52,6 @@ export default class Engine {
     light.position.set(-1, 2, 4);
     this.scene.add(light);
     */
-
-    this.board = new Board();
-    this.scene.add( this.board.getObject3D() );
 
     var ambientLight = new THREE.AmbientLight( 0x606060 );
     this.scene.add( ambientLight );

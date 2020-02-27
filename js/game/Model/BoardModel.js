@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { BOARD_DEPTH, BOARD_WIDTH, SIDE_COLORS } from '/js/game/constants';
 
+
 export default class BoardModel {
   constructor() {
     this.enemyColors = [];

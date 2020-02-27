@@ -67,7 +67,7 @@ export default class Squares {
         vertices[ vi++ ] = nearLeftZ;
 
 
-        const enemyColor = this.model.getColor(x, y);
+        const enemyColor = this.model.getBoardSquareColor(x, y);
         const faceColor = enemyColor ? enemyColor : this.squareColor;
         const colorR = faceColor.r;
         const colorG = faceColor.g;
