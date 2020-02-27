@@ -15,10 +15,6 @@ const ASPECT_RATIO = window.innerWidth / window.innerHeight;
 const SCREEN_WIDTH = 100;
 const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
 
-const LEVEL_SIZE = 101;
-const GRID_DIVISIONS = LEVEL_SIZE;
-const GRID_SIZE = LEVEL_SIZE * BOX_SIZE;
-
 const CAMERA_DISTANCE = 350;
 const CAMERA_LATERAL_OFFSET = 110;
 const CAMERA_HEIGHT = 300;
