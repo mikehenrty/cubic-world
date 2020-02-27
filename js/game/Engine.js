@@ -75,7 +75,7 @@ export default class Engine {
   onMoveFinish(direction) {
     setTimeout(() => {
       if (this.input.isHolding()) {
-        this.cube.move(direction);
+        this.cube.initiateMove(direction);
       }
     }, 10);
   }
