@@ -1,10 +1,14 @@
 import * as THREE from 'three';
-import { BOX_SIZE, HALF_BOX, getMoveOffset } from '../Cube/static-helpers';
+import {
+  BOX_SIZE,
+  HALF_BOX,
+  BOARD_DEPTH,
+  BOARD_WIDTH,
+} from '/js/game/constants';
+import { getMoveOffset } from '/js/game/objects/Cube/static-helpers';
 import BoardModel from './Model';
 import Squares from './Squares.js';
 
-export const BOARD_DEPTH = 11;
-export const BOARD_WIDTH = 5
 const LINE_COLOR = 0x888888;
 
 export default class Board {

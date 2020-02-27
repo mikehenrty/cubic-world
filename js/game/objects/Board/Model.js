@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { BOARD_DEPTH, BOARD_WIDTH } from './';
-import { SIDE_COLORS } from '/js/game/objects/Cube/static-helpers';
+import { BOARD_DEPTH, BOARD_WIDTH, SIDE_COLORS } from '/js/game/constants';
 
 export default class BoardModel {
   constructor() {

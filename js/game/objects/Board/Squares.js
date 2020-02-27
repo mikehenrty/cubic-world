@@ -1,9 +1,10 @@
 import * as THREE from 'three';
-import { BOARD_DEPTH, BOARD_WIDTH } from '/js/game/objects/Board/';
 import {
   BOX_SIZE,
   HALF_BOX,
-} from '/js/game/objects/Cube/static-helpers';
+  BOARD_DEPTH,
+  BOARD_WIDTH,
+} from '/js/game/constants';
 
 const DEFAULT_SQUARE_COLOR = 'black';
 

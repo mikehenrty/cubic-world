@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import CubeModel from './Model';
+import { HALF_BOX } from '/js/game/constants';
 import {
   getMesh,
   getPivot,
   getMixer,
   getActions,
   getPivotOffset,
-  HALF_BOX,
 } from './static-helpers';
 
 export default class Cube {

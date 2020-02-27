@@ -9,7 +9,7 @@ import {
   DIR_LEFT,
   DIR_RIGHT,
   DIR_BACK
-} from './objects/Cube/static-helpers';
+} from '/js/game/constants';
 
 const ASPECT_RATIO = window.innerWidth / window.innerHeight;
 const SCREEN_WIDTH = 200;
@@ -39,7 +39,7 @@ export default class Engine {
     this.camera.lookAt( 20, -100, -CAMERA_DISTANCE );
 
     this.cube = new Cube();
-    this.cube.onMoveFinish = this.onMove.bind(this);
+    this.cube.onMoveFinish = this.onMoveFinish.bind(this);
     this.scene.add( this.cube.getObject3D() );
 
     /*
@@ -76,7 +76,7 @@ export default class Engine {
     }
   }
 
-  onMove(direction) {
+  onMoveFinish(direction) {
     setTimeout(() => {
       if (this.input.isHolding()) {
         this.cube.move(direction);

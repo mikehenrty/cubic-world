@@ -1,3 +1,5 @@
+import { DEBUG } from '/js/game/constants';
+
 // Keep past deltas for FPS calculation.
 // Higher REMEMBER numbers will be slower but more stable.
 const REMEMBER = 30;
@@ -35,9 +37,11 @@ export default class Time {
     this.startTime = this.getNewTime();
     this.pastTimes[0] = this.startTime;
 
-    LOG_FPS && setInterval(() => {
-      console.log('FPS::', this.getAverageFPS());
-    }, 2000);
+    if (DEBUG || LOG_FPS) {
+      setInterval(() => {
+        console.log('FPS::', this.getAverageFPS());
+      }, 2000);
+    }
   }
 
   // Shift the times back and add the current one.

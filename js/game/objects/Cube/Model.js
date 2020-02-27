@@ -1,8 +1,6 @@
 import * as THREE from 'three';
+import { getAllQuaternionsForCube, getMoveOffset } from './static-helpers';
 import {
-  getAllQuaternionsForCube,
-  getStartingOrientation,
-  getMoveOffset,
   SIDE_TOP,
   SIDE_FRONT,
   SIDE_RIGHT,
@@ -14,18 +12,19 @@ import {
   DIR_RIGHT,
   DIR_BACK,
   BOX_SIZE,
-} from './static-helpers';
+  STARTING_ORIENTATION,
+} from '/js/game/constants';
+
 
 export default class CubeModel {
   constructor() {
     // Set up position and orientation on the playing surface.
-    const starting = getStartingOrientation();
-    this.top = starting[SIDE_TOP];
-    this.bottom = starting[SIDE_BOTTOM];
-    this.left = starting[SIDE_LEFT];
-    this.right = starting[SIDE_RIGHT];
-    this.front = starting[SIDE_FRONT];
-    this.back = starting[SIDE_BACK];
+    this.top = STARTING_ORIENTATION[SIDE_TOP];
+    this.bottom = STARTING_ORIENTATION[SIDE_BOTTOM];
+    this.left = STARTING_ORIENTATION[SIDE_LEFT];
+    this.right = STARTING_ORIENTATION[SIDE_RIGHT];
+    this.front = STARTING_ORIENTATION[SIDE_FRONT];
+    this.back = STARTING_ORIENTATION[SIDE_BACK];
 
     this.position = new THREE.Vector2();
 
