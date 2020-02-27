@@ -7,7 +7,8 @@ import {
 } from '/js/game/constants';
 import { getMoveOffset } from '/js/game/objects/Cube/static-helpers';
 import BoardModel from './Model';
-import Squares from './Squares.js';
+import Squares from './Squares';
+import Grid from './Grid';
 
 const LINE_COLOR = 0x888888;
 
@@ -16,39 +17,14 @@ export default class Board {
     this.v2 = new THREE.Vector2();
     this.model = new BoardModel();
     this.squares = new Squares(this.model);
+    this.grid = new Grid();
 
-    const pixelWidth = BOARD_WIDTH * BOX_SIZE;
-    const pixelDepth = BOARD_DEPTH * BOX_SIZE;
-    const color =  new THREE.Color(LINE_COLOR);
+    this.group = new THREE.Group();
 
-    const halfWidth = Math.round(pixelWidth / 2);
-
-    let j = 0
-    let vertices = [], colors = [];
-
-    for ( var i = 0, k = HALF_BOX; i <= BOARD_DEPTH; i ++, k -= BOX_SIZE ) {
-      vertices.push( -halfWidth, 0, k, halfWidth, 0, k );
-
-      color.toArray( colors, j ); j += 3;
-      color.toArray( colors, j ); j += 3;
-    }
-
-    for ( let i = 0; i <=BOARD_WIDTH; i++ ) {
-      const x = -halfWidth + (i * BOX_SIZE);
-      vertices.push( x, 0, HALF_BOX, x, 0, - pixelDepth + HALF_BOX );
-
-      color.toArray( colors, j ); j += 3;
-      color.toArray( colors, j ); j += 3;
-    }
-
-    var geometry = new THREE.BufferGeometry();
-    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
-    geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-
-    var material = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors } );
-
-    this.lines = new THREE.LineSegments( geometry, material );
-    this.lines.attach(this.squares.getObject3D());
+    this.group.attach(this.squares.getObject3D());
+    this.group.attach(this.grid.getObject3D());
+    // Lift the grid slightly off the ground for effect.
+    this.grid.getObject3D().position.setY(1);
   }
 
   canMove(direction, position) {
@@ -71,6 +47,6 @@ export default class Board {
   }
 
   getObject3D() {
-    return this.lines;
+    return this.group;
   }
 }
