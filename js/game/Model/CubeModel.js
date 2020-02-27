@@ -56,6 +56,29 @@ export default class CubeModel {
     this.position.add(getMoveOffset(direction));
   }
 
+  getNextTopSide(direction) {
+    let dir = null;
+    switch(direction) {
+      case DIR_AHEAD:
+        dir = this.back;
+        break;
+
+      case DIR_LEFT:
+        dir = this.right;
+        break;
+
+      case DIR_RIGHT:
+        dir = this.left;
+        break;
+
+      case DIR_BACK:
+        dir = this.front;
+        break;
+    }
+
+    return dir;
+  }
+
   rotate(direction) {
     switch(direction) {
       case DIR_AHEAD:

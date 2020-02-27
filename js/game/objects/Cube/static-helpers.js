@@ -60,6 +60,11 @@ const CLIPS = {
   ),
 }
 
+const CACHED_COLORS = Object.keys(SIDE_COLORS).reduce((accum, side) => {
+  accum[side] = new THREE.Color(SIDE_COLORS[side]);
+  return accum;
+}, {});
+
 export function getMesh() {
   const geometry = new THREE.BoxGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE);
   const material = new THREE.MeshBasicMaterial( {
@@ -209,7 +214,7 @@ export function getMoveOffset(direction) {
 }
 
 export function getColorForSide(sideNum) {
-  return SIDE_COLORS[sideNum];
+  return CACHED_COLORS[sideNum];
 }
 
 export function getRandomDirection() {

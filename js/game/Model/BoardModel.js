@@ -1,23 +1,22 @@
 import * as THREE from 'three';
-import { BOARD_DEPTH, BOARD_WIDTH, SIDE_COLORS } from '/js/game/constants';
+import { BOARD_DEPTH, BOARD_WIDTH } from '/js/game/constants';
 
+// We may not want to include 6 as an enemy side.
+const SIDE_ENEMIES = [1, 2, 3, 4, 5];
+const NUM_ENEMY_TYPES = SIDE_ENEMIES.length;
 
 export default class BoardModel {
   constructor() {
-    this.enemyColors = [];
-    for (let i = 1; i < 6; i++) {
-      this.enemyColors[i - 1] = new THREE.Color(SIDE_COLORS[i]);
-    }
-
     this.squares = [];
+
     for (let x = 0; x < BOARD_WIDTH; x++) {
       this.squares[x] = this.squares[x] || [];
       for (let y = 0; y < BOARD_DEPTH; y++) {
         this.squares[y] = this.squares[y] || [];
 
-        // Add occassional enemy color.
+        // Add occassional enemy.
         if (Math.random() > 0.9) {
-          this.squares[x][y] = this.getRandomEnemyColor();
+          this.squares[x][y] = this.getRandomEnemySide();
         }
       }
     }
@@ -29,12 +28,11 @@ export default class BoardModel {
     return this.startingPosition;
   }
 
-  getColor(x, y) {
+  getSide(x, y) {
     return this.squares[x] && this.squares[x][y];
   }
 
-  getRandomEnemyColor() {
-    const index = Math.round(Math.random() * (this.enemyColors.length - 1));
-    return this.enemyColors[ index ];
+  getRandomEnemySide() {
+    return SIDE_ENEMIES[ Math.round(Math.random() * (NUM_ENEMY_TYPES - 1)) ];
   }
 }

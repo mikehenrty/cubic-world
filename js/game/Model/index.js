@@ -27,8 +27,8 @@ export default class Model {
     return this.cube.getStaticQuaternion();
   }
 
-  getBoardSquareColor(x, y) {
-    return this.board.getColor(x, y);
+  getBoardSquareValue(x, y) {
+    return this.board.getSide(x, y);
   }
 
   canMove(direction) {
@@ -45,7 +45,9 @@ export default class Model {
       return false;
     }
 
-    if (this.board.getColor(x, y)) {
+    // If we have a colored tile, we must be prepared to eat it.
+    const enemySide = this.board.getSide(x, y);
+    if (enemySide && enemySide !== this.cube.getNextTopSide(direction)) {
       return false;
     }
 

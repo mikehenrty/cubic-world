@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { getColorForSide } from '/js/game/objects/Cube/static-helpers';
 import {
   BOX_SIZE,
   HALF_BOX,
@@ -67,8 +68,8 @@ export default class Squares {
         vertices[ vi++ ] = nearLeftZ;
 
 
-        const enemyColor = this.model.getBoardSquareColor(x, y);
-        const faceColor = enemyColor ? enemyColor : this.squareColor;
+        const enemy = this.model.getBoardSquareValue(x, y);
+        const faceColor = enemy ? getColorForSide(enemy) : this.squareColor;
         const colorR = faceColor.r;
         const colorG = faceColor.g;
         const colorB = faceColor.b;

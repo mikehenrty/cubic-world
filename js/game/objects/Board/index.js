@@ -5,7 +5,6 @@ import {
   BOARD_DEPTH,
   BOARD_WIDTH,
 } from '/js/game/constants';
-import { getMoveOffset } from '/js/game/objects/Cube/static-helpers';
 import Squares from './Squares';
 import Grid from './Grid';
 
