@@ -1,4 +1,4 @@
-const INPUT_THRESHOLD = 10;
+const INPUT_THRESHOLD = 20;
 
 export default class Input {
   constructor() {
@@ -59,6 +59,9 @@ export default class Input {
   }
 
   handleKeydown(e) {
+    if (e.repeat) {
+      return;
+    }
     switch(e.key) {
       case 'ArrowUp':
         this.onUp && this.onUp();

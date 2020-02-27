@@ -20,7 +20,8 @@ export default class Cube {
 
     this.updateMeshFromModel();
 
-    this.lastMove = false;
+    this.lastMove = null;
+    this.nextMove = null;
   }
 
   updateMeshFromModel() {
@@ -38,7 +39,12 @@ export default class Cube {
 
   move(direction) {
     if (this.lastMove && this.actions[this.lastMove].isRunning()) {
-      console.log('ignoring while others are running');
+
+      // If user wants to change direction, remember that
+      // and attempt to play it at the end of the move.
+      if (direction !== this.lastMove) {
+        this.nextMove = direction;
+      }
       return;
     }
 
@@ -47,6 +53,7 @@ export default class Cube {
     }
 
     this.lastMove = direction;
+    this.nextMove = null;
 
     // Set up the rotation pivot point.
     this.pivot.position.add(getPivotOffset(direction));
@@ -74,7 +81,12 @@ export default class Cube {
     this.pivot.position.setY(0);
     this.pivot.attach(this.mesh);
 
-    this.onMoveFinish && this.onMoveFinish(direction);
+    // If we have a move pending perform that before calling onMoveFinish.
+    if (this.nextMove) {
+      setTimeout(() => this.move(this.nextMove));
+    } else {
+      this.onMoveFinish && this.onMoveFinish(direction);
+    }
   }
 
   getObject3D() {

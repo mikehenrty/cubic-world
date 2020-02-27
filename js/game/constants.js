@@ -9,7 +9,7 @@ export const BOARD_WIDTH = 5
 // Cube constants.
 export const BOX_SIZE = 50;
 export const HALF_BOX = Math.round(BOX_SIZE / 2); // For convenience.
-export const FLIP_DURATION = 250;
+export const FLIP_DURATION = 325;
 
 export const SIDE_TOP = 'TOP';
 export const SIDE_FRONT = 'FRONT';
