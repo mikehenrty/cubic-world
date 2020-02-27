@@ -5,6 +5,7 @@ import Cube from './objects/Cube/';
 import Board from './objects/Board/';
 import Model from './Model/';
 import {
+  PIXEL_WIDTH,
   BOX_SIZE,
   DIR_AHEAD,
   DIR_LEFT,
@@ -13,7 +14,7 @@ import {
 } from '/js/game/constants';
 
 const ASPECT_RATIO = window.innerWidth / window.innerHeight;
-const SCREEN_WIDTH = 100;
+const SCREEN_WIDTH = PIXEL_WIDTH;
 const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
 
 const CAMERA_DISTANCE = 350;
