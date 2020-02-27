@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { BOX_SIZE, HALF_BOX, getMoveOffset } from '../Cube/static-helpers';
+import BoardModel from './Model';
 import Squares from './Squares.js';
 
 export const BOARD_DEPTH = 11;
@@ -9,7 +10,8 @@ const LINE_COLOR = 0x888888;
 export default class Board {
   constructor() {
     this.v2 = new THREE.Vector2();
-    this.squares = new Squares();
+    this.model = new BoardModel();
+    this.squares = new Squares(this.model);
 
     const pixelWidth = BOARD_WIDTH * BOX_SIZE;
     const pixelDepth = BOARD_DEPTH * BOX_SIZE;

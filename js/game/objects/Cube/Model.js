@@ -16,7 +16,7 @@ import {
   BOX_SIZE,
 } from './static-helpers';
 
-export default class Model {
+export default class CubeModel {
   constructor() {
     // Set up position and orientation on the playing surface.
     const starting = getStartingOrientation();

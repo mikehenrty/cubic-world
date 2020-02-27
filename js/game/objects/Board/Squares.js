@@ -3,18 +3,14 @@ import { BOARD_DEPTH, BOARD_WIDTH } from '/js/game/objects/Board/';
 import {
   BOX_SIZE,
   HALF_BOX,
-  SIDE_COLORS
 } from '/js/game/objects/Cube/static-helpers';
 
 const DEFAULT_SQUARE_COLOR = 'black';
 
 export default class Squares {
-  constructor() {
+  constructor(model) {
+    this.model = model;
     this.squareColor = new THREE.Color(DEFAULT_SQUARE_COLOR);
-    this.enemyColors = [];
-    for (let i = 1; i < 6; i++) {
-      this.enemyColors[i - 1] = new THREE.Color(SIDE_COLORS[i]);
-    }
 
     let vertices = [];
     let colors = [];
@@ -25,10 +21,10 @@ export default class Squares {
     const startZ = 0;
     const startX = Math.round( HALF_BOX + (-BOARD_WIDTH / 2) * BOX_SIZE )
 
-    for ( let i = 0; i < BOARD_DEPTH; i++ ) {
-      const centerZ = startZ - i * BOX_SIZE;
-      for ( let j = 0; j < BOARD_WIDTH; j++ ) {
-        const centerX = startX + j * BOX_SIZE;
+    for ( let y = 0; y < BOARD_DEPTH; y++ ) {
+      const centerZ = startZ - y * BOX_SIZE;
+      for ( let x = 0; x < BOARD_WIDTH; x++ ) {
+        const centerX = startX + x * BOX_SIZE;
 
         // Calculate 4 coords surrounding center
         const farRightX = centerX + HALF_BOX;
@@ -70,10 +66,8 @@ export default class Squares {
         vertices[ vi++ ] = nearLeftZ;
 
 
-        let faceColor = ( Math.random() > .9 )
-          ? this.getRandomEnemyColor()
-          : this.squareColor;
-
+        const enemyColor = this.model.getColor(x, y);
+        const faceColor = enemyColor ? enemyColor : this.squareColor;
         const colorR = faceColor.r;
         const colorG = faceColor.g;
         const colorB = faceColor.b;
@@ -114,12 +108,6 @@ export default class Squares {
     });
 
     this.plane = new THREE.Mesh( geometry, material );
-    this.plane.position.set(0, -1, 0);
-  }
-
-  getRandomEnemyColor() {
-    const index = Math.round(Math.random() * (this.enemyColors.length - 1));
-    return this.enemyColors[ index ];
   }
 
   getObject3D() {

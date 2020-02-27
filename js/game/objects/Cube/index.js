@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import Model from './Model';
+import CubeModel from './Model';
 import {
   getMesh,
   getPivot,
@@ -11,7 +11,7 @@ import {
 
 export default class Cube {
   constructor() {
-    this.model = new Model();
+    this.model = new CubeModel();
 
     // Populate scene.
     this.mesh = getMesh();
