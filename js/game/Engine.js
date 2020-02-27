@@ -60,7 +60,6 @@ export default class Engine {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-
     this.input = new Input();
     this.input.onUp = this.initiateMove.bind(this, DIR_AHEAD);
     this.input.onDown = this.initiateMove.bind(this, DIR_BACK);
@@ -71,15 +70,13 @@ export default class Engine {
   }
 
   initiateMove(direction) {
-    if (this.board.canMove(direction, this.cube.getPositionVec())) {
-      this.cube.move(direction);
-    }
+    this.cube.move(direction);
   }
 
   onMoveFinish(direction) {
     setTimeout(() => {
       if (this.input.isHolding()) {
-        this.cube.initiateMove(direction);
+        this.initiateMove(direction);
       }
     }, 10);
   }

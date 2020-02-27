@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { HALF_BOX } from '/js/game/constants';
+import { BOARD_WIDTH, BOX_SIZE, HALF_BOX } from '/js/game/constants';
 import {
   getMesh,
   getPivot,
@@ -18,12 +18,22 @@ export default class Cube {
     this.mixer = getMixer(this.pivot, this.moveFinish.bind(this));
     this.actions = getActions(this.mixer);
 
+    this.updateMeshFromModel();
+
     this.lastMove = false;
   }
 
-  getPositionVec() {
-    // X/Y coords are more intuitive that x/-z, so we use the former here.
-    return this.model.getCubeXYPosition();
+  updateMeshFromModel() {
+    // Reposition the mesh over the square dictated by model.
+    const position = this.model.getCubePosition();
+    const x = ( position.x - Math.floor(BOARD_WIDTH / 2) ) * BOX_SIZE;
+    const z = -position.y * BOX_SIZE;
+    this.mesh.position.set(x, HALF_BOX, z);
+
+    // Use our pre-generated list of 24 static quaternions
+    // to orient our cube properly with the grid.
+    this.mesh.setRotationFromQuaternion(this.model.getCubeStaticQaternion());
+
   }
 
   move(direction) {
@@ -32,10 +42,18 @@ export default class Cube {
       return;
     }
 
+    if ( !this.model.canMove(direction) ) {
+      return;
+    }
+
     this.lastMove = direction;
+
+    // Set up the rotation pivot point.
     this.pivot.position.add(getPivotOffset(direction));
     this.pivot.attach(this.mesh);
     this.mesh.position.sub(getPivotOffset(direction));
+
+    // Start the animation.
     this.actions[direction].play();
   }
 
@@ -45,18 +63,15 @@ export default class Cube {
     // Update our model of the cube, so we can use to correct
     // rotation rounding errors.
     this.model.updateCube(direction);
-    const { x, z } = this.model.getCubeXZPosition();
 
-    // Remove the mesh and set it's world coords.
     this.pivot.remove(this.mesh);
-    this.mesh.position.set(x, HALF_BOX, z);
-
-    // Use our pre-generated list of 24 static quaternions
-    // to orient our cube properly with the grid.
-    this.mesh.setRotationFromQuaternion(this.model.getCubeStaticQaternion());
+    this.updateMeshFromModel();
 
     this.actions[direction].stop();
-    this.pivot.position.set(x, 0, z);
+
+    // Put the pivot back at the center bottom of cube.
+    this.pivot.position.copy(this.mesh.position);
+    this.pivot.position.setY(0);
     this.pivot.attach(this.mesh);
 
     this.onMoveFinish && this.onMoveFinish(direction);

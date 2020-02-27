@@ -23,7 +23,7 @@ const PIVOTS = {
   BACK:  new THREE.Vector3(0, 0, HALF_BOX),
 };
 
-const MOVES = {
+const MOVES_XY = {
   AHEAD: new THREE.Vector2(0, 1),
   LEFT: new THREE.Vector2(-1, 0),
   RIGHT: new THREE.Vector2(1, 0),
@@ -93,7 +93,6 @@ export function getMesh() {
 
   // Make sure to position box above z-x plane.
   const mesh = new THREE.Mesh( geometry, material );
-  mesh.position.set(0, HALF_BOX, 0);
   return mesh;
 }
 
@@ -206,7 +205,7 @@ export function getPivotOffset(direction) {
 }
 
 export function getMoveOffset(direction) {
-  return MOVES[direction];
+  return MOVES_XY[direction];
 }
 
 export function getColorForSide(sideNum) {

@@ -21,6 +21,12 @@ export default class BoardModel {
         }
       }
     }
+
+    this.startingPosition = new THREE.Vector2(Math.floor(BOARD_WIDTH / 2), 0);
+  }
+
+  getCubeStartingPosition() {
+    return this.startingPosition;
   }
 
   getColor(x, y) {

@@ -15,7 +15,6 @@ import {
   DIR_LEFT,
   DIR_RIGHT,
   DIR_BACK,
-  BOX_SIZE,
   STARTING_ORIENTATION,
 } from '/js/game/constants';
 
@@ -30,6 +29,7 @@ export default class CubeModel {
     this.front = STARTING_ORIENTATION[SIDE_FRONT];
     this.back = STARTING_ORIENTATION[SIDE_BACK];
 
+    // Position will be in positive X/Y coordinates that map to X/-Z coords.
     this.position = new THREE.Vector2();
 
     // Cache quaternions to represent each of 24 orientations.
@@ -40,15 +40,12 @@ export default class CubeModel {
     return this.quaternions[`${this.top}_${this.back}`];
   }
 
-  getXYPosition() {
+  getPosition() {
     return this.position;
   }
 
-  getXZPosition(position = this.position) {
-    return {
-      x: position.x * BOX_SIZE,
-      z: -position.y * BOX_SIZE,
-    };
+  setPosition(position) {
+    this.position.copy(position);
   }
 
   update(direction) {
