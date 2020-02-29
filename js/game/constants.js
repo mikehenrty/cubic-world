@@ -3,10 +3,10 @@ import * as THREE from 'three';
 export const DEBUG = false;
 
 // Number of pixels in the screen.
-export const PIXEL_WIDTH = 120;
+export const PIXEL_WIDTH = 200;
 
 // Board constants.
-export const BOARD_DEPTH = 11;
+export const BOARD_DEPTH = 101;
 export const BOARD_WIDTH = 5
 
 // Cube constants.
