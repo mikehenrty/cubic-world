@@ -15,7 +15,7 @@ export default class BoardModel {
         this.squares[y] = this.squares[y] || [];
 
         // Add occassional enemy.
-        if (Math.random() > 0.9) {
+        if (Math.random() > 0.7) {
           this.squares[x][y] = this.getRandomEnemySide();
         }
       }
@@ -30,6 +30,10 @@ export default class BoardModel {
 
   getSide(x, y) {
     return this.squares[x] && this.squares[x][y];
+  }
+
+  pickUpSquare(x, y) {
+    this.squares[x][y] = undefined;
   }
 
   getRandomEnemySide() {

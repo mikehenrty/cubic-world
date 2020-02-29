@@ -74,8 +74,13 @@ export default class Engine {
     this.cube.move(direction);
   }
 
-  onMoveFinish(direction) {
-    setTimeout(() => {
+  onMoveFinish(direction, checkForHolding) {
+    if (this.model.attemptPickup()) {
+      const cubePosition = this.model.getCubePosition();
+      this.board.resetSquare(cubePosition.x, cubePosition.y);
+    }
+
+    checkForHolding && setTimeout(() => {
       if (this.input.isHolding()) {
         this.initiateMove(direction);
       }

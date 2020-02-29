@@ -8,6 +8,7 @@ import {
   getPivotOffset,
 } from './static-helpers';
 
+
 export default class Cube {
   constructor(model) {
     this.model = model;

@@ -24,6 +24,10 @@ export default class Board {
     this.grid.getObject3D().position.setY(1);
   }
 
+  resetSquare(x, y) {
+    this.squares.resetSquare(x, y);
+  }
+
   getObject3D() {
     return this.group;
   }

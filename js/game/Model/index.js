@@ -16,7 +16,7 @@ export default class Model {
   }
 
   updateCube(direction) {
-    return this.cube.update(direction);
+    this.cube.update(direction);
   }
 
   getCubePosition() {
@@ -29,6 +29,19 @@ export default class Model {
 
   getBoardSquareValue(x, y) {
     return this.board.getSide(x, y);
+  }
+
+  attemptPickup() {
+    return this.pickUpBoardSquare(this.cube.position.x, this.cube.position.y);
+  }
+
+  pickUpBoardSquare(x, y) {
+    const enemy = this.board.getSide(x, y);
+    if (enemy) {
+      this.board.pickUpSquare(x, y);
+      return true;
+    }
+    return false;
   }
 
   canMove(direction) {
