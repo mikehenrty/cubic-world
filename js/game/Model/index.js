@@ -45,10 +45,13 @@ export default class Model {
       return false;
     }
 
-    // If we have a colored tile, we must be prepared to eat it.
+    // If we have a colored tile, we can only move onto that square
+    // if the next top or bottom will match the tile color.
     const enemySide = this.board.getSide(x, y);
-    if (enemySide && enemySide !== this.cube.getNextTopSide(direction)) {
-      return false;
+    if (enemySide) {
+      const nextTop = this.cube.getNextTopSide(direction);
+      const nextBottom = this.cube.getNextBottomSide(direction);
+      return enemySide === nextBottom || enemySide === nextTop;
     }
 
     return true;

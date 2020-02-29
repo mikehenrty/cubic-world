@@ -79,6 +79,29 @@ export default class CubeModel {
     return dir;
   }
 
+  getNextBottomSide(direction) {
+    let dir = null;
+    switch(direction) {
+      case DIR_AHEAD:
+        dir = this.front;
+        break;
+
+      case DIR_LEFT:
+        dir = this.left;
+        break;
+
+      case DIR_RIGHT:
+        dir = this.right;
+        break;
+
+      case DIR_BACK:
+        dir = this.back;
+        break;
+    }
+
+    return dir;
+  }
+
   rotate(direction) {
     switch(direction) {
       case DIR_AHEAD:
