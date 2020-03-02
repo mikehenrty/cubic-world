@@ -1,4 +1,5 @@
 const INPUT_THRESHOLD = 20;
+const SECONDARY_INPUT_THRESHOLD = INPUT_THRESHOLD * 1.4;
 
 export default class Input {
   constructor() {

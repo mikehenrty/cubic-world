@@ -7,7 +7,7 @@ import {
   BOARD_WIDTH,
 } from '/js/game/constants';
 
-const THE_COLOR_PURPLE = new THREE.Color('purple');
+const RESET_COLOR = new THREE.Color('black');
 
 const START_Z = 0;
 const START_X = Math.round( HALF_BOX + (-BOARD_WIDTH / 2) * BOX_SIZE )
@@ -22,8 +22,8 @@ export default class Squares {
     this.vertices = [];
     this.colors = [];
 
-    this.vi = -1;
-    this.ci = -1;
+    let vi = 0;
+    let ci = 0;
 
 
     for ( let y = 0; y < BOARD_DEPTH; y++ ) {
@@ -36,18 +36,18 @@ export default class Squares {
         }
 
         // Track this square geo and color in case we want to change it later.
-        this.setCoordToIndexMap(x, y);
+        this.setCoordToIndexMap(x, y, vi, ci);
 
         const faceColor = getColorForSide(sideNum);
-        this.setColorIndices(faceColor);
-        this.setVertexIndices(x, y);
+        ci = this.setColorIndices(faceColor, ci);
+        vi = this.setVertexIndices(x, y, vi);
       }
     }
 
 
     const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( this.vertices, 3 ) );
-    geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( this.colors, 3 ) );
+    geometry.setAttribute( 'position', this.getAttribute(this.vertices) );
+    geometry.setAttribute( 'color', this.getAttribute(this.colors, true) );
 
     const material = new THREE.MeshBasicMaterial({
       vertexColors: THREE.FaceColors,
@@ -60,39 +60,46 @@ export default class Squares {
   getAttribute(data, dynamic) {
     const attribute = new THREE.Float32BufferAttribute( data, 3 );
     dynamic && attribute.setUsage(THREE.DynamicDrawUsage);
+    return attribute;
   }
 
-  setColorIndices(faceColor, ci) {
+  setColorIndices(faceColor, ci, colors = this.colors) {
     const colorR = faceColor.r;
     const colorG = faceColor.g;
     const colorB = faceColor.b;
 
-    this.colors[ ++this.ci ] = colorR;
-    this.colors[ ++this.ci ] = colorG;
-    this.colors[ ++this.ci ] = colorB;
+    // Decrement to allow for using pre-increment.
+    --ci;
 
-    this.colors[ ++this.ci ] = colorR;
-    this.colors[ ++this.ci ] = colorG;
-    this.colors[ ++this.ci ] = colorB;
+    colors[ ++ci ] = colorR;
+    colors[ ++ci ] = colorG;
+    colors[ ++ci ] = colorB;
 
-    this.colors[ ++this.ci ] = colorR;
-    this.colors[ ++this.ci ] = colorG;
-    this.colors[ ++this.ci ] = colorB;
+    colors[ ++ci ] = colorR;
+    colors[ ++ci ] = colorG;
+    colors[ ++ci ] = colorB;
 
-    this.colors[ ++this.ci ] = colorR;
-    this.colors[ ++this.ci ] = colorG;
-    this.colors[ ++this.ci ] = colorB;
+    colors[ ++ci ] = colorR;
+    colors[ ++ci ] = colorG;
+    colors[ ++ci ] = colorB;
 
-    this.colors[ ++this.ci ] = colorR;
-    this.colors[ ++this.ci ] = colorG;
-    this.colors[ ++this.ci ] = colorB;
+    colors[ ++ci ] = colorR;
+    colors[ ++ci ] = colorG;
+    colors[ ++ci ] = colorB;
 
-    this.colors[ ++this.ci ] = colorR;
-    this.colors[ ++this.ci ] = colorG;
-    this.colors[ ++this.ci ] = colorB;
+    colors[ ++ci ] = colorR;
+    colors[ ++ci ] = colorG;
+    colors[ ++ci ] = colorB;
+
+    colors[ ++ci ] = colorR;
+    colors[ ++ci ] = colorG;
+    colors[ ++ci ] = colorB;
+
+    // Correct for using pre-increment.
+    return ci + 1;
   }
 
-  setVertexIndices(x, y) {
+  setVertexIndices(x, y, vi) {
     const centerZ = START_Z - y * BOX_SIZE;
     const centerX = START_X + x * BOX_SIZE;
 
@@ -109,31 +116,36 @@ export default class Squares {
     const farLeftX = centerX - HALF_BOX;
     const farLeftZ = centerZ + HALF_BOX;
 
+    // Decrement to allow for using pre-increment.
+    --vi;
+
     // Triangle Face 1.
-    this.vertices[ ++this.vi ] = farLeftX;
-    this.vertices[ ++this.vi ] = 0;
-    this.vertices[ ++this.vi ] = farLeftZ;
+    this.vertices[ ++vi ] = farLeftX;
+    this.vertices[ ++vi ] = 0;
+    this.vertices[ ++vi ] = farLeftZ;
 
-    this.vertices[ ++this.vi ] = farRightX;
-    this.vertices[ ++this.vi ] = 0;
-    this.vertices[ ++this.vi ] = farRightZ;
+    this.vertices[ ++vi ] = farRightX;
+    this.vertices[ ++vi ] = 0;
+    this.vertices[ ++vi ] = farRightZ;
 
-    this.vertices[ ++this.vi ] = nearLeftX;
-    this.vertices[ ++this.vi ] = 0
-    this.vertices[ ++this.vi ] = nearLeftZ;
+    this.vertices[ ++vi ] = nearLeftX;
+    this.vertices[ ++vi ] = 0
+    this.vertices[ ++vi ] = nearLeftZ;
 
-    // Triangle Fac++this.e 
-    this.vertices[ ++this.vi ] = farRightX;
-    this.vertices[ ++this.vi ] = 0;
-    this.vertices[ ++this.vi ] = farRightZ;
+    // Triangle Fac++e 
+    this.vertices[ ++vi ] = farRightX;
+    this.vertices[ ++vi ] = 0;
+    this.vertices[ ++vi ] = farRightZ;
 
-    this.vertices[ ++this.vi ] = nearRightX
-    this.vertices[ ++this.vi ] = 0;
-    this.vertices[ ++this.vi ] = nearRightZ;
+    this.vertices[ ++vi ] = nearRightX
+    this.vertices[ ++vi ] = 0;
+    this.vertices[ ++vi ] = nearRightZ;
 
-    this.vertices[ ++this.vi ] = nearLeftX;
-    this.vertices[ ++this.vi ] = 0;
-    this.vertices[ ++this.vi ] = nearLeftZ;
+    this.vertices[ ++vi ] = nearLeftX;
+    this.vertices[ ++vi ] = 0;
+    this.vertices[ ++vi ] = nearLeftZ;
+
+    return vi + 1;
   }
 
   setCoordToIndexMap(x, y, vertexIndex, colorIndex) {
@@ -142,19 +154,26 @@ export default class Squares {
 
   setColor(color, x, y) {
     const ci = this.getColorIndex(x, y);
-    this.setColorIndices(color, ci);
+    this.setColorIndices(color, ci, this.getColorArray());
+
+    // Tell three.js that the colors need updating.
+    this.plane.geometry.attributes.color.needsUpdate = true;
+  }
+
+  getColorArray() {
+    return this.plane.geometry.attributes.color.array;
   }
 
   getColorIndex(x, y) {
-    return this.coordsToBufferIndex[`${x}-${y}`].color;
+    return this.coordsToBufferIndex[`${x}-${y}`].colorIndex;
   }
 
   getVertexIndex(x, y) {
-    return this.coordsToBufferIndex[`${x}-${y}`].vertices;
+    return this.coordsToBufferIndex[`${x}-${y}`].vertexIndex;
   }
 
   resetSquare(x, y) {
-    this.setColor(THE_COLOR_PURPLE, x, y)
+    this.setColor(RESET_COLOR, x, y)
   }
 
   getObject3D() {
