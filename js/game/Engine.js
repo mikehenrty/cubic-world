@@ -30,11 +30,7 @@ export default class Engine {
     this.time = new Time();
     this.scene = new THREE.Scene();
 
-    this.camera = new THREE.PerspectiveCamera( 70, ASPECT_RATIO, 0.8, 5000 );
-    this.camera.position.set( CAMERA_LATERAL_OFFSET, CAMERA_HEIGHT, -CAMERA_DISTANCE );
-    this.cameraOffset = new THREE.Vector3(0, 0, -CAMERA_DISTANCE);
-    this.cameraLookAt = new THREE.Vector3();
-    this.camera.lookAt( 20, -100, -CAMERA_DISTANCE );
+    this.camera = this.getCamera();
 
     // The model tracks cube and board positioning.
     this.model = new Model();
@@ -45,17 +41,7 @@ export default class Engine {
 
     this.board = new Board( this.model );
     this.scene.add( this.board.getObject3D() );
-
-    /*
-    const color = 0xFFFFFF;
-    const intensity = 1;
-    const light = new THREE.DirectionalLight(color, intensity);
-    light.position.set(-1, 2, 4);
-    this.scene.add(light);
-    */
-
-    var ambientLight = new THREE.AmbientLight( 0x606060 );
-    this.scene.add( ambientLight );
+    this.scene.add( this.getLighting() );
 
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -67,21 +53,61 @@ export default class Engine {
     this.input.onLeft = this.initiateMove.bind(this, DIR_LEFT);
     this.input.onRight = this.initiateMove.bind(this, DIR_RIGHT);
 
+    this.nextMove = null;
+
     this.update = this.update.bind(this);
   }
 
-  initiateMove(direction) {
-    this.cube.move(direction);
+  getCamera() {
+    const camera = new THREE.PerspectiveCamera( 70, ASPECT_RATIO, 0.8, 5000 );
+    camera.position.set( CAMERA_LATERAL_OFFSET, CAMERA_HEIGHT, -CAMERA_DISTANCE );
+    this.cameraOffset = new THREE.Vector3(0, 0, -CAMERA_DISTANCE);
+    this.cameraLookAt = new THREE.Vector3();
+    camera.lookAt( 20, -100, -CAMERA_DISTANCE );
+    return camera;
   }
 
-  onMoveFinish(direction, checkForHolding) {
+  getLighting() {
+    /*
+    const color = 0xFFFFFF;
+    const intensity = 1;
+    const light = new THREE.DirectionalLight(color, intensity);
+    light.position.set(-1, 2, 4);
+    this.scene.add(light);
+    */
+
+    var ambientLight = new THREE.AmbientLight( 0x606060 );
+    return ambientLight;
+  }
+
+  initiateMove(direction) {
+    const moveSucceeded = this.cube.move(direction);
+    if (moveSucceeded) {
+      this.nextMove = null;
+    } else {
+      // Save unsuccessful moves for when current move completes.
+      this.nextMove = direction;
+    }
+  }
+
+  onMoveFinish(direction) {
     if (this.model.attemptPickup()) {
       const cubePosition = this.model.getCubePosition();
       this.board.resetSquare(cubePosition.x, cubePosition.y);
     }
 
-    checkForHolding && setTimeout(() => {
-      if (this.input.isHolding()) {
+    // Make sure we have something else to do before continuing.
+    if ( !this.nextMove && !this.input.isHolding()) {
+      return;
+    }
+
+
+    // We use set timeout to avoid stuttering
+    // when transition between cube animations.
+    setTimeout(() => {
+      if (this.nextMove) {
+        this.initiateMove(this.nextMove);
+      } else if (this.input.isHolding()) {
         this.initiateMove(direction);
       }
     }, 10);

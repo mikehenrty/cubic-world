@@ -21,8 +21,7 @@ export default class Cube {
 
     this.updateMeshFromModel();
 
-    this.lastMove = null;
-    this.nextMove = null;
+    this.lastDirection = null;
   }
 
   updateMeshFromModel() {
@@ -35,26 +34,20 @@ export default class Cube {
     // Use our pre-generated list of 24 static quaternions
     // to orient our cube properly with the grid.
     this.mesh.setRotationFromQuaternion(this.model.getCubeStaticQaternion());
-
   }
 
+  // Returns a boolean if succeeded.
   move(direction) {
-    if (this.lastMove && this.actions[this.lastMove].isRunning()) {
 
-      // If user wants to change direction, remember that
-      // and attempt to play it at the end of the move.
-      if (direction !== this.lastMove) {
-        this.nextMove = direction;
-      }
-      return;
+    if (this.lastDirection && this.actions[this.lastDirection].isRunning()) {
+      return false;
     }
 
     if ( !this.model.canMove(direction) ) {
-      return;
+      return false;
     }
 
-    this.lastMove = direction;
-    this.nextMove = null;
+    this.lastDirection = direction;
 
     // Set up the rotation pivot point.
     this.pivot.position.add(getPivotOffset(direction));
@@ -63,10 +56,13 @@ export default class Cube {
 
     // Start the animation.
     this.actions[direction].play();
+
+    return true;
   }
 
   moveFinish(e) {
-    const direction = this.lastMove;
+    const direction = this.lastDirection;
+    this.lastDirection = null;
 
     // Update our model of the cube, so we can use to correct
     // rotation rounding errors.
@@ -81,13 +77,7 @@ export default class Cube {
     this.pivot.position.copy(this.mesh.position);
     this.pivot.position.setY(0);
     this.pivot.attach(this.mesh);
-
-    // If we have a move pending perform that before calling onMoveFinish.
-    if (this.nextMove) {
-      setTimeout(() => this.move(this.nextMove));
-    } else {
-      this.onMoveFinish && this.onMoveFinish(direction);
-    }
+    this.onMoveFinish && this.onMoveFinish(direction);
   }
 
   getObject3D() {
