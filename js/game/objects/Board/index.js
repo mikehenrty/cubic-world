@@ -8,8 +8,6 @@ import {
 import Squares from './Squares';
 import Grid from './Grid';
 
-const LINE_COLOR = 0x888888;
-
 export default class Board {
   constructor(model) {
     this.model = model;
