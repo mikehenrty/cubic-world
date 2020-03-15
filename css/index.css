@@ -22,3 +22,7 @@ body > div {
 tbody {
   transform-origin: top left;
 }
+
+#glyphs {
+  display: none;
+}

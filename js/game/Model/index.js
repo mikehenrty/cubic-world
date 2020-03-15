@@ -9,10 +9,16 @@ export default class Model {
   constructor() {
     this.v2 = new THREE.Vector2();
 
+    this.score = 0;
+
     this.cube = new CubeModel();
     this.board = new BoardModel();
 
     this.cube.setPosition(this.board.getCubeStartingPosition());
+  }
+
+  getScore() {
+    return this.score;
   }
 
   updateCube(direction) {
@@ -39,6 +45,8 @@ export default class Model {
     const enemy = this.board.getSide(x, y);
     if (enemy) {
       this.board.pickUpSquare(x, y);
+      ++this.score;
+      this.onScoreUpdate && this.onScoreUpdate(this.score);
       return true;
     }
     return false;

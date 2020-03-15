@@ -4,12 +4,15 @@
   "version": "0.1.0",
   "license": "CC-BY-3.0",
   "scripts": {
-    "serve": "rm -rf .parcel-cache && parcel index.html"
+    "serve": "rm -rf .parcel-cache && parcel index.html --log-level verbose",
+    "build": "parcel build index.html"
   },
   "devDependencies": {
+    "@parcel/resolver-default": "^2.0.0-alpha.3",
     "parcel": "^2.0.0-alpha.3.2"
   },
   "dependencies": {
-    "three": "^0.113.2"
+    "three": "^0.113.2",
+    "three-bmfont-text": "https://github.com/mikehenrty/three-bmfont-text#hotfix-setarray"
   }
 }

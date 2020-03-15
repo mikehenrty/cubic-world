@@ -1,9 +1,15 @@
 import * as THREE from 'three';
 
-export const DEBUG = false;
+export const DEBUG = true;
 
 // Number of pixels in the screen.
-export const PIXEL_WIDTH = 200;
+export const PIXEL_WIDTH = 300;
+
+// Not sure if these should be constants or not.
+export const ASPECT_RATIO = window.innerWidth / window.innerHeight;
+export const SCREEN_WIDTH = PIXEL_WIDTH;
+export const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
+export const ORTHO_DEPTH = 1000;
 
 // Board constants.
 export const BOARD_DEPTH = 101;

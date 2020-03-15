@@ -1,11 +1,17 @@
 import * as THREE from 'three';
+
 import Time from './controllers/Time';
 import Input from './controllers/Input';
 import Cube from './objects/Cube/';
 import Board from './objects/Board/';
 import Model from './Model/';
+import Text from '/js/Text/';
 import {
   PIXEL_WIDTH,
+  ASPECT_RATIO,
+  SCREEN_WIDTH,
+  SCREEN_HEIGHT,
+  ORTHO_DEPTH,
   BOX_SIZE,
   DIR_AHEAD,
   DIR_LEFT,
@@ -13,14 +19,12 @@ import {
   DIR_BACK
 } from '/js/game/constants';
 
-const ASPECT_RATIO = window.innerWidth / window.innerHeight;
-const SCREEN_WIDTH = PIXEL_WIDTH;
-const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
 
-const CAMERA_DISTANCE = 350;
+const CAMERA_DISTANCE = 400;
 const CAMERA_LATERAL_OFFSET = 110;
 const CAMERA_HEIGHT = 300;
 const CAMERA_LOOK_DISTANCE = 6 * BOX_SIZE;
+
 
 export default class Engine {
 
@@ -29,23 +33,14 @@ export default class Engine {
 
     this.time = new Time();
     this.scene = new THREE.Scene();
-
     this.camera = this.getCamera();
 
     // The model tracks cube and board positioning.
     this.model = new Model();
+    this.model.onScoreUpdate = this.onScoreUpdate.bind(this);
 
     this.cube = new Cube( this.model );
     this.cube.onMoveFinish = this.onMoveFinish.bind(this);
-    this.scene.add( this.cube.getObject3D() );
-
-    this.board = new Board( this.model );
-    this.scene.add( this.board.getObject3D() );
-    this.scene.add( this.getLighting() );
-
-    this.renderer = new THREE.WebGLRenderer();
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     this.input = new Input();
     this.input.onUp = this.initiateMove.bind(this, DIR_AHEAD);
@@ -53,15 +48,54 @@ export default class Engine {
     this.input.onLeft = this.initiateMove.bind(this, DIR_LEFT);
     this.input.onRight = this.initiateMove.bind(this, DIR_RIGHT);
 
+    this.renderer = new THREE.WebGLRenderer();
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+    this.renderer.autoClear = false;
+
+    this.sceneHUD = this.getSceneHUD();
+    this.HUDCamera = this.getHUDCamera();
+
     this.nextMove = null;
 
     this.update = this.update.bind(this);
   }
 
+  async initWorld() {
+    this.scene.add( this.cube.getObject3D() );
+    this.board = new Board( this.model );
+    this.scene.add( this.board.getObject3D() );
+    this.scene.add( this.getLighting() );
+  }
+
+  getSceneHUD() {
+    const textSize = SCREEN_WIDTH / 8;
+    const score = this.model.getScore();
+    const padding = 3;
+    const x = -SCREEN_WIDTH / 2 + textSize / 2 + padding;
+    const y = SCREEN_HEIGHT / 2 - textSize / 2 - padding;
+    this.textScore = new Text(textSize, score, x, y);
+
+    const sceneHUD =  new THREE.Scene();
+    sceneHUD.add(this.textScore.getObject3D());
+
+    return sceneHUD;
+  }
+
+  getHUDCamera() {
+    const camera = new THREE.OrthographicCamera(
+      -SCREEN_WIDTH / 2, SCREEN_WIDTH / 2,
+      SCREEN_HEIGHT / 2, -SCREEN_HEIGHT / 2,
+      -ORTHO_DEPTH / 2, ORTHO_DEPTH / 2
+    );
+
+    return camera;
+  }
+
   getCamera() {
     const camera = new THREE.PerspectiveCamera( 70, ASPECT_RATIO, 0.8, 5000 );
-    camera.position.set( CAMERA_LATERAL_OFFSET, CAMERA_HEIGHT, -CAMERA_DISTANCE );
-    this.cameraOffset = new THREE.Vector3(0, 0, -CAMERA_DISTANCE);
+    camera.position.set( CAMERA_LATERAL_OFFSET, CAMERA_HEIGHT, CAMERA_DISTANCE );
+    this.cameraOffset = new THREE.Vector3(0, 0, -CAMERA_LOOK_DISTANCE);
     this.cameraLookAt = new THREE.Vector3();
     camera.lookAt( 20, -100, -CAMERA_DISTANCE );
     return camera;
@@ -78,6 +112,12 @@ export default class Engine {
 
     var ambientLight = new THREE.AmbientLight( 0x606060 );
     return ambientLight;
+  }
+
+  onScoreUpdate(score) {
+    this.sceneHUD.remove(this.textScore.getObject3D());
+    this.textScore.update(score);
+    this.sceneHUD.add(this.textScore.getObject3D());
   }
 
   initiateMove(direction) {
@@ -100,7 +140,6 @@ export default class Engine {
     if ( !this.nextMove && !this.input.isHolding()) {
       return;
     }
-
 
     // We use set timeout to avoid stuttering
     // when transition between cube animations.
@@ -126,9 +165,12 @@ export default class Engine {
     this.camera.lookAt(this.cameraLookAt);
 
     this.renderer.render( this.scene, this.camera );
+    this.renderer.render( this.sceneHUD, this.HUDCamera );
   }
 
-  start() {
+  async start() {
+    await this.initWorld();
+
     const scale = Math.max(
       window.innerWidth / SCREEN_WIDTH,
       window.innerHeight / SCREEN_HEIGHT

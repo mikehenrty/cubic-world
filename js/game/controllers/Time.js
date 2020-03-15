@@ -1,4 +1,4 @@
-import { DEBUG } from '/js/game/constants';
+import { DEBUG } from '..//constants';
 
 // Keep past deltas for FPS calculation.
 // Higher REMEMBER numbers will be slower but more stable.
