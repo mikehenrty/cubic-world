@@ -3,7 +3,7 @@ import * as THREE from 'three';
 export const DEBUG = true;
 
 // Number of pixels in the screen.
-export const PIXEL_WIDTH = 300;
+export const PIXEL_WIDTH = 500;
 
 // Not sure if these should be constants or not.
 export const ASPECT_RATIO = window.innerWidth / window.innerHeight;
@@ -35,10 +35,10 @@ export const SIDE_FIVE = 5;
 export const SIDE_SIX = 6;
 
 export const COLOR_BLACK = 'black';
-export const COLOR_RED = 'red';
-export const COLOR_BLUE = 'blue';
+export const COLOR_RED = '#F23C54';
+export const COLOR_BLUE = '#1B62A0';
 export const COLOR_GREEN = 'green';
-export const COLOR_YELLOW = 'yellow';
+export const COLOR_YELLOW = '#FFF64C'
 export const COLOR_PURPLE = 'violet';
 
 export const DIR_AHEAD = 'AHEAD';
@@ -47,12 +47,12 @@ export const DIR_RIGHT = 'RIGHT';
 export const DIR_BACK = 'BACK';
 
 export const SIDE_COLORS = {
-  1: COLOR_PURPLE,
-  2: COLOR_YELLOW,
-  3: COLOR_GREEN,
+  1: COLOR_YELLOW,
+  2: COLOR_RED,
+  3: COLOR_BLUE,
   4: COLOR_BLUE,
   5: COLOR_RED,
-  6: COLOR_BLACK,
+  6: COLOR_YELLOW,
 }
 
 export const STARTING_ORIENTATION = {
