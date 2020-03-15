@@ -1,17 +1,23 @@
-const INPUT_THRESHOLD = 20;
+const INPUT_THRESHOLD = 40;
 const SECONDARY_INPUT_THRESHOLD = INPUT_THRESHOLD * 1.4;
+const TAP_THRESHOLD = 120; // milliseconds
+
+const BOX_THRESHOLD = Math.round(window.innerWidth / 7);
+const BOX_Y_POSITION = Math.round(2 * window.innerHeight / 3);
+const BOX_X_POSITION = Math.round(window.innerWidth / 3);
+
 
 export default class Input {
   constructor() {
     this.held = false;
     this.lastX = 0;
     this.lastY = 0;
+    this.lastPressTime = null;
 
     this.onUp = null;
     this.onDown = null;
     this.onLeft = null;
     this.onRight = null;
-
     this.handleKeydown = this.handleKeydown.bind(this);
     this.handleKeyup = this.handleKeyup.bind(this);
     this.handleStart = this.handleStart.bind(this);
@@ -30,11 +36,30 @@ export default class Input {
   }
 
   press() {
+    this.lastPressTime = performance.now();
     this.held = true;
   }
 
   release() {
     this.held = false;
+    this.onRelease && this.onRelease();
+    if (performance.now() - this.lastPressTime < TAP_THRESHOLD) {
+      this.tap();
+    }
+    this.lastPressTime = null;
+  }
+
+  tap() {
+    // Check where tap took place and dispatch move event if needed.
+    if (this.lastY < BOX_Y_POSITION - BOX_THRESHOLD) {
+      this.onUp && this.onUp();
+    } else if (this.lastY > BOX_Y_POSITION + BOX_THRESHOLD) {
+      this.onDown && this.onDown();
+    } else if (this.lastX < BOX_X_POSITION) {
+      this.onLeft && this.onLeft();
+    } else if (this.lastX > BOX_X_POSITION + BOX_THRESHOLD) {
+      this.onRight && this.onRight();
+    }
   }
 
   isHolding() {

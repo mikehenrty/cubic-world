@@ -48,6 +48,7 @@ export default class Engine {
     this.input.onDown = this.initiateMove.bind(this, DIR_BACK);
     this.input.onLeft = this.initiateMove.bind(this, DIR_LEFT);
     this.input.onRight = this.initiateMove.bind(this, DIR_RIGHT);
+    this.input.onRelease = this.cancelNextMove.bind(this);
 
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -69,6 +70,38 @@ export default class Engine {
     this.scene.add( this.getLighting() );
   }
 
+  updateNextMoveDebug() {
+    if (!this.nextMoveText) {
+      return;
+    }
+
+    this.sceneHUD.remove(this.nextMoveText.getObject3D());
+    let moveText = '';
+    switch (this.nextMove) {
+      case DIR_AHEAD:
+        moveText = '↑'
+        break;
+
+      case DIR_LEFT:
+        moveText = '←'
+        break;
+
+      case DIR_RIGHT:
+        moveText = '→'
+        break;
+
+      case DIR_BACK:
+        moveText = '↓'
+        break;
+
+      default:
+        break;
+    }
+
+    this.nextMoveText.update(moveText);
+    this.sceneHUD.add(this.nextMoveText.getObject3D());
+  }
+
   getSceneHUD() {
     const textSize = SCREEN_WIDTH / 8;
     const score = this.model.getScore();
@@ -87,6 +120,11 @@ export default class Engine {
       const fpsY = SCREEN_HEIGHT / 2 - fpsSize / 2 - padding;
       this.fpsText = new Text(fpsSize, '0 fps', fpsX, fpsY);
       sceneHUD.add(this.fpsText.getObject3D());
+
+      const moveX = 0;
+      const moveY = SCREEN_HEIGHT / 3 - fpsSize / 2 - padding;
+      this.nextMoveText = new Text(fpsSize, '', moveX, moveY);
+      sceneHUD.add(this.nextMoveText.getObject3D());
 
       setInterval(() => {
         sceneHUD.remove(this.fpsText.getObject3D());
@@ -144,6 +182,12 @@ export default class Engine {
       // Save unsuccessful moves for when current move completes.
       this.nextMove = direction;
     }
+    DEBUG && this.updateNextMoveDebug();
+  }
+
+  cancelNextMove() {
+    this.nextMove = null;
+    DEBUG && this.updateNextMoveDebug();
   }
 
   onMoveFinish(direction) {
