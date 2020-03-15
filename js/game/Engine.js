@@ -7,6 +7,7 @@ import Board from './objects/Board/';
 import Model from './Model/';
 import Text from '/js/Text/';
 import {
+  DEBUG,
   PIXEL_WIDTH,
   ASPECT_RATIO,
   SCREEN_WIDTH,
@@ -78,6 +79,21 @@ export default class Engine {
 
     const sceneHUD =  new THREE.Scene();
     sceneHUD.add(this.textScore.getObject3D());
+
+    // Add FPS to HUD.
+    if (DEBUG) {
+      const fpsSize = SCREEN_WIDTH / 12;
+      const fpsX = SCREEN_WIDTH / 2 - fpsSize / 2 - padding;
+      const fpsY = SCREEN_HEIGHT / 2 - fpsSize / 2 - padding;
+      this.fpsText = new Text(fpsSize, '0 fps', fpsX, fpsY);
+      sceneHUD.add(this.fpsText.getObject3D());
+
+      setInterval(() => {
+        sceneHUD.remove(this.fpsText.getObject3D());
+        this.fpsText.update(Math.round(this.time.getAverageFPS()) + ' fps');
+        sceneHUD.add(this.fpsText.getObject3D());
+      }, 2000);
+    }
 
     return sceneHUD;
   }
