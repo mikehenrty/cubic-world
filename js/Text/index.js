@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 const FONT_SIZE = 100;
+const FONT_COLOR = '#C1F2C9';
 
 export default class Text {
   constructor(width, content, x, y) {
@@ -51,7 +52,7 @@ export default class Text {
 
     ctx.font = font;
     ctx.textBaseline = 'top';
-    ctx.fillStyle = '#39ff14';
+    ctx.fillStyle = FONT_COLOR;
     ctx.fillText(content, borderSize, borderSize);
 
     return ctx.canvas;
