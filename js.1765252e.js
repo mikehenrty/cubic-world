@@ -34368,7 +34368,7 @@ class $c3eac29d79e305faae9fe3$export$default {
 
 }
 
-const $b3e6d83a7a30826612a01fec8dd3d88$export$DEBUG = true; // Number of pixels in the screen.
+const $b3e6d83a7a30826612a01fec8dd3d88$export$DEBUG = false; // Number of pixels in the screen.
 
 const $b3e6d83a7a30826612a01fec8dd3d88$export$PIXEL_WIDTH = 500; // Not sure if these should be constants or not.
 
@@ -35095,7 +35095,7 @@ const $d09ddf4d53e4d743e2e148f04d2008$var$FONT_COLOR = '#C1F2C9';
 
 class $d09ddf4d53e4d743e2e148f04d2008$export$default {
   constructor(width, content, x, y) {
-    this.width = width;
+    this.width = Math.round(width);
     this.xPos = x;
     this.yPos = y;
     this.mesh = this.getMesh(content);
