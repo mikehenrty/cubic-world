@@ -46,6 +46,7 @@ export default class Squares {
 
 
     const geometry = new THREE.BufferGeometry();
+    geometry.name = 'SquaresGeo';
     geometry.setAttribute( 'position', this.getAttribute(this.vertices) );
     geometry.setAttribute( 'color', this.getAttribute(this.colors, true) );
 
@@ -55,6 +56,7 @@ export default class Squares {
     });
 
     this.plane = new THREE.Mesh( geometry, material );
+    this.plane.name = 'SquaresMesh';
   }
 
   getAttribute(data, dynamic) {

@@ -40,6 +40,7 @@ export default class Grid {
     var material = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors } );
 
     this.lines = new THREE.LineSegments( geometry, material );
+    this.lines.name = 'GridLines';
   }
 
   getObject3D() {

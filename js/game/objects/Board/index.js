@@ -15,9 +15,11 @@ export default class Board {
     this.grid = new Grid();
 
     this.group = new THREE.Group();
+    this.group.name = 'BoardGroup';
 
     this.group.attach(this.squares.getObject3D());
     this.group.attach(this.grid.getObject3D());
+
     // Lift the grid slightly off the ground for effect.
     this.grid.getObject3D().position.setY(1);
   }

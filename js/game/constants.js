@@ -14,7 +14,7 @@ export const ORTHO_DEPTH = 1000;
 // Board constants.
 export const BOARD_DEPTH = 101;
 export const BOARD_WIDTH = 5
-export const LINE_COLOR = '#888888';
+export const LINE_COLOR = 'white';
 
 // Cube constants.
 export const BOX_SIZE = 50;

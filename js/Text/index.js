@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 
-const FONT_SIZE = 100;
+const BORDER_SIZE = 2;
 const FONT_COLOR = '#C1F2C9';
 
 export default class Text {
-  constructor(width, content, x, y) {
-    this.width = width;
+  constructor(height, content, x, y) {
+    this.height = Math.round(height);
     this.xPos = x;
     this.yPos = y;
     this.mesh = this.getMesh(content);
@@ -13,13 +13,16 @@ export default class Text {
   }
 
   getMesh(content) {
-    const canvas = this.makeTextCanvas(FONT_SIZE, content);
-    const texture = new THREE.CanvasTexture(canvas);
+    const canvas = this.makeTextCanvas(this.height, content);
+    this.width = canvas.width;
+
     // because our canvas is likely not a power of 2
     // in both dimensions set the filtering appropriately.
+    const texture = new THREE.CanvasTexture(canvas);
     texture.minFilter = THREE.LinearFilter;
     texture.wrapS = THREE.ClampToEdgeWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.needsUpdate = true;
 
     const material = new THREE.MeshBasicMaterial({
       map: texture,
@@ -27,9 +30,13 @@ export default class Text {
       transparent: true,
     });
 
-    const geometry = new THREE.PlaneBufferGeometry(this.width, this.width);
+    const geometry = new THREE.PlaneBufferGeometry(canvas.width, canvas.height);
+    geometry.name = `TextGeo-${content}`;
 
-    return new THREE.Mesh(geometry, material);
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.name = `TextMesh-${content}`;
+
+    return mesh;
   }
 
   setPosition(x = this.xPos, y = this.yPos) {
@@ -38,13 +45,12 @@ export default class Text {
   }
 
   makeTextCanvas(size, content) {
-    const borderSize = 2;
     const ctx = document.createElement('canvas').getContext('2d');
     const font =  `${size}px bold sans-serif`;
     ctx.font = font;
 
     // measure how long the content will be
-    const doubleBorderSize = borderSize * 2;
+    const doubleBorderSize = BORDER_SIZE * 2;
     const width = ctx.measureText(content).width + doubleBorderSize;
     const height = size + doubleBorderSize;
     ctx.canvas.width = width;
@@ -53,12 +59,13 @@ export default class Text {
     ctx.font = font;
     ctx.textBaseline = 'top';
     ctx.fillStyle = FONT_COLOR;
-    ctx.fillText(content, borderSize, borderSize);
+    ctx.fillText(content, BORDER_SIZE, BORDER_SIZE);
 
     return ctx.canvas;
   }
 
   update(content) {
+    content = content || '';
     this.mesh = this.getMesh(content);
     this.setPosition();
   }

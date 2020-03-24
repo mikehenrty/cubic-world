@@ -103,26 +103,25 @@ export default class Engine {
   }
 
   getSceneHUD() {
-    const textSize = SCREEN_WIDTH / 8;
+    const textSize = SCREEN_HEIGHT / 10;
     const score = this.model.getScore();
-    const padding = 3;
-    const x = -SCREEN_WIDTH / 2 + textSize / 2 + padding;
-    const y = SCREEN_HEIGHT / 2 - textSize / 2 - padding;
+    const x = -SCREEN_WIDTH / 2 + textSize / 2;
+    const y = SCREEN_HEIGHT / 2 - textSize / 2;
     this.textScore = new Text(textSize, score, x, y);
 
-    const sceneHUD =  new THREE.Scene();
+    const sceneHUD = new THREE.Scene();
     sceneHUD.add(this.textScore.getObject3D());
 
     // Add FPS to HUD.
     if (DEBUG) {
-      const fpsSize = SCREEN_WIDTH / 12;
-      const fpsX = SCREEN_WIDTH / 2 - fpsSize / 2 - padding;
-      const fpsY = SCREEN_HEIGHT / 2 - fpsSize / 2 - padding;
+      const fpsSize = SCREEN_HEIGHT / 18;
+      const fpsX = 0;
+      const fpsY = SCREEN_HEIGHT / 2 - fpsSize / 2;
       this.fpsText = new Text(fpsSize, '0 fps', fpsX, fpsY);
       sceneHUD.add(this.fpsText.getObject3D());
 
       const moveX = 0;
-      const moveY = SCREEN_HEIGHT / 3 - fpsSize / 2 - padding;
+      const moveY = SCREEN_HEIGHT / 3 - fpsSize / 2;
       this.nextMoveText = new Text(fpsSize, '', moveX, moveY);
       sceneHUD.add(this.nextMoveText.getObject3D());
 
@@ -224,6 +223,7 @@ export default class Engine {
     this.cameraLookAt.addVectors(this.v, this.cameraOffset);
     this.camera.lookAt(this.cameraLookAt);
 
+    this.renderer.clear();
     this.renderer.render( this.scene, this.camera );
     this.renderer.render( this.sceneHUD, this.HUDCamera );
   }
