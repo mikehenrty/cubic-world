@@ -41,12 +41,17 @@ export default class Input {
   }
 
   release() {
+    if (!this.lastPressTime) {
+      return;
+    }
+
     this.held = false;
     this.onRelease && this.onRelease();
-    if (performance.now() - this.lastPressTime < TAP_THRESHOLD) {
-      this.tap();
-    }
+
+    const elapsed = performance.now() - this.lastPressTime
     this.lastPressTime = null;
+
+    return elapsed;
   }
 
   tap() {
@@ -74,7 +79,11 @@ export default class Input {
   }
 
   handleEnd(e) {
-    this.release();
+    const elapsed = this.release();
+    if (elapsed < TAP_THRESHOLD) {
+      this.tap();
+    }
+
     this.lastX = 0;
     this.lastY = 0;
   }
@@ -104,6 +113,10 @@ export default class Input {
     if (e.repeat) {
       return;
     }
+
+    // The game engine only supports one direction being held at a time.
+    // So any time we get a new key press, we "release" the previous one.
+    this.release();
 
     this.press();
 

@@ -208,7 +208,7 @@ export default class Engine {
       } else if (this.input.isHolding()) {
         this.initiateMove(direction);
       }
-    }, 10);
+    }, 1);
   }
 
   update() {
