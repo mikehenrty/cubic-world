@@ -8,7 +8,6 @@ import Model from './Model/';
 import Text from '/js/Text/';
 import {
   DEBUG,
-  PIXEL_WIDTH,
   ASPECT_RATIO,
   SCREEN_WIDTH,
   SCREEN_HEIGHT,

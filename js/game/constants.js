@@ -3,11 +3,15 @@ import * as THREE from 'three';
 export const DEBUG = true;
 
 // Number of pixels in the screen.
-export const PIXEL_WIDTH = 500;
+const PIXEL_WIDTH_MOBILE = 500;
+const PIXEL_WIDTH_DESKTOP = 1000;
+// Our guess for desktop screen minimum width.
+const WIDTH_THRESHOLD = 1000;
 
 // Not sure if these should be constants or not.
 export const ASPECT_RATIO = window.innerWidth / window.innerHeight;
-export const SCREEN_WIDTH = PIXEL_WIDTH;
+export const SCREEN_WIDTH = (window.innerWidth >= WIDTH_THRESHOLD) ?
+  PIXEL_WIDTH_DESKTOP : PIXEL_WIDTH_MOBILE;
 export const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
 export const ORTHO_DEPTH = 1000;
 
