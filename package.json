@@ -5,8 +5,8 @@
   "license": "CC-BY-3.0",
   "scripts": {
     "clean": "rm -rf dist .parcel-cache",
-    "serve": "yarn clean && parcel index.html --log-level verbose",
-    "build": "yarn clean && parcel build index.html --public-url ./",
+    "serve": "yarn clean && parcel browser/index.html --log-level verbose",
+    "build": "yarn clean && parcel build browser/index.html --public-url ./",
     "deploy": "yarn build && gh-pages -d dist"
   },
   "devDependencies": {
