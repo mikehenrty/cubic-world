@@ -1,13 +1,14 @@
 {
   "name": "cubic-world",
-  "type": "module",
   "version": "0.1.0",
   "license": "CC-BY-3.0",
   "scripts": {
-    "clean": "rm -rf dist .parcel-cache",
-    "serve": "yarn clean && parcel browser/index.html --log-level verbose",
-    "build": "yarn clean && parcel build browser/index.html --public-url ./",
-    "deploy": "yarn build && gh-pages -d dist"
+    "clean": "rm -rf dist dist-server .parcel-cache",
+    "build": "parcel build browser/index.html --target=browser",
+    "build:server": "parcel build server/index.js --target=server --dist-dir=dist-server",
+    "start": "parcel browser/index.html --open --target=browser --log-level verbose",
+    "start:server": "yarn build:server && node dist-server/index.js",
+    "deploy": "yarn clean && yarn build && gh-pages -d dist/browser"
   },
   "devDependencies": {
     "gh-pages": "^2.2.0",
@@ -16,7 +17,19 @@
   "dependencies": {
     "three": "^0.113.2"
   },
-  "browserslist": [
-    "last 1 Chrome versions"
-  ]
+  "targets": {
+    "browser": {
+      "context": "browser",
+      "publicUrl": "./",
+      "engines": {
+        "browsers": "last 1 Chrome versions"
+      }
+    },
+    "server": {
+      "context": "node",
+      "engines": {
+        "node": ">=14.x"
+      }
+    }
+  }
 }
