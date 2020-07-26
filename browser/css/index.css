@@ -14,9 +14,17 @@ table {
 }
 
 #UI {
+  background-color: white;
   position: fixed;
   height: 100%;
   width: 100%;
+  z-index: 1;
+  transition: all 200ms ease-in-out;
+}
+
+#UI.hide {
+  opacity: 0;
+  transform: translateY(-100%);
 }
 
 tbody {
