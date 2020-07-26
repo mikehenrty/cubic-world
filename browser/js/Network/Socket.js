@@ -1,4 +1,5 @@
-export const WS_PORT = 8081;
+import { WS_PORT } from '/../shared/config';
+
 export const WS_HOST = 'ws://' + window.location.hostname + ':' + WS_PORT;
 export const EVT_MSG = 'message';
 
