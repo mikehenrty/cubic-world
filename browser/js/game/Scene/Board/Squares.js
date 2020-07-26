@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { getColorForSide } from '/js/game/objects/Cube/static-helpers';
+import { getColorForSide } from '/js/game/Scene/Cube/static-helpers';
 import {
   BOX_SIZE,
   HALF_BOX,

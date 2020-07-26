@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { BOARD_WIDTH, BOARD_DEPTH } from '/js/game/constants';
-import { getMoveOffset } from '/js/game/objects/Cube/static-helpers';
+import { getMoveOffset } from '/js/game/Scene/Cube/static-helpers';
 import BoardModel from './BoardModel';
 import CubeModel from './CubeModel';
 

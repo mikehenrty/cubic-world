@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {
   getAllQuaternionsForCube,
   getMoveOffset,
-} from '/js/game/objects/Cube/static-helpers';
+} from '/js/game/Scene/Cube/static-helpers';
 
 import {
   SIDE_TOP,
