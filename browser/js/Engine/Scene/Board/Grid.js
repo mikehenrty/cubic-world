@@ -5,7 +5,7 @@ import {
   BOARD_DEPTH,
   BOARD_WIDTH,
   LINE_COLOR,
-} from '/js/game/constants';
+} from '/js/Engine/constants';
 
 export default class Grid {
   constructor() {

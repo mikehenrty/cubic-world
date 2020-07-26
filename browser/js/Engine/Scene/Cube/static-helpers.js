@@ -11,7 +11,7 @@ import {
   SIDE_FIVE,
   SIDE_SIX,
   DIRECTIONS,
-} from '/js/game/constants';
+} from '/js/Engine/constants';
 
 
 const PI_OVER_TWO = Math.PI / 2;

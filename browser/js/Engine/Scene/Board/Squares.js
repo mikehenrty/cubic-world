@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { getColorForSide } from '/js/game/Scene/Cube/static-helpers';
+import { getColorForSide } from '/js/Engine/Scene/Cube/static-helpers';
 import {
   BOX_SIZE,
   HALF_BOX,
   BOARD_DEPTH,
   BOARD_WIDTH,
-} from '/js/game/constants';
+} from '/js/Engine/constants';
 
 const RESET_COLOR = new THREE.Color('black');
 

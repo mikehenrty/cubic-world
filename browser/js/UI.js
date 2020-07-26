@@ -41,6 +41,6 @@ export default class UI extends EventTarget {
   }
 
   setErrorMsg(msg) {
-    this.messageEll.textContent = msg;
+    this.messageEl.textContent = msg;
   }
 }

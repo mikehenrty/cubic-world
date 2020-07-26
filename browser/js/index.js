@@ -1,4 +1,4 @@
-import Engine from './game/Engine';
+import Engine from './Engine';
 import Network, { EVT_PEERS } from './Network';
 import UI, { EVT_START } from './UI';
 
@@ -20,8 +20,8 @@ async function run() {
     ui.init();
     await network.start();
   } catch(e) {
-    ui.setErrorMsg('ERROR: could not connect');
     console.error('could not connect', e);
+    ui.setErrorMsg('ERROR: could not connect to lobby server');
   }
 }
 

@@ -17,7 +17,7 @@ import {
   DIR_LEFT,
   DIR_RIGHT,
   DIR_BACK
-} from '/js/game/constants';
+} from './constants';
 
 
 const CAMERA_DISTANCE = 400;

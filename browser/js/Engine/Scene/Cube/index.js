@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { BOARD_WIDTH, BOX_SIZE, HALF_BOX } from '/js/game/constants';
+import { BOARD_WIDTH, BOX_SIZE, HALF_BOX } from '/js/Engine/constants';
 import {
   getMesh,
   getPivot,
