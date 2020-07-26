@@ -21,7 +21,7 @@ export default class Network extends EventTarget {
     });
   }
 
-  async start() {
+  async init() {
     return this.socket.getRawSocket();
   }
 
