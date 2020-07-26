@@ -13,8 +13,8 @@ table {
   display: block;
 }
 
-body > div {
-  display: fixed;
+#UI {
+  position: fixed;
   height: 100%;
   width: 100%;
 }

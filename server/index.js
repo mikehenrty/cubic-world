@@ -1,13 +1,36 @@
 import os from 'os';
 import { Server } from 'ws';
+import faker from 'faker';
 
 const DEBUG = true;
 const HOST = os.hostname();
 const WS_PORT = 8081;
 const WS_URL = `http:\/\/${HOST}:${WS_PORT}\/`;
 
-export function debugClients(websockets) {
-  DEBUG && console.log(websockets.clients);
+function generateName() {
+  const nameOne = faker.name.firstName().toUpperCase();
+  const nameTwo = faker.name.firstName().toUpperCase();
+  const verb = faker.hacker.verb();
+  const adjective = faker.hacker.adjective();
+  const obj = faker.commerce.productName();
+
+  return `${nameOne} and ${nameTwo} ${verb} ${obj} only when ${adjective}.`;
+}
+
+function debugClients(websockets) {
+  if (DEBUG) {
+    for (let socket of websockets.clients.values()) {
+      console.log(socket.name);
+    }
+  }
+}
+
+function broadcaseMessage(websockets) {
+  const clients = [...websockets.clients.values()];
+  msg = JSON.stringify(clients.map(s => s.name));
+  for (let socket of websockets.clients.values()) {
+    socket.send(msg);
+  }
 }
 
 export function startServer() {
@@ -19,6 +42,8 @@ export function startServer() {
   });
 
   websockets.on('connection', socket => {
+    socket.name = generateName();
+
     DEBUG && console.log('NEW CONNECTION!');
     debugClients(websockets);
 
@@ -29,12 +54,16 @@ export function startServer() {
     });
 
     socket.on('close', () => {
-      console.debug(`disconnect ${clients.getName(socket)}`);
-      // clients.remove(socket);
-      // broadcastListUpdate(socket);
+      DEBUG && console.log('client disconneted');
       debugClients(websockets);
     });
+
+    // Send welcome message.
+    // socket.send(socket.name);
+    broadcaseMessage(websockets);
   });
+
+  console.log('listing on', WS_URL);
 }
 
 // Start if we are the entry point.

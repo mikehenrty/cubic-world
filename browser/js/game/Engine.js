@@ -2,10 +2,10 @@ import * as THREE from 'three';
 
 import Time from './controllers/Time';
 import Input from './controllers/Input';
-import Cube from './Scene/Cube/';
-import Board from './Scene/Board/';
-import Model from './Model/';
-import Text from '/js/Text/';
+import Cube from './Scene/Cube';
+import Board from './Scene/Board';
+import Model from './Model';
+import Text from '/js/Text';
 import {
   DEBUG,
   ASPECT_RATIO,
