@@ -11,7 +11,7 @@ export default class UI extends EventTarget {
     this.el = document.createElement('div');
     this.el.id = 'UI';
 
-    this.messageEl = document.createElement('p');
+    this.messageEl = document.createElement('pre');
     this.startButton = document.createElement('button');
     this.startButton.textContent = 'Start Game';
 
@@ -39,7 +39,7 @@ export default class UI extends EventTarget {
   }
 
   setPeerList(list) {
-    this.messageEl.textContent = list.toString();
+    this.messageEl.textContent = list.join('\n');
   }
 
   setErrorMsg(msg) {

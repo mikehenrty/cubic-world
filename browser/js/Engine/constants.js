@@ -4,7 +4,7 @@ export const DEBUG = true;
 
 // Number of pixels in the screen.
 const PIXEL_WIDTH_MOBILE = 500;
-const PIXEL_WIDTH_DESKTOP = 1000;
+const PIXEL_WIDTH_DESKTOP = 750;
 // Our guess for desktop screen minimum width.
 const WIDTH_THRESHOLD = 1000;
 

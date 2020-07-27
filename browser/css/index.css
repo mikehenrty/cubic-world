@@ -1,4 +1,5 @@
 body {
+  font-size: 20px;
   height: 100vh;
   width: 100vw;
   margin: 0;
@@ -20,6 +21,17 @@ table {
   width: 100%;
   z-index: 1;
   transition: all 200ms ease-in-out;
+}
+
+#UI pre {
+  display: block;
+  padding: 10vw
+}
+
+#UI button {
+  font-size: 1.2rem;
+  padding: 1rem;
+  margin-left: 15vw;
 }
 
 #UI.hide {
