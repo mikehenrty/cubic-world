@@ -26,9 +26,15 @@ export default class Socket extends EventTarget {
         rej(e);
       });
       this.ws.addEventListener('open', () => {
-        res();
+        res(this.ws);
       });
     });
+  }
+
+  async send(cmd, params, error) {
+    const socket = await this.getRawSocket();
+    const msg = new LobbyMessage(cmd, params, error);
+    socket.send(msg.toString());
   }
 
   onMessage({ data }) {

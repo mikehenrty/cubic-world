@@ -1,5 +1,5 @@
 import Socket, { EVT_MSG } from './Socket';
-import { CMD_LIST_PEERS } from '/../shared/message/LobbyMessage';
+import { CMD_LIST_PEERS, CMD_REGISTER } from '/../shared/message/LobbyMessage';
 
 
 export const EVT_PEERS = CMD_LIST_PEERS;
@@ -13,8 +13,8 @@ export default class Network extends EventTarget {
     this.socket.addEventListener(EVT_PEERS, this.onList.bind(this));
   }
 
-  async init() {
-    return this.socket.getRawSocket();
+  async init(id) {
+    await this.socket.send(CMD_REGISTER, { id });
   }
 
   onList({ detail }) {

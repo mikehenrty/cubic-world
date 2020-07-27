@@ -39,7 +39,7 @@ export default class UI extends EventTarget {
   }
 
   setPeerList({ me, names }) {
-    const list = names.filter(n => n !== me).join('\n');
+    const list = names.filter(n => n.name !== me).map(n => n.name).join('\n');
     this.messageEl.textContent = `Welcome ${me}!\n\n${list}`;
   }
 

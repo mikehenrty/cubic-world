@@ -2,7 +2,10 @@ import os from 'os';
 import { Server } from 'ws';
 import faker from 'faker';
 import { WS_PORT } from '../shared/config';
-import LobbyMessage, { CMD_LIST_PEERS } from '../shared/message/LobbyMessage';
+import LobbyMessage, {
+  CMD_LIST_PEERS,
+  CMD_REGISTER
+} from '../shared/message/LobbyMessage';
 
 const DEBUG = true;
 const HOST = os.hostname();
@@ -26,13 +29,26 @@ function debugClients(websockets) {
 
 function broadcaseMessageCmd(websockets, cmd) {
   const clients = [...websockets.clients.values()];
-  const names = clients.map(s => s.name)
+  const names = clients.filter(s => s.id).map(({ id, name }) => ({ id, name }));
   const msg = new LobbyMessage(cmd, { names });
 
   for (let socket of websockets.clients.values()) {
     console.log('Sending msg::', msg.toString());
     msg.params.me = socket.name;
     socket.send(msg.toString());
+  }
+}
+
+function handleMessage(socket, msg) {
+  switch (msg.cmd) {
+    case CMD_REGISTER:
+      socket.id = msg.params.id
+      socket.name = generateName();
+      break;
+
+    default:
+      console.error('unknown command', msg);
+      break;
   }
 }
 
@@ -46,14 +62,13 @@ export function startServer() {
   });
 
   websockets.on('connection', socket => {
-    socket.name = generateName();
-
     DEBUG && console.log('NEW CONNECTION!');
     debugClients(websockets);
 
     socket.on('message', message => {
-      DEBUG && console.log('got message', message);
+      handleMessage(socket, LobbyMessage.marshalFromString(message));
       debugClients(websockets);
+      broadcaseMessageCmd(websockets, CMD_LIST_PEERS);
     });
 
     socket.on('close', () => {
@@ -61,9 +76,6 @@ export function startServer() {
       debugClients(websockets);
       broadcaseMessageCmd(websockets, CMD_LIST_PEERS);
     });
-
-    // Inform peers of new connection.
-    broadcaseMessageCmd(websockets, CMD_LIST_PEERS);
   });
 
   console.log('listing on', WS_URL);

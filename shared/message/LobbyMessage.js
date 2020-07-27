@@ -1,6 +1,7 @@
 const DELIMETER = '|||';
 
 export const CMD_LIST_PEERS = 'ListPeers';
+export const CMD_REGISTER = 'RegisterMe';
 export const ERR_MARSHAL = 'MarshalError'
 
 
