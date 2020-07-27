@@ -9,11 +9,10 @@ const HOST = os.hostname();
 const WS_URL = `http:\/\/${HOST}:${WS_PORT}\/`;
 
 function generateName() {
-  const nameOne = faker.name.firstName().toUpperCase();
-  const nameTwo = faker.name.firstName().toUpperCase();
+  const nameOne = faker.name.firstName()
   const verb = faker.hacker.verb();
 
-  return `${nameOne}${verb}${nameTwo}`
+  return `${verb}-${nameOne}`
 }
 
 function debugClients(websockets) {
@@ -31,6 +30,7 @@ function broadcaseMessageCmd(websockets, cmd) {
 
   for (let socket of websockets.clients.values()) {
     console.log('Sending msg::', msg.toString());
+    msg.params.me = socket.name;
     socket.send(msg.toString());
   }
 }

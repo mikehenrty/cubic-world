@@ -18,7 +18,6 @@ export default class Network extends EventTarget {
   }
 
   onList({ detail }) {
-    console.log('got some details', detail);
-    this.dispatchEvent(new CustomEvent(EVT_PEERS, { detail: detail.names }));
+    this.dispatchEvent(new CustomEvent(EVT_PEERS, { detail }));
   }
 }

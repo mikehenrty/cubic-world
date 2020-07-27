@@ -38,8 +38,9 @@ export default class UI extends EventTarget {
     this.el.classList.remove('hide');
   }
 
-  setPeerList(list) {
-    this.messageEl.textContent = list.join('\n');
+  setPeerList({ me, names }) {
+    const list = names.filter(n => n !== me).join('\n');
+    this.messageEl.textContent = `Welcome ${me}!\n\n${list}`;
   }
 
   setErrorMsg(msg) {
