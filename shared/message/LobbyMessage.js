@@ -32,7 +32,6 @@ export default class LobbyMessage {
   }
 
   toString() {
-    console.log('called', this);
     const { cmd, params, error } = this;
     return [ cmd, JSON.stringify(params), error ].join(DELIMETER);
   }
