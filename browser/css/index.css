@@ -4,10 +4,12 @@ body {
   width: 100vw;
   margin: 0;
   overflow: hidden;
+  background-color: #222222;
 }
 canvas {
   display: block;
   transform-origin: top left;
+  margin: 0 auto;
 }
 
 table {
@@ -34,9 +36,13 @@ table {
   margin-left: 15vw;
 }
 
+#UI .ask-to-connect {
+  padding: 0.2rem;
+  font-weight: bold;
+}
+
 #UI.hide {
-  opacity: 0;
-  transform: translateY(-100%);
+  display:none;
 }
 
 tbody {

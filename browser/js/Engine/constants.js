@@ -2,6 +2,15 @@ import * as THREE from 'three';
 
 export const DEBUG = true;
 
+const MAX_WIDTH = 900;
+
+export const SCALE = 1;
+export const SCREEN_WIDTH = Math.min(window.innerWidth, MAX_WIDTH) * SCALE;
+export const SCREEN_HEIGHT = window.innerHeight * SCALE;
+export const ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+/*
+ *
 // Number of pixels in the screen.
 const PIXEL_WIDTH_MOBILE = 500;
 const PIXEL_WIDTH_DESKTOP = 750;
@@ -13,6 +22,7 @@ export const ASPECT_RATIO = window.innerWidth / window.innerHeight;
 export const SCREEN_WIDTH = (window.innerWidth >= WIDTH_THRESHOLD) ?
   PIXEL_WIDTH_DESKTOP : PIXEL_WIDTH_MOBILE;
 export const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
+*/
 export const ORTHO_DEPTH = 1000;
 
 // Board constants.

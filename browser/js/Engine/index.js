@@ -9,6 +9,7 @@ import Text from '/js/Text';
 import {
   DEBUG,
   ASPECT_RATIO,
+  SCALE,
   SCREEN_WIDTH,
   SCREEN_HEIGHT,
   ORTHO_DEPTH,
@@ -230,12 +231,14 @@ export default class Engine {
   async start() {
     await this.initWorld();
 
+    /*
     const scale = Math.max(
       window.innerWidth / SCREEN_WIDTH,
       window.innerHeight / SCREEN_HEIGHT
     );
+    */
     document.body.appendChild(this.renderer.domElement);
-    this.renderer.domElement.style.transform = `scale(${scale})`;
+    this.renderer.domElement.style.transform = `scale(${ 1 / SCALE })`;
 
     this.time.start();
     this.update();
