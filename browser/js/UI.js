@@ -1,4 +1,12 @@
-export const EVT_START = 'start';
+import {
+  CMD_ASK_TO_CONNECT,
+  CMD_CONNECT_TO_PEER
+} from '/../shared/message/LobbyMessage.js'
+
+
+export const EVT_START = 'Start';
+export const EVT_ASK = CMD_ASK_TO_CONNECT;
+export const EVT_CONNECT = CMD_CONNECT_TO_PEER;
 
 
 export default class UI extends EventTarget {
@@ -12,12 +20,14 @@ export default class UI extends EventTarget {
     this.el.id = 'UI';
 
     this.messageEl = document.createElement('pre');
+    this.peerContainer = document.createElement('div');
     this.startButton = document.createElement('button');
     this.startButton.textContent = 'Start Game';
 
     this.startButton.addEventListener('click', this.onStart.bind(this));
 
     this.el.appendChild(this.messageEl);
+    this.el.appendChild(this.peerContainer);
     this.el.appendChild(this.startButton);
   }
 
@@ -39,8 +49,38 @@ export default class UI extends EventTarget {
   }
 
   setPeerList({ me, names }) {
-    const list = names.filter(n => n.name !== me).map(n => n.name).join('\n');
-    this.messageEl.textContent = `Welcome ${me}!\n\n${list}`;
+    this.messageEl.textContent = `Welcome ${me}!`;
+
+    // Add connect buttons for each potential peer.
+    this.peerContainer.innerHTML = '';
+    names.filter(peer => peer.name !== me).forEach(peer => {
+      const askButton = document.createElement('button');
+      askButton.classList.add('ask-to-connect');
+      askButton.textContent = `Connect to ${peer.name} - ${peer.id}`;
+      askButton.value = peer.id;
+      askButton.addEventListener('click', this.ask.bind(this, peer));
+      this.peerContainer.appendChild(askButton);
+    });
+  }
+
+  ask(peer) {
+    this.dispatchEvent(new CustomEvent(CMD_ASK_TO_CONNECT, {
+      detail: {
+        peerId: peer.id,
+        name: peer.name,
+      }
+    }));
+  }
+
+  handleAsk(detail) {
+    if (confirm(`Do you wanna play ${detail.name}?`)) {
+      // Initiate WebRTC connection.
+      this.dispatchEvent(new CustomEvent(CMD_CONNECT_TO_PEER, {
+        detail: {
+          peerId: detail.from
+        }
+      }));
+    }
   }
 
   setErrorMsg(msg) {

@@ -2,6 +2,10 @@ const DELIMETER = '|||';
 
 export const CMD_LIST_PEERS = 'ListPeers';
 export const CMD_REGISTER = 'RegisterMe';
+export const CMD_ASK_TO_CONNECT = 'AskToConnect';
+export const CMD_CONNECT_TO_PEER = 'ConnectToPeer';
+export const CMD_SIGNALING = 'Signaling';
+
 export const ERR_MARSHAL = 'MarshalError'
 
 
