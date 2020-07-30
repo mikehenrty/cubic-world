@@ -1,4 +1,3 @@
-import os from 'os';
 import { Server } from 'ws';
 import faker from 'faker';
 import { WS_PORT } from '../shared/config';
@@ -10,7 +9,7 @@ import LobbyMessage, {
 } from '../shared/message/LobbyMessage';
 
 const DEBUG = false;
-const HOST = os.hostname();
+const HOST = '0.0.0.0';
 const WS_URL = `http:\/\/${HOST}:${WS_PORT}\/`;
 
 function generateName() {
