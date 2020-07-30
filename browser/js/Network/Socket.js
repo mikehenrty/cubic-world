@@ -22,7 +22,7 @@ export default class Socket extends EventTarget {
       this.ws.addEventListener(WS_EVT_MSG, this.onMessage.bind(this));
 
       this.ws.addEventListener('error', (e) => {
-        console.error('error at websocket level', e);
+        console.error('error at websocket level', ''+e, e.type);
         rej(e);
       });
       this.ws.addEventListener('open', () => {
