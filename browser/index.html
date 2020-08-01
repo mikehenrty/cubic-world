@@ -8,6 +8,15 @@
     <link rel="stylesheet" type="text/css" href="css/index.css">
   </head>
   <body>
+    <script>
+      window.onerror = function(err) {
+        console.error('GLOBAL ERR:::', err);
+        const p = document.createElement('p');
+        p.textConent = `${e.message}||${e.detail}\n\n${err.stack}`;
+        document.body.appendChild(p);
+      };
+    </script>
+    <script src="https://unpkg.com/event-target@latest/min.js"></script>
     <script type="module" src="js/index.js"></script>
   </body>
 </html>
