@@ -3,13 +3,18 @@ body {
   height: 100vh;
   width: 100vw;
   margin: 0;
-  overflow: hidden;
+  overflow: scroll;
   background-color: #222222;
 }
 canvas {
   display: block;
   transform-origin: top left;
   margin: 0 auto;
+}
+
+p {
+  background-color: white;
+  font-size: 2rem;
 }
 
 table {
