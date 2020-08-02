@@ -85,5 +85,11 @@ export default class UI extends EventTarget {
 
   setErrorMsg(msg) {
     this.messageEl.textContent = msg;
+    this.messageEl.style.color = 'red';
+  }
+
+  setMsg(msg) {
+    this.messageEl.textContent = msg;
+    this.messageEl.style.color = 'black';
   }
 }

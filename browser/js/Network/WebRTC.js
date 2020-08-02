@@ -1,8 +1,10 @@
 import { CMD_SIGNALING } from '/../shared/message/LobbyMessage';
+import PeerMessage from '/../shared/message/PeerMessage';
 
 
 export const EVT_SIGNALING = CMD_SIGNALING;
 export const EVT_READY = 'PeerReady';
+export const EVT_MESSAGE = 'PeerMessage';
 
 export const SIG_OFFER = 'offer';
 export const SIG_CANDIDATE = 'candidate';
@@ -33,6 +35,7 @@ export default class WebRTC extends EventTarget {
     this.peerId = null;
     this.authorizedPeer = null;
     this.dataChannel = null;
+    this.initiator = false;
 
     // this.socket.on('signaling', this.signalHandler.bind(this));
     this.socket.addEventListener(EVT_SIGNALING, this.onSignal.bind(this));
@@ -52,7 +55,7 @@ export default class WebRTC extends EventTarget {
     this.authorizePeer(peerId);
     this.initPeerConnection(peerId);
 
-    console.log('PLAYER 1, creating data channel to', this.peerId);
+    this.initiator = true;
     this.dataChannel = this.peerConnection.createDataChannel(CHANNEL_LABEL, {
       ordered: false,
       maxRetransmits: 0,
@@ -88,17 +91,19 @@ export default class WebRTC extends EventTarget {
     this.dataChannel.onmessage = this.onMessage.bind(this);
   }
 
-  onMessage(evt) {
-    console.error('On message not yet implemented!');
-    throw evt;
+  onMessage({ data }) {
+    let msg = PeerMessage.marshalFromString(data);
+    this.dispatchEvent(new CustomEvent(msg.cmd, { detail: msg }));
   }
 
-  send(cmd, param) {
+  send(cmd, arg, timestamp) {
     if (!this.dataChannel) {
       console.error('error, tried to call send when data channel null');
       return;
     }
-    this.dataChannel.send(`${cmd}|${param || ''}`);
+
+    const msg = new PeerMessage(cmd, arg, timestamp);
+    this.dataChannel.send(msg.toString());
   };
 
   candidateHandler(evt) {
@@ -158,7 +163,7 @@ export default class WebRTC extends EventTarget {
     }
 
     if (from !== this.peerId) {
-      console.log('PLAYER 2');
+      console.log('Peer accepted our game request.');
       this.initPeerConnection(from);
     }
 
@@ -222,8 +227,10 @@ export default class WebRTC extends EventTarget {
     console.log('data channel state change', this.dataChannel.readyState);
     switch (this.dataChannel.readyState) {
       case READY_STATE_OPEN:
-        const peerId = this.peerId;
-        this.dispatchEvent(new CustomEvent(EVT_READY, { detail: { peerId } }));
+        this.dispatchEvent(new CustomEvent(EVT_READY, { detail: {
+          peerId: this.peerId,
+          playerNum: this.initiator ? 2 : 1,  // Initiator is player 2.
+        } }));
         break;
 
       case READY_STATE_CLOSED:
