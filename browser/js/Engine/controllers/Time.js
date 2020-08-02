@@ -1,55 +1,50 @@
-// Keep past deltas for FPS calculation.
-// Higher REMEMBER numbers will be slower but more stable.
-const REMEMBER = 30;
-
 export default class Time {
   constructor() {
     this.startTime = 0;
-    this.pastTimes = new Array(REMEMBER);
+    this.lastTime = 0;
+    this.currentTime = 0;
+
+    this.lastMeasuredTime = 0;
+    this.frameCount = 0;
   }
 
   getNewTime() {
     return performance.now();
   }
 
-  getCurrentTime() {
-    return this.pastTimes[0] || this.startTime;
-  }
-
-  getLastTime() {
-    return this.pastTimes[1] || this.startTime;
-  }
-
   getAverageFPS() {
-    const deltas = new Array(REMEMBER - 1);
-    for (let i = 0; i < REMEMBER - 1; i++) {
-      deltas[i] = this.pastTimes[i] - this.pastTimes[i + 1];
-    }
-    return 1000 / deltas.reduce((accum, delta) => (
-      accum + delta / (REMEMBER - 1)
-    ), 0)
+    const deltaSeconds = this.getDeltaSinceLastMeasured() / 1000;  // ms -> s
+    const fps = this.frameCount / deltaSeconds;
+    this.frameCount = 0;
+    this.lastMeasuredTime = this.getNewTime();
+
+    return fps;
   }
 
   start() {
     this.startTime = this.getNewTime();
-    this.pastTimes[0] = this.startTime;
+    this.lastTime = this.startTime;
+    this.currentTime = this.startTime;
+    this.lastMeasuredTime = this.startTime;
+    this.frameCount = 0;
   }
 
-  // Shift the times back and add the current one.
-  updatePastTimes() {
-    for (let i = REMEMBER - 1; i > 0; i--) {
-      this.pastTimes[i] = this.pastTimes[i - 1];
-    }
-
-    this.pastTimes[0] = this.getNewTime();
+  getDeltaSinceLastMeasured() {
+    return this.currentTime - this.lastMeasuredTime;
   }
 
   getDeltaSinceLastTick() {
-    return this.getCurrentTime() - this.getLastTime();
+    return this.currentTime - this.lastTime;
   }
 
   tick() {
-    this.updatePastTimes();
-    return this.getDeltaSinceLastTick();
+    const delta = this.getDeltaSinceLastTick();
+
+    // Update times and counters.
+    ++this.frameCount;
+    this.lastTime = this.currentTime;
+    this.currentTime = this.getNewTime();
+
+    return delta;
   }
 }
