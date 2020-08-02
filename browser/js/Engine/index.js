@@ -102,6 +102,22 @@ export default class Engine {
     this.sceneHUD.add(this.nextMoveText.getObject3D());
   }
 
+  updateCountdown() {
+    let num;
+    if (!this.time.startTime) {
+      num = '-';
+    } else  {
+      num = Math.ceil(this.time.getDeltaUntilStart() / 1000);
+      if (num < 0) {
+        num = 'GO!';
+      }
+    }
+
+    this.sceneHUD.remove(this.countdownText.getObject3D());
+    this.countdownText.update(num);
+    this.sceneHUD.add(this.countdownText.getObject3D());
+  }
+
   getSceneHUD() {
     const textSize = SCREEN_HEIGHT / 10;
     const score = this.model.getScore();
@@ -111,6 +127,12 @@ export default class Engine {
 
     const sceneHUD = new THREE.Scene();
     sceneHUD.add(this.textScore.getObject3D());
+
+    const countdownSize = SCREEN_HEIGHT / 12;
+    const countdownX = 0;
+    const countdownY = SCREEN_HEIGHT / 2 - countdownSize / 2 - 30;
+    this.countdownText = new Text(countdownSize, '_', countdownX, countdownY);
+    sceneHUD.add(this.countdownText.getObject3D());
 
     // Add FPS to HUD.
     if (DEBUG) {
@@ -174,6 +196,10 @@ export default class Engine {
   }
 
   initiateMove(direction) {
+    if (!this.time.started()) {
+      return;
+    }
+
     const moveSucceeded = this.cube.move(direction);
     if (moveSucceeded) {
       this.nextMove = null;
@@ -214,12 +240,15 @@ export default class Engine {
   update() {
     requestAnimationFrame( this.update );
 
+    this.updateCountdown()
+
     const delta = this.time.tick();
     this.cube.update(delta);
 
     this.cube.mesh.getWorldPosition(this.v);
     this.camera.position.setZ(this.v.z + CAMERA_DISTANCE);
     //this.camera.position.setX(this.v.x + CAMERA_LATERAL_OFFSET);
+    this.v.y = 0;
     this.cameraLookAt.addVectors(this.v, this.cameraOffset);
     this.camera.lookAt(this.cameraLookAt);
 
@@ -228,7 +257,7 @@ export default class Engine {
     this.renderer.render( this.sceneHUD, this.HUDCamera );
   }
 
-  async start() {
+  async start(delay) {
     await this.initWorld();
 
     /*
@@ -240,7 +269,7 @@ export default class Engine {
     document.body.appendChild(this.renderer.domElement);
     this.renderer.domElement.style.transform = `scale(${ 1 / SCALE })`;
 
-    this.time.start();
+    this.time.start(delay);
     this.update();
   }
 }

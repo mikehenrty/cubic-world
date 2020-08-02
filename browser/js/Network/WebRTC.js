@@ -52,7 +52,6 @@ export default class WebRTC extends EventTarget {
 
   // Initiate webRTC signaling (usually done be invitee).
   async connect(peerId) {
-    this.authorizePeer(peerId);
     this.initPeerConnection(peerId);
 
     this.initiator = true;

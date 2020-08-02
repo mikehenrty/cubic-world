@@ -6,13 +6,18 @@ import {
   CMD_REGISTER,
   CMD_ASK_TO_CONNECT
 } from '/../shared/message/LobbyMessage';
+import { CMD_START, CMD_START_ACK } from '/../shared/message/PeerMessage';
 
 
 export const EVT_PEERS = CMD_LIST_PEERS;
 export const EVT_PEER_READY = EVT_READY;
 export const EVT_PEER_SYNC = EVT_SYNC;
 export const EVT_ASK = CMD_ASK_TO_CONNECT;
-export const FAKE_LATENCY = 200; // TODO: for debugging.
+export const EVT_START_GAME = CMD_START;
+export const EVT_START_ACK = CMD_START_ACK;
+export const FAKE_LATENCY = 200;  // TODO: for debugging.
+
+export const START_DELAY = 5000;  // ms
 
 
 export default class Network extends EventTarget {
@@ -31,6 +36,14 @@ export default class Network extends EventTarget {
     // When ready for P2P messaging.
     this.webRTC.addEventListener(EVT_READY,
       this.forward.bind(this, EVT_PEER_READY));
+
+    // When ready to start match.
+    this.webRTC.addEventListener(EVT_START_GAME,
+      this.forward.bind(this, EVT_START_GAME));
+
+    // When match start time was accepted signal start.
+    this.webRTC.addEventListener(EVT_START_ACK,
+      this.forward.bind(this, EVT_START_GAME));
 
     // When timestamps are synced, go.
     this.time.addEventListener(EVT_SYNC,
@@ -55,6 +68,7 @@ export default class Network extends EventTarget {
   }
 
   connectToPeer(peerId) {
+    this.webRTC.authorizePeer(peerId);
     this.webRTC.connect(peerId);
   }
 
@@ -64,5 +78,15 @@ export default class Network extends EventTarget {
 
   syncTimeWithPeer() {
     this.time.sync();
+  }
+
+  startGame() {
+    const startTime = this.time.now() + START_DELAY;
+    this.sendToPeer(CMD_START, startTime);
+    this.dispatchEvent(new CustomEvent(CMD_START, {
+      detail: {
+        arg: startTime
+      }
+    }));
   }
 }

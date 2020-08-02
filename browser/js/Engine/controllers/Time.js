@@ -21,12 +21,21 @@ export default class Time {
     return fps;
   }
 
-  start() {
-    this.startTime = this.getNewTime();
-    this.lastTime = this.startTime;
-    this.currentTime = this.startTime;
-    this.lastMeasuredTime = this.startTime;
+  start(delay) {
+    const now = this.getNewTime()
+    this.startTime = now + delay;
+    this.lastTime = now;
+    this.currentTime = now;
+    this.lastMeasuredTime = now;
     this.frameCount = 0;
+  }
+
+  started() {
+    return this.currentTime > this.startTime;
+  }
+
+  getDeltaUntilStart() {
+    return this.startTime - this.currentTime;
   }
 
   getDeltaSinceLastMeasured() {

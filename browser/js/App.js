@@ -3,7 +3,8 @@ import Engine from './Engine';
 import Network, {
   EVT_PEERS,
   EVT_PEER_READY,
-  EVT_PEER_SYNC
+  EVT_PEER_SYNC,
+  EVT_START_GAME
 } from './Network';
 import UI, { EVT_START, EVT_ASK, EVT_CONNECT } from './UI';
 
@@ -44,27 +45,31 @@ export default class App {
       this.network.connectToPeer(detail.peerId);
     });
 
-    // Peer to peer message is available.
+    // Peer to peer message is available, both players get this event.
     this.network.addEventListener(EVT_PEER_READY, ({ detail }) => {
-      this.ui.setMsg('Syncing wrist watches with ' + detail.name);
+      this.ui.setMsg('Synchronizing clocks');
       this.playerNum = detail.playerNum;
       if (this.playerNum === 1) {
         this.network.syncTimeWithPeer();
       }
-      this.ui.hide();
     });
 
     // Timestamps are synced up and we can negotiate the start of the game.
-    this.network.addEventListener(EVT_PEER_SYNC, ({ detail }) => {
+    this.network.addEventListener(EVT_PEER_SYNC, () => {
       if (this.playerNum !== 1) {
         console.error('Got sync event as second player, ignoring');
         return;
       }
+      this.ui.setMsg('Synced, preparing to start');
+      this.network.startGame();
+    });
 
-      console.log('start game stub.');
-      // TODO: Propose time to have game start
-      //this.network.startGame(detail.peerId);
-      //this.engine.start();
+    // Game is ready to go!
+    this.network.addEventListener(EVT_START_GAME, ({ detail }) => {
+      this.ui.hide();
+      const startTime = parseInt(detail.arg, 10);
+      const delay = startTime - this.network.time.now();
+      this.engine.start(delay);
     });
   }
 
