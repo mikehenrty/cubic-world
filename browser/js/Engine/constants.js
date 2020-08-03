@@ -37,6 +37,7 @@ export const LINE_COLOR = 'white';
 export const BOX_SIZE = 50;
 export const HALF_BOX = Math.round(BOX_SIZE / 2); // For convenience.
 export const FLIP_DURATION = 325;
+export const MIN_FLIP_DURATION = 100;
 
 export const SIDE_TOP = 'TOP';
 export const SIDE_FRONT = 'FRONT';

@@ -4,6 +4,7 @@ export const CMD_PING = 'Ping';
 export const CMD_PONG = 'Pong';
 export const CMD_START = 'Start';
 export const CMD_START_ACK = 'StartAck';
+export const CMD_MOVE = 'Move'
 
 export const ERR_MARSHAL = 'MarshalError'
 

@@ -6,7 +6,11 @@ import {
   CMD_REGISTER,
   CMD_ASK_TO_CONNECT
 } from '/../shared/message/LobbyMessage';
-import { CMD_START, CMD_START_ACK } from '/../shared/message/PeerMessage';
+import {
+  CMD_START,
+  CMD_START_ACK,
+  CMD_MOVE
+} from '/../shared/message/PeerMessage';
 
 
 export const EVT_PEERS = CMD_LIST_PEERS;
@@ -15,9 +19,10 @@ export const EVT_PEER_SYNC = EVT_SYNC;
 export const EVT_ASK = CMD_ASK_TO_CONNECT;
 export const EVT_START_GAME = CMD_START;
 export const EVT_START_ACK = CMD_START_ACK;
+export const EVT_MOVE = CMD_MOVE;
 export const FAKE_LATENCY = 200;  // TODO: for debugging.
 
-export const START_DELAY = 3500;  // ms
+export const START_DELAY = 2000;  // ms
 
 
 export default class Network extends EventTarget {
@@ -46,6 +51,10 @@ export default class Network extends EventTarget {
     this.webRTC.addEventListener(EVT_START_ACK,
       this.forward.bind(this, EVT_START_GAME));
       */
+
+    // When ready to start match.
+    this.webRTC.addEventListener(EVT_MOVE,
+      this.forward.bind(this, EVT_MOVE));
 
     // When timestamps are synced, go.
     this.time.addEventListener(EVT_SYNC,
@@ -85,10 +94,16 @@ export default class Network extends EventTarget {
   startGame(boardData) {
     const startTime = this.time.now() + START_DELAY;
     this.sendToPeer(CMD_START, startTime, boardData);
+
+    // Start game immediately for this player.
     this.dispatchEvent(new CustomEvent(CMD_START, {
       detail: {
         arg: startTime
       }
     }));
+  }
+
+  sendMove(direction, finishAt) {
+    this.sendToPeer(CMD_MOVE, direction, finishAt);
   }
 }

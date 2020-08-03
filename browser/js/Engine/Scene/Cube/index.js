@@ -1,11 +1,16 @@
 import * as THREE from 'three';
-import { BOARD_WIDTH, BOX_SIZE, HALF_BOX } from '/js/Engine/constants';
+import {
+  BOARD_WIDTH,
+  BOX_SIZE,
+  HALF_BOX
+} from '/js/Engine/constants';
 import {
   getMesh,
   getPivot,
   getMixer,
   getActions,
   getPivotOffset,
+  setActionDuration
 } from './static-helpers';
 
 
@@ -13,7 +18,6 @@ export default class Cube {
   constructor(model, isOpponent) {
     this.model = model;
     this.isOpponent = !!isOpponent;
-
     // Populate scene.
     this.mesh = getMesh();
     this.pivot = getPivot(this.mesh);
@@ -36,7 +40,8 @@ export default class Cube {
 
     // Use our pre-generated list of 24 static quaternions
     // to orient our cube properly with the grid.
-    this.mesh.setRotationFromQuaternion(this.model.getCubeStaticQaternion());
+    this.mesh.setRotationFromQuaternion(
+      this.model.getCubeStaticQaternion(this.isOpponent));
 
     // Put the pivot back at the center bottom of cube.
     this.pivot.position.copy(this.mesh.position);
@@ -45,13 +50,13 @@ export default class Cube {
   }
 
   // Returns a boolean if succeeded.
-  move(direction) {
+  move(direction, duration) {
 
     if (this.lastDirection && this.actions[this.lastDirection].isRunning()) {
       return false;
     }
 
-    if ( !this.model.canMove(direction) ) {
+    if ( !this.model.canMove(direction, this.isOpponent) ) {
       return false;
     }
 
@@ -63,7 +68,9 @@ export default class Cube {
     this.mesh.position.sub(getPivotOffset(direction));
 
     // Start the animation.
-    this.actions[direction].play();
+    const action = this.actions[direction];
+    setActionDuration(action, duration);
+    action.play();
 
     return true;
   }
@@ -80,7 +87,7 @@ export default class Cube {
 
     // Update our model of the cube, so we can use to correct
     // rotation rounding errors.
-    this.model.updateCube(direction);
+    this.model.updateCube(direction, this.isOpponent);
 
     this.actions[direction].stop();
 

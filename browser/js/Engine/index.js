@@ -19,7 +19,8 @@ import {
   DIR_RIGHT,
   DIR_BACK,
   PLAYER_ONE,
-  PLAYER_TWO
+  PLAYER_TWO,
+  FLIP_DURATION
 } from './constants';
 
 
@@ -28,10 +29,13 @@ const CAMERA_LATERAL_OFFSET = 110;
 const CAMERA_HEIGHT = 300;
 const CAMERA_LOOK_DISTANCE = 6 * BOX_SIZE;
 
+export const EVT_MOVE = 'CubeMove';
 
-export default class Engine {
+
+export default class Engine extends EventTarget {
 
   constructor() {
+    super();
     this.player = 0;
     this.v = new THREE.Vector3();
 
@@ -46,7 +50,7 @@ export default class Engine {
     this.cube = new Cube( this.model );
     this.cube.onMoveFinish = this.onMoveFinish.bind(this);
     this.cubeOpponent = new Cube( this.model, true );
-    this.cubeOpponent.onMoveFinish = this.onMoveFinish.bind(this);
+    // this.cubeOpponent.onMoveFinish = this.onMoveFinish.bind(this);
 
     this.input = new Input();
     this.input.onUp = this.initiateMove.bind(this, DIR_AHEAD);
@@ -226,8 +230,7 @@ export default class Engine {
   }
 
   initiateMoveOpponent(direction, duration) {
-    // TODO: add duration.
-    const moveSucceeded = this.cubeOpponent.move(direction);
+    const moveSucceeded = this.cubeOpponent.move(direction, duration);
     if (!moveSucceeded) {
       // TODO: Send error message to opponent?
       console.error('Opponent request bad move');
@@ -242,6 +245,10 @@ export default class Engine {
     const moveSucceeded = this.cube.move(direction);
     if (moveSucceeded) {
       this.nextMove = null;
+      this.dispatchEvent(new CustomEvent(EVT_MOVE, { detail: {
+        direction,
+        duration: FLIP_DURATION,
+      } }));
     } else {
       // Save unsuccessful moves for when current move completes.
       this.nextMove = direction;
@@ -254,7 +261,7 @@ export default class Engine {
     DEBUG && this.updateNextMoveDebug();
   }
 
-  onMoveFinish(direction) {
+  onMoveFinish(direction, isOpponent) {
     if (this.model.attemptPickup()) {
       const cubePosition = this.model.getCubePosition();
       this.board.resetSquare(cubePosition.x, cubePosition.y);

@@ -3,6 +3,7 @@ import {
   BOX_SIZE,
   HALF_BOX,
   FLIP_DURATION,
+  MIN_FLIP_DURATION,
   SIDE_COLORS,
   SIDE_ONE,
   SIDE_TWO,
@@ -198,6 +199,7 @@ function _getAction(mixer, name) {
   action.clampWhenFinished = true;
   return action;
 }
+
 export function getActions(mixer) {
   return {
     AHEAD: _getAction(mixer, CLIPS.AHEAD),
@@ -205,6 +207,12 @@ export function getActions(mixer) {
     RIGHT: _getAction(mixer, CLIPS.RIGHT),
     BACK: _getAction(mixer, CLIPS.BACK),
   };
+}
+
+export function setActionDuration(action, duration) {
+  duration = duration ? Math.max(duration, MIN_FLIP_DURATION) : FLIP_DURATION;
+  action._clip.tracks[0].times[1] = duration
+  action._clip.duration = duration;
 }
 
 export function getPivotOffset(direction) {

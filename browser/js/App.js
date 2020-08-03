@@ -1,10 +1,11 @@
 import Player from './Player';
-import Engine from './Engine';
+import Engine, { EVT_MOVE as EVT_MY_MOVE } from './Engine';
 import Network, {
   EVT_PEERS,
   EVT_PEER_READY,
   EVT_PEER_SYNC,
-  EVT_START_GAME
+  EVT_START_GAME,
+  EVT_MOVE
 } from './Network';
 import UI, { EVT_START, EVT_ASK, EVT_CONNECT } from './UI';
 
@@ -79,6 +80,16 @@ export default class App {
       const startTime = parseInt(detail.arg, 10);
       const delay = startTime - this.network.time.now();
       this.engine.start(delay);
+    });
+
+    this.engine.addEventListener(EVT_MY_MOVE, ({ detail }) => {
+      const finishAt = this.network.time.now() + detail.duration;
+      this.network.sendMove(detail.direction, finishAt);
+    });
+
+    this.network.addEventListener(EVT_MOVE, ({ detail }) => {
+      const duration = parseInt(detail.error, 10) - this.network.time.now();
+      this.engine.initiateMoveOpponent(detail.arg, duration);
     });
   }
 

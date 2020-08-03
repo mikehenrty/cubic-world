@@ -20,6 +20,10 @@ export default class Model {
     this.cube.setPosition(this.board.getCubeStartPos());
   }
 
+  getCube(isOpponent) {
+    return isOpponent ? this.cubeOpponent : this.cube;
+  }
+
   setPlayer(playerNum) {
     if (playerNum !== PLAYER_ONE && playerNum !== PLAYER_TWO) {
       console.error('Got weird player num', playerNum);
@@ -27,7 +31,6 @@ export default class Model {
     }
 
     const otherPlayerNum = (playerNum === PLAYER_ONE) ? PLAYER_TWO : PLAYER_ONE;
-    console.log('setting cubes', this.board.getCubeStartPos(playerNum), this.board.getCubeStartPos(otherPlayerNum));
     this.cube.setPosition(this.board.getCubeStartPos(playerNum));
     this.cubeOpponent.setPosition(this.board.getCubeStartPos(otherPlayerNum));
   }
@@ -36,24 +39,25 @@ export default class Model {
     return this.score;
   }
 
-  updateCube(direction) {
-    this.cube.update(direction);
+  updateCube(direction, isOpponent) {
+    this.getCube(isOpponent).update(direction);
   }
 
   getCubePosition(isOpponent) {
-    return (isOpponent ? this.cubeOpponent : this.cube).getPosition();
+    return this.getCube(isOpponent).getPosition();
   }
 
-  getCubeStaticQaternion() {
-    return this.cube.getStaticQuaternion();
+  getCubeStaticQaternion(isOpponent) {
+    return this.getCube(isOpponent).getStaticQuaternion();
   }
 
   getBoardSquareValue(x, y) {
     return this.board.getSide(x, y);
   }
 
-  attemptPickup() {
-    return this.pickUpBoardSquare(this.cube.position.x, this.cube.position.y);
+  attemptPickup(isOpponent) {
+    const position = this.getCube(isOpponent).getPosition;
+    return this.pickUpBoardSquare(position.x, position.y);
   }
 
   pickUpBoardSquare(x, y) {
@@ -67,8 +71,10 @@ export default class Model {
     return false;
   }
 
-  canMove(direction) {
-    this.v2.copy(this.cube.position).add(getMoveOffset(direction));
+  canMove(direction, isOpponent) {
+    const cube = this.getCube(isOpponent);
+
+    this.v2.copy(cube.position).add(getMoveOffset(direction));
 
     const x = this.v2.x;
     const y = this.v2.y;
@@ -85,8 +91,8 @@ export default class Model {
     // if the next top or bottom will match the tile color.
     const enemySide = this.board.getSide(x, y);
     if (enemySide) {
-      const nextTop = this.cube.getNextTopSide(direction);
-      const nextBottom = this.cube.getNextBottomSide(direction);
+      const nextTop = cube.getNextTopSide(direction);
+      const nextBottom = cube.getNextBottomSide(direction);
       return enemySide === nextBottom || enemySide === nextTop;
     }
 
