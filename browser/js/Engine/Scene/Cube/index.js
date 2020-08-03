@@ -49,17 +49,19 @@ export default class Cube {
     this.pivot.attach(this.mesh);
   }
 
-  // Returns a boolean if succeeded.
-  move(direction, duration) {
+  canPickUp(direction) {
+    return this.model.canPickUp(direction, this.isOpponent);
+  }
 
+  canMove(direction) {
     if (this.lastDirection && this.actions[this.lastDirection].isRunning()) {
       return false;
     }
 
-    if ( !this.model.canMove(direction, this.isOpponent) ) {
-      return false;
-    }
+    return this.model.canMove(direction, this.isOpponent);
+  }
 
+  move(direction, duration) {
     this.lastDirection = direction;
 
     // Set up the rotation pivot point.
@@ -71,8 +73,6 @@ export default class Cube {
     const action = this.actions[direction];
     setActionDuration(action, duration);
     action.play();
-
-    return true;
   }
 
   resetPivot() {

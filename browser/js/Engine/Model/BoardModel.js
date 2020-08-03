@@ -47,6 +47,10 @@ export default class BoardModel {
     return this.squares[x] && this.squares[x][y];
   }
 
+  isEnemy(x, y) {
+    return !!this.getSide(x, y);
+  }
+
   pickUpSquare(x, y) {
     this.squares[x][y] = undefined;
   }

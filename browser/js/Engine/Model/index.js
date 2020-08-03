@@ -71,11 +71,29 @@ export default class Model {
     return false;
   }
 
+  canPickUp(direction, isOpponent) {
+    const cube = this.getCube(isOpponent);
+
+    this.v2.copy(cube.position).add(getMoveOffset(direction));
+    const x = this.v2.x;
+    const y = this.v2.y;
+
+    const enemySide = this.board.getSide(x, y);
+    if (!enemySide) {
+      return false;
+    }
+
+    // If we have a colored tile, we can only move onto that square
+    // if the next top or bottom will match the tile color.
+    const nextTop = cube.getNextTopSide(direction);
+    const nextBottom = cube.getNextBottomSide(direction);
+    return enemySide === nextBottom || enemySide === nextTop;
+  }
+
   canMove(direction, isOpponent) {
     const cube = this.getCube(isOpponent);
 
     this.v2.copy(cube.position).add(getMoveOffset(direction));
-
     const x = this.v2.x;
     const y = this.v2.y;
 
@@ -87,13 +105,8 @@ export default class Model {
       return false;
     }
 
-    // If we have a colored tile, we can only move onto that square
-    // if the next top or bottom will match the tile color.
-    const enemySide = this.board.getSide(x, y);
-    if (enemySide) {
-      const nextTop = cube.getNextTopSide(direction);
-      const nextBottom = cube.getNextBottomSide(direction);
-      return enemySide === nextBottom || enemySide === nextTop;
+    if (this.board.isEnemy(x, y)) {
+      return this.canPickUp(direction, isOpponent);
     }
 
     return true;

@@ -20,7 +20,8 @@ import {
   DIR_BACK,
   PLAYER_ONE,
   PLAYER_TWO,
-  FLIP_DURATION
+  FLIP_DURATION,
+  FAST_FLIP_DURATION
 } from './constants';
 
 
@@ -242,17 +243,21 @@ export default class Engine extends EventTarget {
       return;
     }
 
-    const moveSucceeded = this.cube.move(direction);
-    if (moveSucceeded) {
-      this.nextMove = null;
-      this.dispatchEvent(new CustomEvent(EVT_MOVE, { detail: {
-        direction,
-        duration: FLIP_DURATION,
-      } }));
-    } else {
+    if (!this.cube.canMove(direction)) {
       // Save unsuccessful moves for when current move completes.
       this.nextMove = direction;
+    } else {
+      const duration = this.cube.canPickUp(direction) ?
+        FAST_FLIP_DURATION : FLIP_DURATION;
+
+      this.cube.move(direction, duration);
+      this.nextMove = null;
+
+      this.dispatchEvent(
+        new CustomEvent(EVT_MOVE, { detail: { direction, duration } })
+      );
     }
+
     DEBUG && this.updateNextMoveDebug();
   }
 
