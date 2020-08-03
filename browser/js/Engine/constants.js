@@ -9,6 +9,9 @@ export const SCREEN_WIDTH = Math.min(window.innerWidth, MAX_WIDTH) * SCALE;
 export const SCREEN_HEIGHT = window.innerHeight * SCALE;
 export const ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
 
+export const PLAYER_ONE = 1;
+export const PLAYER_TWO = 2;
+
 /*
  *
 // Number of pixels in the screen.

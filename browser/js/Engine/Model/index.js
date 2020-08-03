@@ -3,18 +3,33 @@ import { BOARD_WIDTH, BOARD_DEPTH } from '/js/Engine/constants';
 import { getMoveOffset } from '/js/Engine/Scene/Cube/static-helpers';
 import BoardModel from './BoardModel';
 import CubeModel from './CubeModel';
+import { PLAYER_ONE, PLAYER_TWO } from '../constants';
 
 
 export default class Model {
   constructor() {
     this.v2 = new THREE.Vector2();
 
+    this.playerNum = 0;
     this.score = 0;
 
     this.cube = new CubeModel();
+    this.cubeOpponent = new CubeModel();
     this.board = new BoardModel();
 
-    this.cube.setPosition(this.board.getCubeStartingPosition());
+    this.cube.setPosition(this.board.getCubeStartPos());
+  }
+
+  setPlayer(playerNum) {
+    if (playerNum !== PLAYER_ONE && playerNum !== PLAYER_TWO) {
+      console.error('Got weird player num', playerNum);
+      return;
+    }
+
+    const otherPlayerNum = (playerNum === PLAYER_ONE) ? PLAYER_TWO : PLAYER_ONE;
+    console.log('setting cubes', this.board.getCubeStartPos(playerNum), this.board.getCubeStartPos(otherPlayerNum));
+    this.cube.setPosition(this.board.getCubeStartPos(playerNum));
+    this.cubeOpponent.setPosition(this.board.getCubeStartPos(otherPlayerNum));
   }
 
   getScore() {
@@ -25,8 +40,8 @@ export default class Model {
     this.cube.update(direction);
   }
 
-  getCubePosition() {
-    return this.cube.getPosition();
+  getCubePosition(isOpponent) {
+    return (isOpponent ? this.cubeOpponent : this.cube).getPosition();
   }
 
   getCubeStaticQaternion() {

@@ -11,7 +11,7 @@ export default class BoardModel {
 
     for (let x = 0; x < BOARD_WIDTH; x++) {
       this.squares[x] = this.squares[x] || [];
-      for (let y = 0; y < BOARD_DEPTH; y++) {
+      for (let y = 2; y < BOARD_DEPTH; y++) {
         this.squares[y] = this.squares[y] || [];
 
         // Add occassional enemy.
@@ -20,12 +20,19 @@ export default class BoardModel {
         }
       }
     }
-
-    this.startingPosition = new THREE.Vector2(Math.floor(BOARD_WIDTH / 2), 0);
   }
 
-  getCubeStartingPosition() {
-    return this.startingPosition;
+  getCubeStartPos(playerNum) {
+    let startX;
+    if (playerNum === 1) {
+      startX = 1;
+    } else if (playerNum === 2) {
+      startX = BOARD_WIDTH - 2;
+    } else {
+      startX = Math.floor(BOARD_WIDTH / 2);
+    }
+
+    return new THREE.Vector2(startX, 0);
   }
 
   getSide(x, y) {

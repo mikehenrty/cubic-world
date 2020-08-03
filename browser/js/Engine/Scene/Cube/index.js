@@ -10,8 +10,9 @@ import {
 
 
 export default class Cube {
-  constructor(model) {
+  constructor(model, isOpponent) {
     this.model = model;
+    this.isOpponent = !!isOpponent;
 
     // Populate scene.
     this.mesh = getMesh();
@@ -25,8 +26,10 @@ export default class Cube {
   }
 
   updateMeshFromModel() {
+    this.pivot.remove(this.mesh);
+
     // Reposition the mesh over the square dictated by model.
-    const position = this.model.getCubePosition();
+    const position = this.model.getCubePosition(this.isOpponent);
     const x = ( position.x - Math.floor(BOARD_WIDTH / 2) ) * BOX_SIZE;
     const z = -position.y * BOX_SIZE;
     this.mesh.position.set(x, HALF_BOX, z);
@@ -34,6 +37,11 @@ export default class Cube {
     // Use our pre-generated list of 24 static quaternions
     // to orient our cube properly with the grid.
     this.mesh.setRotationFromQuaternion(this.model.getCubeStaticQaternion());
+
+    // Put the pivot back at the center bottom of cube.
+    this.pivot.position.copy(this.mesh.position);
+    this.pivot.position.setY(0);
+    this.pivot.attach(this.mesh);
   }
 
   // Returns a boolean if succeeded.
@@ -60,6 +68,12 @@ export default class Cube {
     return true;
   }
 
+  resetPivot() {
+    this.pivot.position.copy(this.mesh.position);
+    this.pivot.position.setY(0);
+    this.pivot.attach(this.mesh);
+  }
+
   moveFinish(e) {
     const direction = this.lastDirection;
     this.lastDirection = null;
@@ -68,15 +82,11 @@ export default class Cube {
     // rotation rounding errors.
     this.model.updateCube(direction);
 
-    this.pivot.remove(this.mesh);
-    this.updateMeshFromModel();
-
     this.actions[direction].stop();
 
-    // Put the pivot back at the center bottom of cube.
-    this.pivot.position.copy(this.mesh.position);
-    this.pivot.position.setY(0);
-    this.pivot.attach(this.mesh);
+    this.updateMeshFromModel();
+
+
     this.onMoveFinish && this.onMoveFinish(direction);
   }
 

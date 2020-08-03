@@ -31,6 +31,7 @@ export default class App {
     // ASK from UI is player initiated.
     this.ui.addEventListener(EVT_ASK, ({ detail }) => {
       this.ui.setMsg('Asking ' + detail.name);
+      this.engine.weArePlayerOne();
       this.network.sendAsk(detail);
     });
 
@@ -42,6 +43,7 @@ export default class App {
     // Both players have agreed, initiatite Peer2Peer connection.
     this.ui.addEventListener(EVT_CONNECT, ({ detail }) => {
       this.ui.setMsg('Connecting to ' + detail.name);
+      this.engine.weArePlayerTwo();
       this.network.connectToPeer(detail.peerId);
     });
 

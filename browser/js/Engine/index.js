@@ -17,7 +17,9 @@ import {
   DIR_AHEAD,
   DIR_LEFT,
   DIR_RIGHT,
-  DIR_BACK
+  DIR_BACK,
+  PLAYER_ONE,
+  PLAYER_TWO
 } from './constants';
 
 
@@ -30,6 +32,7 @@ const CAMERA_LOOK_DISTANCE = 6 * BOX_SIZE;
 export default class Engine {
 
   constructor() {
+    this.player = 0;
     this.v = new THREE.Vector3();
 
     this.time = new Time();
@@ -42,6 +45,8 @@ export default class Engine {
 
     this.cube = new Cube( this.model );
     this.cube.onMoveFinish = this.onMoveFinish.bind(this);
+    this.cubeOpponent = new Cube( this.model, true );
+    this.cubeOpponent.onMoveFinish = this.onMoveFinish.bind(this);
 
     this.input = new Input();
     this.input.onUp = this.initiateMove.bind(this, DIR_AHEAD);
@@ -61,6 +66,22 @@ export default class Engine {
     this.nextMove = null;
 
     this.update = this.update.bind(this);
+  }
+
+  setPlayer(player) {
+    this.player = player;
+    this.model.setPlayer(player);
+    this.cube.updateMeshFromModel();
+    this.cubeOpponent.updateMeshFromModel();
+    this.scene.add( this.cubeOpponent.getObject3D() );
+  }
+
+  weArePlayerOne() {
+    this.setPlayer(PLAYER_ONE);
+  }
+
+  weArePlayerTwo() {
+    this.setPlayer(PLAYER_TWO);
   }
 
   async initWorld() {
@@ -240,15 +261,23 @@ export default class Engine {
   update() {
     requestAnimationFrame( this.update );
 
-    this.updateCountdown()
+    // Stop the countdown refresh soon after game has started.
+    if (this.time.startTime + 100 > this.time.currentTime) {
+      this.updateCountdown()
+    }
 
     const delta = this.time.tick();
     this.cube.update(delta);
+    this.cubeOpponent.update(delta);
 
     this.cube.mesh.getWorldPosition(this.v);
     this.camera.position.setZ(this.v.z + CAMERA_DISTANCE);
     //this.camera.position.setX(this.v.x + CAMERA_LATERAL_OFFSET);
+
+    // Should we make the camera bouncy?
+    // this.v.y = Math.round(this.v.y / 3);
     this.v.y = 0;
+
     this.cameraLookAt.addVectors(this.v, this.cameraOffset);
     this.camera.lookAt(this.cameraLookAt);
 
@@ -269,7 +298,7 @@ export default class Engine {
     document.body.appendChild(this.renderer.domElement);
     this.renderer.domElement.style.transform = `scale(${ 1 / SCALE })`;
 
-    this.time.start(delay);
+    this.time.start(delay || 0);
     this.update();
   }
 }
