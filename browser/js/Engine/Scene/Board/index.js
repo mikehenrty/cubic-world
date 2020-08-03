@@ -9,8 +9,14 @@ import Squares from './Squares';
 import Grid from './Grid';
 
 export default class Board {
-  constructor(model) {
+  constructor(model, data) {
     this.model = model;
+
+    // If we have a board, use that.
+    if (data) {
+      this.model.board.setFromString(data);
+    }
+
     this.squares = new Squares(this.model);
     this.grid = new Grid();
 

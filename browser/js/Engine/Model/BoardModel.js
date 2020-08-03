@@ -22,6 +22,14 @@ export default class BoardModel {
     }
   }
 
+  getAsString() {
+    return JSON.stringify(this.squares);
+  }
+
+  setFromString(data) {
+    this.squares = JSON.parse(data);
+  }
+
   getCubeStartPos(playerNum) {
     let startX;
     if (playerNum === 1) {

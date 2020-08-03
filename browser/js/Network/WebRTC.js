@@ -95,13 +95,13 @@ export default class WebRTC extends EventTarget {
     this.dispatchEvent(new CustomEvent(msg.cmd, { detail: msg }));
   }
 
-  send(cmd, arg, timestamp) {
+  send(cmd, arg, timestamp, err) {
     if (!this.dataChannel) {
       console.error('error, tried to call send when data channel null');
       return;
     }
 
-    const msg = new PeerMessage(cmd, arg, timestamp);
+    const msg = new PeerMessage(cmd, arg, timestamp, err);
     this.dataChannel.send(msg.toString());
   };
 

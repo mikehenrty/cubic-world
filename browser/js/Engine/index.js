@@ -84,11 +84,20 @@ export default class Engine {
     this.setPlayer(PLAYER_TWO);
   }
 
-  async initWorld() {
+  initWorld(boardData) {
+    if (this.board) {
+      console.error('Already initialized world', boardData);
+      return;
+    }
+
     this.scene.add( this.cube.getObject3D() );
-    this.board = new Board( this.model );
+    this.board = new Board( this.model, boardData );
     this.scene.add( this.board.getObject3D() );
     this.scene.add( this.getLighting() );
+  }
+
+  getBoardData() {
+    return this.model.board.getAsString();
   }
 
   updateNextMoveDebug() {
@@ -216,6 +225,15 @@ export default class Engine {
     this.sceneHUD.add(this.textScore.getObject3D());
   }
 
+  initiateMoveOpponent(direction, duration) {
+    // TODO: add duration.
+    const moveSucceeded = this.cubeOpponent.move(direction);
+    if (!moveSucceeded) {
+      // TODO: Send error message to opponent?
+      console.error('Opponent request bad move');
+    }
+  }
+
   initiateMove(direction) {
     if (!this.time.started()) {
       return;
@@ -287,8 +305,9 @@ export default class Engine {
   }
 
   async start(delay) {
-    await this.initWorld();
-
+    if (!this.board) {
+      this.initWorld();
+    }
     /*
     const scale = Math.max(
       window.innerWidth / SCREEN_WIDTH,

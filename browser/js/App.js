@@ -63,12 +63,19 @@ export default class App {
         return;
       }
       this.ui.setMsg('Synced, preparing to start');
-      this.network.startGame();
+      this.engine.initWorld();
+      this.network.startGame(this.engine.getBoardData());
     });
 
     // Game is ready to go!
     this.network.addEventListener(EVT_START_GAME, ({ detail }) => {
+      // We hijacked the error field to pass extra data.
+      if (detail.error) {
+        this.engine.initWorld(detail.error);
+      }
+
       this.ui.hide();
+
       const startTime = parseInt(detail.arg, 10);
       const delay = startTime - this.network.time.now();
       this.engine.start(delay);

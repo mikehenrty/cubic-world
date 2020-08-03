@@ -42,8 +42,10 @@ export default class Network extends EventTarget {
       this.forward.bind(this, EVT_START_GAME));
 
     // When match start time was accepted signal start.
+    /* TODO: REMOVE ACK
     this.webRTC.addEventListener(EVT_START_ACK,
       this.forward.bind(this, EVT_START_GAME));
+      */
 
     // When timestamps are synced, go.
     this.time.addEventListener(EVT_SYNC,
@@ -72,17 +74,17 @@ export default class Network extends EventTarget {
     this.webRTC.connect(peerId);
   }
 
-  sendToPeer(cmd, param) {
-    this.webRTC.send(cmd, param, this.time.now());
+  sendToPeer(cmd, param, err) {
+    this.webRTC.send(cmd, param, this.time.now(), err);
   }
 
   syncTimeWithPeer() {
     this.time.sync();
   }
 
-  startGame() {
+  startGame(boardData) {
     const startTime = this.time.now() + START_DELAY;
-    this.sendToPeer(CMD_START, startTime);
+    this.sendToPeer(CMD_START, startTime, boardData);
     this.dispatchEvent(new CustomEvent(CMD_START, {
       detail: {
         arg: startTime

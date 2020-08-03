@@ -19,8 +19,7 @@ export default class PeerMessage {
       arg = str.substr(0, index = str.indexOf(DELIM));
       str = str.substr(index + 1);
       timestamp = parseInt(str.substr(0, index = str.indexOf(DELIM)), 10);
-      str = str.substr(index + 1);
-      error = str.substr(0, index = str.indexOf(DELIM));
+      error = str.substr(index + 1);
 
       return new PeerMessage(cmd, arg, timestamp, error);
     } catch (e) {
