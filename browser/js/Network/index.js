@@ -17,7 +17,7 @@ export const EVT_START_GAME = CMD_START;
 export const EVT_START_ACK = CMD_START_ACK;
 export const FAKE_LATENCY = 200;  // TODO: for debugging.
 
-export const START_DELAY = 5000;  // ms
+export const START_DELAY = 3500;  // ms
 
 
 export default class Network extends EventTarget {
