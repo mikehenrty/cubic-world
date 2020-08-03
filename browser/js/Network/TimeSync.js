@@ -1,6 +1,7 @@
 import { CMD_PING, CMD_PONG } from '/../shared/message/PeerMessage.js';
 
 const SYNC_REPEATS = 10;
+const REPEAT_DELAY = 50;
 
 export const EVT_PING = CMD_PING;
 export const EVT_PONG = CMD_PONG;
@@ -50,7 +51,7 @@ export default class TimeSync extends EventTarget {
       if (this.offsetSamples.length < SYNC_REPEATS) {
         setTimeout(() => {
           this.webRTC.send(CMD_PING, null, this.now());
-        }, 200);
+        }, REPEAT_DELAY);
 
       } else {
         this.syncing = false;
