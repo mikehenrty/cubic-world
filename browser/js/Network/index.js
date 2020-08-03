@@ -104,6 +104,8 @@ export default class Network extends EventTarget {
   }
 
   sendMove(direction, finishAt) {
-    this.sendToPeer(CMD_MOVE, direction, finishAt);
+    if (this.webRTC.isConnected()) {
+      this.sendToPeer(CMD_MOVE, direction, finishAt);
+    }
   }
 }
