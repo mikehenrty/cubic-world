@@ -23,12 +23,14 @@ import {
   DIR_RIGHT,
   DIR_BACK,
   PLAYER_ONE,
-  PLAYER_TWO
+  PLAYER_TWO,
+  FAST_FLIP_DURATION,
+  HALF_BOX
 } from './constants';
 
 
 const CAMERA_DISTANCE = 400;
-const CAMERA_LATERAL_OFFSET = 110;
+const CAMERA_LATERAL_OFFSET = 150;
 const CAMERA_HEIGHT = 300;
 const CAMERA_LOOK_DISTANCE = 6 * BOX_SIZE;
 
@@ -78,6 +80,9 @@ export default class Engine extends EventTarget {
     this.HUDCamera = this.getHUDCamera();
 
     this.update = this.update.bind(this);
+
+    // Flag to move camera differently when animating onto colored square.
+    this.isEating = false;
   }
 
   setPlayer(player) {
@@ -247,6 +252,9 @@ export default class Engine extends EventTarget {
   }
 
   onMoveStart({ detail }) {
+    if (detail.duration === FAST_FLIP_DURATION) {
+      this.isEating = true;
+    }
     this.dispatchEvent(new CustomEvent(EVT_CUBE_MOVE, { detail }));
   }
 
@@ -277,6 +285,7 @@ export default class Engine extends EventTarget {
   }
 
   onMoveFinish({ detail }) {
+    this.isEating = false;
     if (detail.nextMove || this.input.isHolding()) {
       // Need to call this in a setTimeout to prevent jank.
       setTimeout(() => {
@@ -309,11 +318,14 @@ export default class Engine extends EventTarget {
 
     this.cube.mesh.getWorldPosition(this.v);
     this.camera.position.setZ(this.v.z + CAMERA_DISTANCE);
-    //this.camera.position.setX(this.v.x + CAMERA_LATERAL_OFFSET);
+    this.camera.position.setX(this.v.x + CAMERA_LATERAL_OFFSET);
 
     // Should we make the camera bouncy?
-    // this.v.y = Math.round(this.v.y / 3);
-    this.v.y = 0;
+    if (this.isEating) {
+      this.v.y = Math.round((this.v.y - HALF_BOX) / 2);
+    } else {
+      this.v.y = 0;
+    }
 
     this.cameraLookAt.addVectors(this.v, this.cameraOffset);
     this.camera.lookAt(this.cameraLookAt);
