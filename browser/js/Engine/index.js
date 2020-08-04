@@ -25,7 +25,8 @@ import {
   PLAYER_ONE,
   PLAYER_TWO,
   FAST_FLIP_DURATION,
-  HALF_BOX
+  HALF_BOX,
+  END_DELAY
 } from './constants';
 
 
@@ -35,6 +36,7 @@ const CAMERA_HEIGHT = 300;
 const CAMERA_LOOK_DISTANCE = 6 * BOX_SIZE;
 
 export const EVT_CUBE_MOVE = 'CubeMove';
+export const EVT_WIN = 'PlayerWin';
 
 
 export default class Engine extends EventTarget {
@@ -247,7 +249,6 @@ export default class Engine extends EventTarget {
 
   onPickUp({ detail }) {
     const { x, y } = detail;
-    console.log('got pickup', x, y);
     this.board.resetSquare(x, y);
   }
 
@@ -259,7 +260,7 @@ export default class Engine extends EventTarget {
   }
 
   initiateMove(direction) {
-    if (!this.time.started()) {
+    if (!this.time.running()) {
       return false;
     }
 
@@ -268,7 +269,7 @@ export default class Engine extends EventTarget {
   }
 
   initiateMoveOpponent(direction, duration) {
-    if (!this.time.started()) {
+    if (!this.time.running()) {
       return false;
     }
 
@@ -276,7 +277,7 @@ export default class Engine extends EventTarget {
   }
 
   cancelNextMove() {
-    if (!this.time.started()) {
+    if (!this.time.running()) {
       return false;
     }
 
@@ -286,6 +287,16 @@ export default class Engine extends EventTarget {
 
   onMoveFinish({ detail }) {
     this.isEating = false;
+
+    // Check if we won.
+    if (this.model.weWin()) {
+      // this.dispatchEvent(new CustomEvent(EVT_WIN));
+      this.onWin();
+      return;
+    }
+
+    // Continue moving if we received a new direction,
+    // or the old direction is being held.
     if (detail.nextMove || this.input.isHolding()) {
       // Need to call this in a setTimeout to prevent jank.
       setTimeout(() => {
@@ -296,6 +307,12 @@ export default class Engine extends EventTarget {
   }
 
   onMoveFinishOpponent({ detail }) {
+    // Check if opponent won.
+    if (this.model.theyWin()) {
+      this.onWin(true);
+      return;
+    }
+
     if (detail.nextMove) {
       // Need to call this in a setTimeout to prevent jank.
       setTimeout(() => {
@@ -304,7 +321,22 @@ export default class Engine extends EventTarget {
     }
   }
 
+  onWin(isOpponent) {
+    console.log('got win');
+    this.time.end();
+
+    const winText = isOpponent ? 'You lose!' : 'You win!';
+    this.sceneHUD.remove(this.countdownText.getObject3D());
+    this.countdownText.update(winText);
+    this.sceneHUD.add(this.countdownText.getObject3D());
+  }
+
   update() {
+    if (this.time.ended() && this.time.timeSinceEnded() > END_DELAY) {
+      location.reload();
+      return;
+    }
+
     requestAnimationFrame( this.update );
 
     // Stop the countdown refresh soon after game has started.
@@ -313,6 +345,7 @@ export default class Engine extends EventTarget {
     }
 
     const delta = this.time.tick();
+
     this.cube.update(delta);
     this.cubeOpponent.update(delta);
 

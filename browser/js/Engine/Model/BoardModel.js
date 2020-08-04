@@ -22,6 +22,10 @@ export default class BoardModel {
     }
   }
 
+  isWinningPosition(y) {
+    return y === BOARD_DEPTH;
+  }
+
   getAsString() {
     return JSON.stringify(this.squares);
   }

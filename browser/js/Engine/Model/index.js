@@ -35,6 +35,19 @@ export default class Model {
     this.cubeOpponent.setPosition(this.board.getCubeStartPos(otherPlayerNum));
   }
 
+  checkWin(isOpponent) {
+    const { y } = this.getCube(isOpponent).getPosition();
+    return this.board.isWinningPosition(y);
+  }
+
+  weWin() {
+    return this.checkWin();
+  }
+
+  theyWin() {
+    return this.checkWin(true);
+  }
+
   getScore() {
     return this.score;
   }
@@ -103,7 +116,7 @@ export default class Model {
       return false;
     }
 
-    if (y < 0 || y >= BOARD_DEPTH) {
+    if (y < 0 || y >= BOARD_DEPTH + 1) {
       return false;
     }
 

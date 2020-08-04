@@ -11,6 +11,7 @@ import {
   CMD_START_ACK,
   CMD_MOVE
 } from '/../shared/message/PeerMessage';
+import { START_DELAY } from '../Engine/constants'
 
 
 export const EVT_PEERS = CMD_LIST_PEERS;
@@ -21,8 +22,6 @@ export const EVT_START_GAME = CMD_START;
 export const EVT_START_ACK = CMD_START_ACK;
 export const EVT_MOVE = CMD_MOVE;
 export const FAKE_LATENCY = 200;  // TODO: for debugging.
-
-export const START_DELAY = 2000;  // ms
 
 
 export default class Network extends EventTarget {

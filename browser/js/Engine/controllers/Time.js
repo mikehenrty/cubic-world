@@ -1,6 +1,7 @@
 export default class Time {
   constructor() {
     this.startTime = 0;
+    this.endTime = 0;
     this.lastTime = 0;
     this.currentTime = 0;
 
@@ -30,8 +31,24 @@ export default class Time {
     this.frameCount = 0;
   }
 
+  end() {
+    this.endTime = this.getNewTime();
+  }
+
   started() {
     return this.currentTime > this.startTime;
+  }
+
+  ended() {
+    return this.endTime > 0;
+  }
+
+  running() {
+    return this.started() && !this.ended();
+  }
+
+  timeSinceEnded() {
+    return this.currentTime - this.endTime;
   }
 
   getDeltaUntilStart() {

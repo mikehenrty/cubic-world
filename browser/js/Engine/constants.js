@@ -12,6 +12,9 @@ export const ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
 export const PLAYER_ONE = 1;
 export const PLAYER_TWO = 2;
 
+export const START_DELAY = 2000;  // ms
+export const END_DELAY = 2000;
+
 /*
  *
 // Number of pixels in the screen.
