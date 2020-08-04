@@ -56,16 +56,18 @@ export default class Model {
   }
 
   attemptPickup(isOpponent) {
-    const position = this.getCube(isOpponent).getPosition;
-    return this.pickUpBoardSquare(position.x, position.y);
+    const { x, y } = this.getCube(isOpponent).getPosition();
+    return this.pickUpBoardSquare(x, y, isOpponent);
   }
 
-  pickUpBoardSquare(x, y) {
+  pickUpBoardSquare(x, y, isOpponent) {
     const enemy = this.board.getSide(x, y);
     if (enemy) {
       this.board.pickUpSquare(x, y);
-      ++this.score;
-      this.onScoreUpdate && this.onScoreUpdate(this.score);
+      if (!isOpponent) {
+        ++this.score;
+        this.onScoreUpdate && this.onScoreUpdate(this.score);
+      }
       return true;
     }
     return false;
