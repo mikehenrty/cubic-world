@@ -18,6 +18,7 @@ export default class Input {
     this.onDown = null;
     this.onLeft = null;
     this.onRight = null;
+    this.onRelease = null;
     this.handleKeydown = this.handleKeydown.bind(this);
     this.handleKeyup = this.handleKeyup.bind(this);
     this.handleStart = this.handleStart.bind(this);

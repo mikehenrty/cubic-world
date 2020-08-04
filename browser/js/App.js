@@ -1,5 +1,5 @@
 import Player from './Player';
-import Engine, { EVT_MOVE as EVT_MY_MOVE } from './Engine';
+import Engine, { EVT_CUBE_MOVE } from './Engine';
 import Network, {
   EVT_PEERS,
   EVT_PEER_READY,
@@ -82,7 +82,7 @@ export default class App {
       this.engine.start(delay);
     });
 
-    this.engine.addEventListener(EVT_MY_MOVE, ({ detail }) => {
+    this.engine.addEventListener(EVT_CUBE_MOVE, ({ detail }) => {
       const finishAt = this.network.time.now() + detail.duration;
       this.network.sendMove(detail.direction, finishAt);
     });

@@ -2,7 +2,9 @@ import * as THREE from 'three';
 import {
   BOARD_WIDTH,
   BOX_SIZE,
-  HALF_BOX
+  HALF_BOX,
+  FLIP_DURATION,
+  FAST_FLIP_DURATION
 } from '/js/Engine/constants';
 import {
   getMesh,
@@ -14,8 +16,14 @@ import {
 } from './static-helpers';
 
 
-export default class Cube {
+export const EVT_START_MOVE = 'CubeMove';
+export const EVT_FINISH_MOVE = 'CubeMoveFinish';
+export const EVT_PICKUP = 'CubePickup';
+
+
+export default class Cube extends EventTarget {
   constructor(model, isOpponent) {
+    super();
     this.model = model;
     this.isOpponent = !!isOpponent;
     // Populate scene.
@@ -27,6 +35,7 @@ export default class Cube {
     this.updateMeshFromModel();
 
     this.lastDirection = null;
+    this.nextMove = null;
   }
 
   updateMeshFromModel() {
@@ -49,19 +58,43 @@ export default class Cube {
     this.pivot.attach(this.mesh);
   }
 
+  getNextMove() { return this.nextMove; }
+
+  consumeNextMove() {
+    const nextMove = this.nextMove;
+    this.nextMove = null;
+    return nextMove;
+  }
+
   canPickUp(direction) {
     return this.model.canPickUp(direction, this.isOpponent);
   }
 
-  canMove(direction) {
-    if (this.lastDirection && this.actions[this.lastDirection].isRunning()) {
+  isAnimating() {
+    return this.lastDirection && this.actions[this.lastDirection].isRunning();
+  }
+
+  isValidMove(direction) {
+    return this.model.cubeCanMove(direction, this.isOpponent);
+  }
+
+  tryMove(direction, duration) {
+    // Make sure we are not already animating, if so save move for later.
+    if (this.isAnimating()) {
+      this.nextMove = direction;
       return false;
     }
 
-    return this.model.canMove(direction, this.isOpponent);
-  }
+    // Sanity check that we can move in the requested direction.
+    if (!this.isValidMove(direction)) {
+      return false;
+    }
 
-  move(direction, duration) {
+    // If we weren't given a duration, use defaults.
+    if (typeof duration === 'undefined') {
+      duration = this.canPickUp(direction) ? FAST_FLIP_DURATION : FLIP_DURATION;
+    }
+
     this.lastDirection = direction;
 
     // Set up the rotation pivot point.
@@ -73,12 +106,15 @@ export default class Cube {
     const action = this.actions[direction];
     setActionDuration(action, duration);
     action.play();
-  }
 
-  resetPivot() {
-    this.pivot.position.copy(this.mesh.position);
-    this.pivot.position.setY(0);
-    this.pivot.attach(this.mesh);
+    // For moves from current player, dispatch move event.
+    if (!this.isOpponent) {
+      this.dispatchEvent(
+        new CustomEvent(EVT_START_MOVE, { detail: { direction, duration } })
+      );
+    }
+
+    return true;
   }
 
   moveFinish(e) {
@@ -88,13 +124,20 @@ export default class Cube {
     // Update our model of the cube, so we can use to correct
     // rotation rounding errors.
     this.model.updateCube(direction, this.isOpponent);
-
     this.actions[direction].stop();
-
     this.updateMeshFromModel();
 
+    if (this.model.attemptPickup(this.isOpponent)) {
+      const { x, y } = this.model.getCubePosition(this.isOpponent);
+      this.dispatchEvent(new CustomEvent(EVT_PICKUP, { detail: { x, y } }));
+    }
 
-    this.onMoveFinish && this.onMoveFinish(direction);
+    const nextMove = this.nextMove;
+    this.consumeNextMove();
+    this.dispatchEvent(new CustomEvent(EVT_FINISH_MOVE, { detail: {
+      nextMove,
+      lastMove: direction,
+    } }));
   }
 
   getObject3D() {

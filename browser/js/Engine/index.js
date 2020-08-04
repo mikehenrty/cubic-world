@@ -2,7 +2,11 @@ import * as THREE from 'three';
 
 import Time from './controllers/Time';
 import Input from './controllers/Input';
-import Cube from './Scene/Cube';
+import Cube, {
+  EVT_PICKUP,
+  EVT_START_MOVE,
+  EVT_FINISH_MOVE
+} from './Scene/Cube';
 import Board from './Scene/Board';
 import Model from './Model';
 import Text from '/js/Text';
@@ -19,9 +23,7 @@ import {
   DIR_RIGHT,
   DIR_BACK,
   PLAYER_ONE,
-  PLAYER_TWO,
-  FLIP_DURATION,
-  FAST_FLIP_DURATION
+  PLAYER_TWO
 } from './constants';
 
 
@@ -30,7 +32,7 @@ const CAMERA_LATERAL_OFFSET = 110;
 const CAMERA_HEIGHT = 300;
 const CAMERA_LOOK_DISTANCE = 6 * BOX_SIZE;
 
-export const EVT_MOVE = 'CubeMove';
+export const EVT_CUBE_MOVE = 'CubeMove';
 
 
 export default class Engine extends EventTarget {
@@ -44,21 +46,28 @@ export default class Engine extends EventTarget {
     this.scene = new THREE.Scene();
     this.camera = this.getCamera();
 
-    // The model tracks cube and board positioning.
-    this.model = new Model();
-    this.model.onScoreUpdate = this.onScoreUpdate.bind(this);
-
-    this.cube = new Cube( this.model );
-    this.cube.onMoveFinish = this.onMoveFinish.bind(this);
-    this.cubeOpponent = new Cube( this.model, true );
-    // this.cubeOpponent.onMoveFinish = this.onMoveFinish.bind(this);
-
     this.input = new Input();
     this.input.onUp = this.initiateMove.bind(this, DIR_AHEAD);
     this.input.onDown = this.initiateMove.bind(this, DIR_BACK);
     this.input.onLeft = this.initiateMove.bind(this, DIR_LEFT);
     this.input.onRight = this.initiateMove.bind(this, DIR_RIGHT);
     this.input.onRelease = this.cancelNextMove.bind(this);
+
+    // The model tracks cube and board positioning.
+    this.model = new Model();
+    this.model.onScoreUpdate = this.onScoreUpdate.bind(this);
+
+    // Create the main cube scene object.
+    this.cube = new Cube( this.model );
+    this.cube.addEventListener(EVT_PICKUP, this.onPickUp.bind(this));
+    this.cube.addEventListener(EVT_START_MOVE, this.onMoveStart.bind(this));
+    this.cube.addEventListener(EVT_FINISH_MOVE, this.onMoveFinish.bind(this));
+
+    // Create opponent's cube.
+    this.cubeOpponent = new Cube( this.model, true );
+    this.cubeOpponent.addEventListener(EVT_PICKUP, this.onPickUp.bind(this));
+    this.cubeOpponent.addEventListener(EVT_FINISH_MOVE,
+                                       this.onMoveFinishOpponent.bind(this));
 
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -67,8 +76,6 @@ export default class Engine extends EventTarget {
 
     this.sceneHUD = this.getSceneHUD();
     this.HUDCamera = this.getHUDCamera();
-
-    this.nextMove = null;
 
     this.update = this.update.bind(this);
   }
@@ -110,26 +117,29 @@ export default class Engine extends EventTarget {
       return;
     }
 
+    const nextMove = this.cube.getNextMove();
+
     this.sceneHUD.remove(this.nextMoveText.getObject3D());
     let moveText = '';
-    switch (this.nextMove) {
+    switch (nextMove) {
       case DIR_AHEAD:
-        moveText = '↑'
+        moveText = '↑';
         break;
 
       case DIR_LEFT:
-        moveText = '←'
+        moveText = '←';
         break;
 
       case DIR_RIGHT:
-        moveText = '→'
+        moveText = '→';
         break;
 
       case DIR_BACK:
-        moveText = '↓'
+        moveText = '↓';
         break;
 
       default:
+        moveText = '';
         break;
     }
 
@@ -143,7 +153,7 @@ export default class Engine extends EventTarget {
       num = '-';
     } else  {
       num = Math.ceil(this.time.getDeltaUntilStart() / 1000);
-      if (num < 0) {
+      if (num <= 0) {
         num = 'GO!';
       }
     }
@@ -230,69 +240,66 @@ export default class Engine extends EventTarget {
     this.sceneHUD.add(this.textScore.getObject3D());
   }
 
-  initiateMoveOpponent(direction, duration) {
-    const moveSucceeded = this.cubeOpponent.move(direction, duration);
-    if (!moveSucceeded) {
-      // TODO: Send error message to opponent?
-      console.error('Opponent request bad move');
-    }
+  onPickUp({ detail }) {
+    const { x, y } = detail;
+    console.log('got pickup', x, y);
+    this.board.resetSquare(x, y);
+  }
+
+  onMoveStart({ detail }) {
+    this.dispatchEvent(new CustomEvent(EVT_CUBE_MOVE, { detail }));
   }
 
   initiateMove(direction) {
     if (!this.time.started()) {
-      return;
+      return false;
     }
 
-    if (!this.cube.canMove(direction)) {
-      // Save unsuccessful moves for when current move completes.
-      this.nextMove = direction;
-    } else {
-      const duration = this.cube.canPickUp(direction) ?
-        FAST_FLIP_DURATION : FLIP_DURATION;
-
-      this.cube.move(direction, duration);
-      this.nextMove = null;
-
-      this.dispatchEvent(
-        new CustomEvent(EVT_MOVE, { detail: { direction, duration } })
-      );
-    }
-
+    this.cube.tryMove(direction);
     DEBUG && this.updateNextMoveDebug();
+  }
+
+  initiateMoveOpponent(direction, duration) {
+    if (!this.time.started()) {
+      return false;
+    }
+
+    this.cubeOpponent.tryMove(direction, duration);
   }
 
   cancelNextMove() {
-    this.nextMove = null;
+    if (!this.time.started()) {
+      return false;
+    }
+
+    this.cube.consumeNextMove();
     DEBUG && this.updateNextMoveDebug();
   }
 
-  onMoveFinish(direction, isOpponent) {
-    if (this.model.attemptPickup()) {
-      const cubePosition = this.model.getCubePosition();
-      this.board.resetSquare(cubePosition.x, cubePosition.y);
+  onMoveFinish({ detail }) {
+    if (detail.nextMove || this.input.isHolding()) {
+      // Need to call this in a setTimeout to prevent jank.
+      setTimeout(() => {
+        this.initiateMove(detail.nextMove || detail.lastMove);
+      }, 1);
     }
+    DEBUG && this.updateNextMoveDebug();
+  }
 
-    // Make sure we have something else to do before continuing.
-    if ( !this.nextMove && !this.input.isHolding()) {
-      return;
+  onMoveFinishOpponent({ detail }) {
+    if (detail.nextMove) {
+      // Need to call this in a setTimeout to prevent jank.
+      setTimeout(() => {
+        this.initiateMoveOpponent(detail.nextMove);
+      }, 1);
     }
-
-    // We use set timeout to avoid stuttering
-    // when transition between cube animations.
-    setTimeout(() => {
-      if (this.nextMove) {
-        this.initiateMove(this.nextMove);
-      } else if (this.input.isHolding()) {
-        this.initiateMove(direction);
-      }
-    }, 1);
   }
 
   update() {
     requestAnimationFrame( this.update );
 
     // Stop the countdown refresh soon after game has started.
-    if (this.time.startTime + 100 > this.time.currentTime) {
+    if (this.time.startTime + 1000 > this.time.currentTime) {
       this.updateCountdown()
     }
 

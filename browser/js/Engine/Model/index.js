@@ -90,7 +90,7 @@ export default class Model {
     return enemySide === nextBottom || enemySide === nextTop;
   }
 
-  canMove(direction, isOpponent) {
+  cubeCanMove(direction, isOpponent) {
     const cube = this.getCube(isOpponent);
 
     this.v2.copy(cube.position).add(getMoveOffset(direction));
