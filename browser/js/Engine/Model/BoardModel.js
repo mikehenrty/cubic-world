@@ -14,8 +14,11 @@ export default class BoardModel {
       for (let y = 2; y < BOARD_DEPTH; y++) {
         this.squares[y] = this.squares[y] || [];
 
-        // Add occassional enemy.
-        if (Math.random() > 0.7) {
+        // If we are in the farthest row, this is the goal.
+        if (y === BOARD_DEPTH - 1) {
+          this.squares[x][y] = -1
+        } else if (Math.random() > 0.7) {
+          // Otherwise add occassional enemy.
           this.squares[x][y] = this.getRandomEnemySide();
         }
       }
@@ -23,7 +26,8 @@ export default class BoardModel {
   }
 
   isWinningPosition(y) {
-    return y === BOARD_DEPTH;
+    // Last space on the grid.
+    return y === BOARD_DEPTH - 1;
   }
 
   getAsString() {
@@ -52,7 +56,7 @@ export default class BoardModel {
   }
 
   isEnemy(x, y) {
-    return !!this.getSide(x, y);
+    return this.getSide(x, y) > 0;
   }
 
   pickUpSquare(x, y) {

@@ -49,6 +49,7 @@ export const SIDE_RIGHT = 'RIGHT';
 export const SIDE_LEFT = 'LEFT';
 export const SIDE_BACK = 'BACK';
 export const SIDE_BOTTOM = 'BOTTOM';
+export const SIDE_GOAL = 'GOAL';
 
 export const SIDE_ONE = 1;
 export const SIDE_TWO = 2;
@@ -56,6 +57,7 @@ export const SIDE_THREE = 3;
 export const SIDE_FOUR = 4;
 export const SIDE_FIVE = 5;
 export const SIDE_SIX = 6;
+export const SIDE_MINUS_ONE = -1;
 
 export const COLOR_BLACK = 'black';
 export const COLOR_RED = '#F23C54';
@@ -70,12 +72,20 @@ export const DIR_RIGHT = 'RIGHT';
 export const DIR_BACK = 'BACK';
 
 export const SIDE_COLORS = {
+ '-1': COLOR_GREEN,
   1: COLOR_YELLOW,
   2: COLOR_RED,
   3: COLOR_BLUE,
+  // 4..6 are copied for now.
   4: COLOR_BLUE,
   5: COLOR_RED,
   6: COLOR_YELLOW,
+}
+
+export const SIDE_COLORS_OPPONENT = {
+  1: COLOR_YELLOW,
+  2: COLOR_RED,
+  3: COLOR_BLUE,
 }
 
 export const STARTING_ORIENTATION = {

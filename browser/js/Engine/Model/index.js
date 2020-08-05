@@ -116,7 +116,7 @@ export default class Model {
       return false;
     }
 
-    if (y < 0 || y >= BOARD_DEPTH + 1) {
+    if (y < 0 || y >= BOARD_DEPTH) {
       return false;
     }
 

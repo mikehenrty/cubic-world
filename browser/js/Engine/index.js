@@ -182,7 +182,7 @@ export default class Engine extends EventTarget {
 
     const countdownSize = SCREEN_HEIGHT / 12;
     const countdownX = 0;
-    const countdownY = SCREEN_HEIGHT / 2 - countdownSize / 2 - 30;
+    const countdownY = SCREEN_HEIGHT / 2 - countdownSize / 2 - 100;
     this.countdownText = new Text(countdownSize, '_', countdownX, countdownY);
     sceneHUD.add(this.countdownText.getObject3D());
 
