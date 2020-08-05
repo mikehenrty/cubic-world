@@ -1,53 +1,117 @@
+:root {
+  font-size: 16pt;
+}
+
 body {
-  font-size: 20px;
   height: 100vh;
   width: 100vw;
   margin: 0;
   overflow: hidden;
   background-color: #222222;
+  font-family: Verdana, Geneva, sans-serif;
 }
+
+@media (max-width: 640px) {
+  :root {
+    font-size: 13pt;
+  }
+}
+
 canvas {
   display: block;
   transform-origin: top left;
   margin: 0 auto;
 }
 
+h1 {
+  font-size: 1.6rem;
+  margin: 1rem;
+}
+
 p {
+  font-size: 1.1rem;
+  padding: 0 3rem;
   background-color: white;
-  font-size: 2rem;
+  margin: 1rem;
+}
+
+p.signature {
+  font-size: 1rem;
+  margin: 0.6rem;
 }
 
 table {
   display: block;
 }
 
+ul {
+  display: inline-block;
+  text-align: left;
+}
+
+li {
+  list-style: none;
+  margin-bottom: 1rem;
+}
+
 #UI {
   background-color: white;
   position: fixed;
-  height: 100%;
-  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 1;
-  transition: all 200ms ease-in-out;
-}
-
-#UI pre {
-  display: block;
-  padding: 10vw
-}
-
-#UI button {
-  font-size: 1.2rem;
-  padding: 1rem;
-  margin-left: 15vw;
-}
-
-#UI .ask-to-connect {
-  padding: 0.2rem;
-  font-weight: bold;
+  text-align: center;
+  transition: all 250ms linear;
+  padding: 0 0.5rem;
 }
 
 #UI.hide {
-  display:none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#UI #online {
+  border: 1px solid gray;
+  border-radius: 1px;
+  max-width: 30rem;
+  max-height: 50%;
+  overflow: hidden;
+  margin: 0 auto;
+  padding-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+  #UI #online {
+    overflow: scroll;
+  }
+}
+
+#online p {
+  font-size: 1.2rem;
+}
+
+#UI button#play-offline {
+  font-size: 1.2rem;
+  padding: 1rem;
+  display: inline-block;
+  box-sizing: border-box;
+  font-weight: bold;
+  margin: 3rem 0 2rem;
+}
+
+@media (max-width: 640px) {
+  #UI button#play-offline {
+    margin: 1rem 0 0rem;
+  }
+}
+
+#UI .ask-to-connect {
+  font-size: 1rem;
+  margin: 0 0.9rem;
+  padding: 0.5rem 0.7rem;;
+  font-weight: bold;
 }
 
 tbody {

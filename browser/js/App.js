@@ -101,11 +101,13 @@ export default class App {
       console.error('could not connect', e);
       this.ui.setErrorMsg('ERROR: could not connect to lobby server');
 
+      /*
       // Automatically start the game after displaying error message.
       setTimeout(() => {
         this.ui.hide();
         this.engine.start()
       }, 1000);
+      */
     }
   }
 }

@@ -32,7 +32,7 @@ export const SCREEN_HEIGHT = SCREEN_WIDTH / ASPECT_RATIO;
 export const ORTHO_DEPTH = 1000;
 
 // Board constants.
-export const BOARD_DEPTH = 101;
+export const BOARD_DEPTH = 31;
 export const BOARD_WIDTH = 5
 export const LINE_COLOR = 'white';
 

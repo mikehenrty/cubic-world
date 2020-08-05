@@ -14,10 +14,11 @@ const WS_URL = `http:\/\/${HOST}:${WS_PORT}\/`;
 
 function generateName() {
   const nameOne = faker.name.firstName()
+  const lastName = faker.name.lastName()
   let verb = faker.hacker.verb();
   verb = verb[0].toUpperCase() + verb.slice(1);
 
-  return `${nameOne}-${verb}`.replace(/\s+/g, '-');
+  return `${verb} ${nameOne}`;
 }
 
 function debugClients(websockets) {

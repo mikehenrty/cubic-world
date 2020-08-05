@@ -15,24 +15,64 @@ export default class UI extends EventTarget {
     this.createDOM();
   }
 
+  make(elementType, textContent, parent) {
+    const el = document.createElement(elementType);
+
+    if (textContent) {
+      el.textContent = textContent;
+    }
+
+    if (parent) {
+      parent.appendChild(el);
+    } else if (this.rootEl) {
+      this.rootEl.appendChild(el);
+    }
+
+    return el;
+  }
+
   createDOM() {
-    this.el = document.createElement('div');
-    this.el.id = 'UI';
+    this.rootEl = this.make('div');
+    this.rootEl.id = 'UI';
 
-    this.messageEl = document.createElement('pre');
-    this.peerContainer = document.createElement('div');
-    this.startButton = document.createElement('button');
-    this.startButton.textContent = 'Start Game';
+    this.welcomeMessage = this.make('h1', 'Welcome to Cubic!')
+    this.explainer = this.make(
+      'p',
+      `Cubic is a multiplayer puzzle racing game.`,
+    );
 
+    /*
+    this.explainer2 = this.make(
+      'p',
+      `The goal is roll your cube across 
+       the finish line before your opponent.`,
+    );
+    */
+
+    this.onlineContainer = this.make('div');
+    this.onlineContainer.id = 'online';
+    this.onlineInfo = this.make('h3', 'Play Online', this.onlineContainer);
+    this.messageEl = this.make('p', 'Loading', this.onlineContainer);
+    this.peerContainer = this.make('ul', null, this.onlineContainer);
+
+    this.startButton = this.make('button', 'Practice Offline');
+    this.startButton.id = 'play-offline';
     this.startButton.addEventListener('click', this.onStart.bind(this));
 
-    this.el.appendChild(this.messageEl);
-    this.el.appendChild(this.peerContainer);
-    this.el.appendChild(this.startButton);
+    this.signature = this.make('p');
+    this.signature.classList.add('signature');
+    this.signature.innerHTML =
+      'Hacked together by <a target="_blank" href="https://twitter.com/mikehenrty">mikehenrty</a>.'
+
+    this.signature2 = this.make('p');
+    this.signature2.classList.add('signature');
+    this.signature2.innerHTML =
+      'Souce code on <a href="https://github.com/mikehenrty/cubic-world/">GitHub</a>.'
+
   }
 
   init() {
-    document.body.appendChild(this.el);
+    document.body.appendChild(this.rootEl);
   }
 
   onStart() {
@@ -41,25 +81,25 @@ export default class UI extends EventTarget {
   }
 
   hide() {
-    this.el.classList.add('hide');
+    this.rootEl.classList.add('hide');
   }
 
   show() {
-    this.el.classList.remove('hide');
+    this.rootEl.classList.remove('hide');
   }
 
   setPeerList({ me, names }) {
-    this.messageEl.textContent = `Welcome ${me}!`;
+    this.messageEl.innerHTML = `Your cubic persona is "<b>${me}</b>!"`;
 
     // Add connect buttons for each potential peer.
     this.peerContainer.innerHTML = '';
     names.filter(peer => peer.name !== me).forEach(peer => {
-      const askButton = document.createElement('button');
+      const item = this.make('li', null, this.peerContainer);
+      const askButton = this.make('button', `Play`, item);
+      const description = this.make('span', `vs. "${peer.name}"`, item);
       askButton.classList.add('ask-to-connect');
-      askButton.textContent = `Connect to ${peer.name} - ${peer.id}`;
       askButton.value = peer.id;
       askButton.addEventListener('click', this.ask.bind(this, peer));
-      this.peerContainer.appendChild(askButton);
     });
   }
 
