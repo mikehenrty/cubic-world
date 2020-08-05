@@ -2,9 +2,14 @@ import * as THREE from 'three';
 
 export const DEBUG = true;
 
+export const IS_FIREFOX =
+  navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+
+console.log('is firefox?', IS_FIREFOX);
+
 const MAX_WIDTH = 900;
 
-export const SCALE = 1;
+export const SCALE = IS_FIREFOX ? 0.65 : 1;
 export const SCREEN_WIDTH = Math.min(window.innerWidth, MAX_WIDTH) * SCALE;
 export const SCREEN_HEIGHT = window.innerHeight * SCALE;
 export const ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
