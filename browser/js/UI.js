@@ -5,6 +5,7 @@ import {
 
 
 export const EVT_START = 'Start';
+export const EVT_INVITE = 'AcceptInvite';
 export const EVT_ASK = CMD_ASK_TO_CONNECT;
 export const EVT_CONNECT = CMD_CONNECT_TO_PEER;
 
@@ -13,6 +14,9 @@ export default class UI extends EventTarget {
   constructor() {
     super();
     this.createDOM();
+    this.id = null;
+    this.name = null;
+    this.loaded = false;
   }
 
   make(elementType, textContent, parent) {
@@ -53,6 +57,14 @@ export default class UI extends EventTarget {
     this.onlineContainer.id = 'online';
     this.onlineInfo = this.make('h3', 'Play Online', this.onlineContainer);
     this.messageEl = this.make('p', 'Loading', this.onlineContainer);
+    this.messageEl.classList.add('signature');
+    this.linkContainer = this.make('div', null, this.onlineContainer);
+    this.linkButton = this.make('button', 'Invite Link', this.linkContainer);
+    this.linkButton.className = 'link-button';
+    this.linkButton.addEventListener('click', this.onCopy.bind(this));
+    this.linkInput = this.make('input', null, this.linkContainer);
+    this.linkInput.className = 'peer-link';
+
     this.peerContainer = this.make('ul', null, this.onlineContainer);
 
     this.startButton = this.make('button', 'Practice Offline');
@@ -80,6 +92,12 @@ export default class UI extends EventTarget {
     this.dispatchEvent(new Event(EVT_START));
   }
 
+  onCopy() {
+    this.linkInput.focus();
+    this.linkInput.select();
+    document.execCommand('copy');
+  }
+
   hide() {
     this.rootEl.classList.add('hide');
   }
@@ -88,12 +106,34 @@ export default class UI extends EventTarget {
     this.rootEl.classList.remove('hide');
   }
 
-  setPeerList({ me, names }) {
-    this.messageEl.innerHTML = `Your cubic persona is "<b>${me}</b>!"`;
+  getPeerLink(id) {
+    const url = new URL(window.location.href);
+    return `${url.protocol}\/\/${url.host}${url.pathname}#${id}`;
+  }
 
-    // Add connect buttons for each potential peer.
+  getInviteId() {
+    const url = window.location.href;
+    const i = url.indexOf('#');
+    if (i !== -1) {
+      return url.slice(i + 1);
+    }
+    return null;
+  }
+
+  setPeerList({ me, names }) {
+    this.messageEl.innerHTML = `Your name is "<b>${me}</b>!"`;
     this.peerContainer.innerHTML = '';
-    names.filter(peer => peer.name !== me).forEach(peer => {
+
+    names.forEach(peer => {
+
+      // If this is current player, remember id.
+      if (peer.name === me) {
+        this.id = peer.id;
+        this.name = peer.name;
+        return;
+      }
+
+      // Add connect buttons for each potential peer.
       const item = this.make('li', null, this.peerContainer);
       const askButton = this.make('button', `Play`, item);
       const description = this.make('span', `vs. "${peer.name}"`, item);
@@ -101,13 +141,35 @@ export default class UI extends EventTarget {
       askButton.value = peer.id;
       askButton.addEventListener('click', this.ask.bind(this, peer));
     });
+
+    // If we only have one name in the list, it's ours.
+    if (names.length < 2) {
+      this.make('li', 'No pontential opponents right now.', this.peerContainer);
+    }
+
+    // Set up invite flow on first data from server.
+    if (!this.loaded) {
+      this.loaded = true;
+
+      if (this.id) {
+        this.linkInput.value = this.getPeerLink(this.id);
+      }
+
+      const id = this.getInviteId();
+      if (id) {
+        this.dispatchEvent(new CustomEvent(EVT_INVITE, { detail: {
+          id,
+          name: this.name || 'Guest',
+        }}));
+      }
+    }
   }
 
   ask(peer) {
     this.dispatchEvent(new CustomEvent(CMD_ASK_TO_CONNECT, {
       detail: {
         peerId: peer.id,
-        name: peer.name,
+        name: this.name || peer.name,
       }
     }));
   }

@@ -8,7 +8,7 @@ import Network, {
   EVT_MOVE,
   EVT_PEER_DISCONNECT
 } from './Network';
-import UI, { EVT_START, EVT_ASK, EVT_CONNECT } from './UI';
+import UI, { EVT_START, EVT_ASK, EVT_CONNECT, EVT_INVITE } from './UI';
 
 
 export default class App {
@@ -30,6 +30,13 @@ export default class App {
       this.engine.start();
     });
 
+    // If user came from an invite link, initiate "ask" flow.
+    this.ui.addEventListener(EVT_INVITE, ({ detail }) => {
+      this.ui.setMsg('Connecting to your friend...');
+      this.engine.weArePlayerOne();
+      this.network.sendAsk(detail);
+    });
+
     // ASK from UI is player initiated.
     this.ui.addEventListener(EVT_ASK, ({ detail }) => {
       this.ui.setMsg('Asking ' + detail.name);
@@ -39,6 +46,7 @@ export default class App {
 
     // ASK coming from the network was initiated by a peer.
     this.network.addEventListener(EVT_ASK, ({ detail }) => {
+      console.log('oh?');
       this.ui.handleAsk(detail);
     });
 

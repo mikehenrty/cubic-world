@@ -36,11 +36,6 @@ p {
   margin: 1rem;
 }
 
-p.signature {
-  font-size: 1rem;
-  margin: 0.6rem;
-}
-
 table {
   display: block;
 }
@@ -66,6 +61,11 @@ li {
   text-align: center;
   transition: opacity 250ms linear, transform 2s ease-in;
   padding: 0 0.5rem;
+}
+
+#UI p.signature {
+  font-size: 0.9rem;
+  margin: 0.6rem;
 }
 
 #UI.hide {
