@@ -9,6 +9,7 @@ import { PLAYER_ONE, PLAYER_TWO } from '../constants';
 export default class Model {
   constructor() {
     this.v2 = new THREE.Vector2();
+    this.v2secondary = new THREE.Vector2();
 
     this.playerNum = 0;
     this.score = 0;
@@ -105,6 +106,21 @@ export default class Model {
     return enemySide === nextBottom || enemySide === nextTop;
   }
 
+  overlapsACube(v2) {
+    if (v2.equals(this.cube.position)) {
+      return true;
+    }
+    if (v2.equals(this.cubeOpponent.getPosition())) {
+      return true;
+    }
+
+    return false;
+  }
+
+  moveCube(direction, isOpponent) {
+    this.getCube(isOpponent).setDirection(direction);
+  }
+
   cubeCanMove(direction, isOpponent) {
     const cube = this.getCube(isOpponent);
 
@@ -118,6 +134,21 @@ export default class Model {
 
     if (y < 0 || y >= BOARD_DEPTH) {
       return false;
+    }
+
+    if (this.overlapsACube(this.v2)) {
+      return false;
+    }
+
+    // For moves originating on this client, we will check
+    // if we received a move onto this square from opponent.
+    if (!isOpponent && this.cubeOpponent.direction) {
+      this.v2secondary.copy(this.cubeOpponent.position)
+                      .add(getMoveOffset(this.cubeOpponent.direction));
+
+      if (this.v2.equals(this.v2secondary)) {
+        return false;
+      }
     }
 
     if (this.board.isEnemy(x, y)) {

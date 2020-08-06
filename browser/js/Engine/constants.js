@@ -5,8 +5,6 @@ export const DEBUG = true;
 export const IS_FIREFOX =
   navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
-console.log('is firefox?', IS_FIREFOX);
-
 const MAX_WIDTH = 900;
 
 export const SCALE = IS_FIREFOX ? 0.65 : 1;

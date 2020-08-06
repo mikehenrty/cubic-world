@@ -32,6 +32,9 @@ export default class CubeModel {
     // Position will be in positive X/Y coordinates that map to X/-Z coords.
     this.position = new THREE.Vector2();
 
+    // Track validated, and current animating direction.
+    this.direction = null;
+
     // Cache quaternions to represent each of 24 orientations.
     this.quaternions = getAllQuaternionsForCube();
   }
@@ -48,7 +51,17 @@ export default class CubeModel {
     this.position.copy(position);
   }
 
+  setDirection(direction) {
+    this.direction = direction;
+  }
+
   update(direction) {
+    if (direction !== this.direction) {
+      console.error('got different direction than anticipated');
+    }
+
+    this.direction = null;
+
     // Update the rotation of the cube.
     this.rotate(direction);
 

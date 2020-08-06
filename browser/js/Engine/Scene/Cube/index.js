@@ -85,12 +85,12 @@ export default class Cube extends EventTarget {
       return false;
     }
 
-    // Sanity check that we can move in the requested direction.
-    if (!this.isValidMove(direction)) {
+    // Only check that current client can move in the requested direction.
+    if (!this.isOpponent && !this.isValidMove(direction)) {
       return false;
     }
 
-    // If we weren't given a duration, use defaults.
+    // If we weren't given a duration (ie. from opponent), use defaults.
     if (typeof duration === 'undefined') {
       duration = this.canPickUp(direction) ? FAST_FLIP_DURATION : FLIP_DURATION;
     }
@@ -106,6 +106,9 @@ export default class Cube extends EventTarget {
     const action = this.actions[direction];
     setActionDuration(action, duration);
     action.play();
+
+    // Update the model with intended direction.
+    this.model.moveCube(direction, this.isOpponent);
 
     // For moves from current player, dispatch move event.
     if (!this.isOpponent) {
