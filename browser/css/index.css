@@ -84,7 +84,7 @@ li {
 
 @media (max-width: 640px) {
   #UI #online {
-    overflow: scroll;
+    overflow-y: scroll;
   }
 }
 
