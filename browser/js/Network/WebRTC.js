@@ -5,6 +5,7 @@ import PeerMessage from '/../shared/message/PeerMessage';
 export const EVT_SIGNALING = CMD_SIGNALING;
 export const EVT_READY = 'PeerReady';
 export const EVT_MESSAGE = 'PeerMessage';
+export const EVT_DISCONNECT = 'Disconnect'
 
 export const SIG_OFFER = 'offer';
 export const SIG_CANDIDATE = 'candidate';

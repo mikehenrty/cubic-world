@@ -5,7 +5,8 @@ import Network, {
   EVT_PEER_READY,
   EVT_PEER_SYNC,
   EVT_START_GAME,
-  EVT_MOVE
+  EVT_MOVE,
+  EVT_PEER_DISCONNECT
 } from './Network';
 import UI, { EVT_START, EVT_ASK, EVT_CONNECT } from './UI';
 
@@ -91,6 +92,11 @@ export default class App {
       const duration = parseInt(detail.error, 10) - this.network.time.now();
       this.engine.initiateMoveOpponent(detail.arg, duration);
     });
+
+    // Peer disconnect, restart.
+    this.network.addEventListener(EVT_PEER_DISCONNECT, () => {
+      this.engine.signalDisconnect();
+     });
   }
 
   async start() {

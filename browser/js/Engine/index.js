@@ -165,8 +165,12 @@ export default class Engine extends EventTarget {
       }
     }
 
+    this.setCountdown(num);
+  }
+
+  setCountdown(text) {
     this.sceneHUD.remove(this.countdownText.getObject3D());
-    this.countdownText.update(num);
+    this.countdownText.update(text);
     this.sceneHUD.add(this.countdownText.getObject3D());
   }
 
@@ -322,13 +326,14 @@ export default class Engine extends EventTarget {
   }
 
   onWin(isOpponent) {
-    console.log('got win');
     this.time.end();
 
     const winText = isOpponent ? 'You lose!' : 'You win!';
-    this.sceneHUD.remove(this.countdownText.getObject3D());
-    this.countdownText.update(winText);
-    this.sceneHUD.add(this.countdownText.getObject3D());
+    this.setCountdown(winText);
+  }
+
+  signalDisconnect() {
+    this.setCountdown('disconnected');
   }
 
   update() {

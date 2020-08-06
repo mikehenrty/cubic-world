@@ -1,5 +1,5 @@
 import Socket, { EVT_MSG } from './Socket';
-import WebRTC, { EVT_READY } from './WebRTC';
+import WebRTC, { EVT_READY, EVT_DISCONNECT } from './WebRTC';
 import TimeSync, { EVT_SYNC } from './TimeSync';
 import {
   CMD_LIST_PEERS,
@@ -16,6 +16,7 @@ import { START_DELAY } from '../Engine/constants'
 
 export const EVT_PEERS = CMD_LIST_PEERS;
 export const EVT_PEER_READY = EVT_READY;
+export const EVT_PEER_DISCONNECT = EVT_DISCONNECT;
 export const EVT_PEER_SYNC = EVT_SYNC;
 export const EVT_ASK = CMD_ASK_TO_CONNECT;
 export const EVT_START_GAME = CMD_START;
@@ -54,6 +55,10 @@ export default class Network extends EventTarget {
     // When ready to start match.
     this.webRTC.addEventListener(EVT_MOVE,
       this.forward.bind(this, EVT_MOVE));
+
+    // When ready to start match.
+    this.webRTC.addEventListener(EVT_DISCONNECT,
+      this.forward.bind(this, EVT_PEER_DISCONNECT));
 
     // When timestamps are synced, go.
     this.time.addEventListener(EVT_SYNC,
