@@ -21,6 +21,7 @@ canvas {
   display: block;
   transform-origin: top left;
   margin: 0 auto;
+  user-select: none;
 }
 
 h1 {
@@ -63,13 +64,14 @@ li {
   bottom: 0;
   z-index: 1;
   text-align: center;
-  transition: all 250ms linear;
+  transition: opacity 250ms linear, transform 2s ease-in;
   padding: 0 0.5rem;
 }
 
 #UI.hide {
   opacity: 0;
   pointer-events: none;
+  transform: scale(0);
 }
 
 #UI #online {
