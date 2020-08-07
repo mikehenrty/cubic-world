@@ -46,7 +46,6 @@ export default class App {
 
     // ASK coming from the network was initiated by a peer.
     this.network.addEventListener(EVT_ASK, ({ detail }) => {
-      console.log('oh?');
       this.ui.handleAsk(detail);
     });
 
