@@ -57,14 +57,26 @@ export default class UI extends EventTarget {
     this.onlineContainer.id = 'online';
     this.onlineInfo = this.make('h3', 'Play Online', this.onlineContainer);
     this.messageEl = this.make('p', 'Loading', this.onlineContainer);
-    this.messageEl.classList.add('signature');
     this.linkContainer = this.make('div', null, this.onlineContainer);
-    this.linkButton = this.make('button', 'Invite Link', this.linkContainer);
+    this.linkButton = this.make('button', 'Copy Invite Link', this.linkContainer);
     this.linkButton.className = 'link-button';
     this.linkButton.addEventListener('click', this.onCopy.bind(this));
     this.linkInput = this.make('input', null, this.linkContainer);
     this.linkInput.className = 'peer-link';
+    this.linkDescription = this.make(
+      'p',
+      'Give this link to a friend and Play Now!',
+      this.onlineContainer
+    );
+    this.linkDescription.className = 'signature';
 
+    this.peerListDescription = this.make(
+      'p',
+      'Lobby',
+      this.onlineContainer
+    );
+    this.peerListDescription.style.marginBottom = 0;
+    this.peerListDescription.style.marginTop = '2rem';
     this.peerContainer = this.make('ul', null, this.onlineContainer);
 
     this.startButton = this.make('button', 'Practice Offline');
@@ -158,7 +170,7 @@ export default class UI extends EventTarget {
       const id = this.getInviteId();
       if (id) {
         this.dispatchEvent(new CustomEvent(EVT_INVITE, { detail: {
-          id,
+          peerId: id,
           name: this.name || 'Guest',
         }}));
       }

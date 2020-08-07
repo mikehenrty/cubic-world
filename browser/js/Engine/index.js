@@ -105,8 +105,7 @@ export default class Engine extends EventTarget {
 
   initWorld(boardData) {
     if (this.board) {
-      console.error('Already initialized world', boardData);
-      return;
+      console.warn('Already initialized world', boardData);
     }
 
     this.scene.add( this.cube.getObject3D() );
