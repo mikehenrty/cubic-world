@@ -110,6 +110,8 @@ export default class App {
     try {
       this.ui.init();
       await this.network.init(this.player.id);
+      this.ui.hide();
+      this.engine.start()
     } catch(e) {
       console.error('could not connect', e);
       this.ui.setErrorMsg('ERROR: could not connect to lobby server');

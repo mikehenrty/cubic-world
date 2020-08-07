@@ -30,9 +30,9 @@ import {
 } from './constants';
 
 
-const CAMERA_DISTANCE = 400;
+const CAMERA_DISTANCE = 200;
 const CAMERA_LATERAL_OFFSET = 150;
-const CAMERA_HEIGHT = 300;
+const CAMERA_HEIGHT = 350;
 const CAMERA_LOOK_DISTANCE = 6 * BOX_SIZE;
 
 export const EVT_CUBE_MOVE = 'CubeMove';
@@ -159,8 +159,10 @@ export default class Engine extends EventTarget {
       num = '-';
     } else  {
       num = Math.ceil(this.time.getDeltaUntilStart() / 1000);
-      if (num <= 0) {
+      if (num <= 0 && num > -500) {
         num = 'GO!';
+      } else if (num <= 0) {
+        num = '';
       }
     }
 
@@ -232,16 +234,34 @@ export default class Engine extends EventTarget {
   }
 
   getLighting() {
-    /*
     const color = 0xFFFFFF;
     const intensity = 1;
-    const light = new THREE.DirectionalLight(color, intensity);
-    light.position.set(-1, 2, 4);
-    this.scene.add(light);
-    */
+    var light = new THREE.DirectionalLight( 0xFFFFFF, 1 );
+    light.position.set(200, 200, 200);
+    var helper = new THREE.DirectionalLightHelper( light, 15 );
+    this.scene.add( light );
+    this.scene.add( helper );
 
-    var ambientLight = new THREE.AmbientLight( 0x606060 );
-    return ambientLight;
+    var point = new THREE.PointLight( 0xffffff, 1, 1000 );
+    point.position.set( 200, 200, 200 );
+    this.scene.add( point );
+
+    var light3 = new THREE.PointLight( 0xffffff, 1, 1000 );
+    light3.position.set( -50, 50, -100 );
+    this.scene.add( light3 );
+
+    var light4 = new THREE.PointLight( 0xffffff, 1, 1000 );
+    light4.position.set( -50, 50, 100 );
+    this.scene.add( light4 );
+    // const light = new THREE.DirectionalLight(color, intensity);
+    // this.scene.add(light);
+
+    // var ambientLight = new THREE.AmbientLight( 0x606060, 0.8 );
+    // return ambientLight;
+    // var areaLight = new THREE.HemisphereLight( 0xffffff, 0x888888, 0.9 );
+    // var helper = new THREE.DirectionalLightHelper( areaLight, 15 );
+    // this.scene.add( helper );
+    //return areaLight;
   }
 
   onScoreUpdate(score) {
@@ -355,7 +375,7 @@ export default class Engine extends EventTarget {
 
     this.cube.mesh.getWorldPosition(this.v);
     this.camera.position.setZ(this.v.z + CAMERA_DISTANCE);
-    this.camera.position.setX(this.v.x + CAMERA_LATERAL_OFFSET);
+    //this.camera.position.setX(this.v.x + CAMERA_LATERAL_OFFSET);
 
     // Should we make the camera bouncy?
     if (this.isEating) {

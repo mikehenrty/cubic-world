@@ -69,7 +69,7 @@ const CACHED_COLORS = Object.keys(SIDE_COLORS).reduce((accum, side) => {
 export function getMesh() {
   const geometry = new THREE.BoxGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE);
   geometry.name = 'CubeGeo';
-  const material = new THREE.MeshBasicMaterial( {
+  const material = new THREE.MeshPhongMaterial( {
     color: 0xffffff,
     vertexColors: THREE.FaceColors,
   });
