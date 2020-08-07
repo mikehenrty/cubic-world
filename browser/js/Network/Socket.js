@@ -32,7 +32,6 @@ export default class Socket extends EventTarget {
   }
 
   async send(cmd, params, error) {
-    console.log('sending', cmd, params, error);
     const socket = await this.getRawSocket();
     const msg = new LobbyMessage(cmd, params, error);
     socket.send(msg.toString());
