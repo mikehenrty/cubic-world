@@ -37,7 +37,7 @@ export const ORTHO_DEPTH = 1000;
 // Board constants.
 export const BOARD_DEPTH = 31;
 export const BOARD_WIDTH = 5
-export const LINE_COLOR = 0x999999;
+export const LINE_COLOR = 0xbbbbbb;
 
 // Cube constants.
 export const BOX_SIZE = 50;
@@ -63,10 +63,10 @@ export const SIDE_SIX = 6;
 export const SIDE_MINUS_ONE = -1;
 
 export const COLOR_BLACK = 'black';
-export const COLOR_RED = '#F23C54';
-export const COLOR_BLUE = '#1B62A0';
-export const COLOR_GREEN = 'green';
-export const COLOR_YELLOW = '#FFF64C'
+export const COLOR_RED = '#fa1616';
+export const COLOR_BLUE = '#1506e5';
+export const COLOR_GREEN = '#06e514';
+export const COLOR_YELLOW = '#d6e506';
 export const COLOR_PURPLE = 'violet';
 
 export const DIR_AHEAD = 'AHEAD';

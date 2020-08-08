@@ -54,10 +54,13 @@ export default class Squares {
     geometry.setAttribute( 'normal', this.getAttribute(this.normals) );
     geometry.setAttribute( 'color', this.getAttribute(this.colors, true) );
 
-    const material = new THREE.MeshStandardMaterial({
+    const material = new THREE.MeshPhongMaterial({
       color: 0xffffff,
       vertexColors: THREE.FaceColors,
       side: THREE.DoubleSide,
+      shininess: 100,
+      emissive: 0x30202,
+      specular: 0xffffff,
     });
 
     this.plane = new THREE.Mesh( geometry, material );

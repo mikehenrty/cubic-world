@@ -72,6 +72,7 @@ export function getMesh() {
   const material = new THREE.MeshPhongMaterial( {
     color: 0xffffff,
     vertexColors: THREE.FaceColors,
+    shininess: 30,
   });
 
   // Right side.
