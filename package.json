@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "faker": "^4.1.0",
-    "three": "^0.113.2",
+    "three": "^0.125.0",
     "ws": "^7.3.1"
   },
   "targets": {
