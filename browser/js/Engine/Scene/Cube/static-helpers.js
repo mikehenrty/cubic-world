@@ -69,38 +69,41 @@ const CACHED_COLORS = Object.keys(SIDE_COLORS).reduce((accum, side) => {
 export function getMesh() {
   const geometry = new THREE.BoxGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE);
   geometry.name = 'CubeGeo';
-  const material = new THREE.MeshPhongMaterial( {
-    color: 0xffffff,
-    vertexColors: THREE.FaceColors,
-    shininess: 30,
-  });
 
-  // Right side.
-  geometry.faces[ 0 ].color.setStyle( SIDE_COLORS[SIDE_FIVE] );
-  geometry.faces[ 1 ].color.setStyle( SIDE_COLORS[SIDE_FIVE] );
+  var materials = [
+    // Right side.
+    new THREE.MeshPhongMaterial({
+      color: SIDE_COLORS[SIDE_FIVE],
+    }),
 
-  // Left side.
-  geometry.faces[ 2 ].color.setStyle( SIDE_COLORS[SIDE_TWO] );
-  geometry.faces[ 3 ].color.setStyle( SIDE_COLORS[SIDE_TWO] );
+    // Left side.
+    new THREE.MeshPhongMaterial({
+      color: SIDE_COLORS[SIDE_TWO],
+    }),
 
-  // Top side.
-  geometry.faces[ 4 ].color.setStyle( SIDE_COLORS[SIDE_ONE] );
-  geometry.faces[ 5 ].color.setStyle( SIDE_COLORS[SIDE_ONE] );
+    // Top side.
+    new THREE.MeshPhongMaterial({
+      color: SIDE_COLORS[SIDE_ONE],
+    }),
 
-  // Bottom side.
-  geometry.faces[ 6 ].color.setStyle( SIDE_COLORS[SIDE_SIX] );
-  geometry.faces[ 7 ].color.setStyle( SIDE_COLORS[SIDE_SIX] );
+    // Bottom side.
+    new THREE.MeshPhongMaterial({
+      color: SIDE_COLORS[SIDE_SIX],
+    }),
 
-  // Back side.
-  geometry.faces[ 8 ].color.setStyle( SIDE_COLORS[SIDE_THREE] );
-  geometry.faces[ 9 ].color.setStyle( SIDE_COLORS[SIDE_THREE] );
+    // Back side.
+    new THREE.MeshPhongMaterial({
+      color: SIDE_COLORS[SIDE_THREE],
+    }),
 
-  // Front side.
-  geometry.faces[ 10 ].color.setStyle( SIDE_COLORS[SIDE_FOUR] );
-  geometry.faces[ 11 ].color.setStyle( SIDE_COLORS[SIDE_FOUR] );
+    // Front side.
+    new THREE.MeshPhongMaterial({
+      color: SIDE_COLORS[SIDE_FOUR],
+    }),
+  ];
 
   // Make sure to position box above z-x plane.
-  const mesh = new THREE.Mesh( geometry, material );
+  const mesh = new THREE.Mesh( geometry, materials );
   mesh.name = 'CubeMesh';
   return mesh;
 }
