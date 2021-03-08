@@ -73,6 +73,7 @@ export default class Input {
   }
 
   handleStart(e) {
+    e.preventDefault();
     this.press();
     const touch = e.changedTouches[0];
     this.lastX = touch.clientX;

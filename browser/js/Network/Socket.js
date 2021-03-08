@@ -1,5 +1,5 @@
-import { WS_DOMAIN, WS_EXTERNAL_PORT } from '/../shared/config';
-import LobbyMessage from '/../shared/message/LobbyMessage';
+import { WS_DOMAIN, WS_EXTERNAL_PORT } from '/shared/config';
+import LobbyMessage from '/shared/message/LobbyMessage';
 
 
 export const WS_HOST = 'wss://' + WS_DOMAIN + ':' + WS_EXTERNAL_PORT;

@@ -1,16 +1,16 @@
-import Socket, { EVT_MSG } from './Socket';
+import Socket from './Socket';
 import WebRTC, { EVT_READY, EVT_DISCONNECT } from './WebRTC';
 import TimeSync, { EVT_SYNC } from './TimeSync';
 import {
   CMD_LIST_PEERS,
   CMD_REGISTER,
   CMD_ASK_TO_CONNECT
-} from '/../shared/message/LobbyMessage';
+} from '/shared/message/LobbyMessage';
 import {
   CMD_START,
   CMD_START_ACK,
   CMD_MOVE
-} from '/../shared/message/PeerMessage';
+} from '/shared/message/PeerMessage';
 import { START_DELAY } from '../Engine/constants'
 
 

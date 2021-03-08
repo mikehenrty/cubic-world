@@ -9,7 +9,7 @@ import Cube, {
 } from './Scene/Cube';
 import Board from './Scene/Board';
 import Model from './Model';
-import Text from '/js/Text';
+import Text from '/browser/js/Text';
 import {
   DEBUG,
   ASPECT_RATIO,
@@ -17,6 +17,7 @@ import {
   SCREEN_WIDTH,
   SCREEN_HEIGHT,
   ORTHO_DEPTH,
+  BOARD_DEPTH,
   BOX_SIZE,
   DIR_AHEAD,
   DIR_LEFT,
@@ -30,7 +31,7 @@ import {
 } from './constants';
 
 
-const CAMERA_DISTANCE = 400;
+const CAMERA_DISTANCE = 300;
 const CAMERA_LATERAL_OFFSET = 150;
 const CAMERA_HEIGHT = 300;
 const CAMERA_LOOK_DISTANCE = 6 * BOX_SIZE;
@@ -159,8 +160,10 @@ export default class Engine extends EventTarget {
       num = '-';
     } else  {
       num = Math.ceil(this.time.getDeltaUntilStart() / 1000);
-      if (num <= 0) {
+      if (num <= 0 && num > -500) {
         num = 'GO!';
+      } else if (num <= 0) {
+        num = '';
       }
     }
 
@@ -232,16 +235,78 @@ export default class Engine extends EventTarget {
   }
 
   getLighting() {
+    
+    var light = new THREE.DirectionalLight( 0xFFFFFF, 0.45 );
+    light.position.set(200, 50, 25);
+    var helper = new THREE.DirectionalLightHelper( light, 15 );
+    this.scene.add( light );
+    this.scene.add( helper );
+
+    var light = new THREE.DirectionalLight( 0xFFFFFF, 0.45 );
+    light.position.set(0, 50, 125);
+    var helper = new THREE.DirectionalLightHelper( light, 15 );
+    this.scene.add( light );
+    this.scene.add( helper );
+    
+
     /*
-    const color = 0xFFFFFF;
-    const intensity = 1;
-    const light = new THREE.DirectionalLight(color, intensity);
-    light.position.set(-1, 2, 4);
-    this.scene.add(light);
+    var point = new THREE.PointLight( 0xffffff, 1, 1000 );
+    point.position.set( 200, 200, 200 );
+    this.cube.getObject3D().add( point );
+
+    var light3 = new THREE.PointLight( 0xffffff, 1, 1000 );
+    light3.position.set( -50, 50, -100 );
+    this.cube.getObject3D().add( light3 );
+
+    var light4 = new THREE.PointLight( 0xffffff, 1, 1000 );
+    light4.position.set( -50, 50, 100 );
+    this.cube.getObject3D().add( light4 );
+    */
+    // const light = new THREE.DirectionalLight(color, intensity);
+    // this.scene.add(light);
+    //
+
+    /*
+    for (let i = 0; i < 20; i++) {
+      continue;
+      let pointLight = new THREE.PointLight( 0xff0000, 500, 500 );
+      pointLight.position.set( 50, 240, -50 * i + 100 );
+      this.scene.add( pointLight );
+
+      let sphereSize = 10;
+      let pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
+      this.scene.add( pointLightHelper );
+    }
+    */
+    
+
+    /*
+    for (let i = 0; i < 3; i++) {
+      var spotLight = new THREE.SpotLight( 0xffffff, 0.4, 700, Math.PI / 8, 0, 1 );
+      spotLight.position.set( 200, 500, -500 - ( 600 * i ));
+      // spotLight.shadow.mapSize.width = 0
+      // spotLight.shadow.mapSize.height = 0;
+      spotLight.shadow.mapSize.width = 1024;
+      spotLight.shadow.mapSize.height = 1024;
+
+      spotLight.shadow.camera.near = 10;
+      spotLight.shadow.camera.far = 3000;
+      spotLight.shadow.camera.fov = 1;
+      spotLight.target = this.cube.getObject3D();
+      this.scene.add( spotLight );
+      // this.scene.add( spotLight.target );
+
+      // var spotLightHelper = new THREE.SpotLightHelper( spotLight );
+      //this.scene.add( spotLightHelper );
+    }
     */
 
-    var ambientLight = new THREE.AmbientLight( 0x606060 );
-    return ambientLight;
+    // var ambientLight = new THREE.AmbientLight( 0x606060, 0.8 );
+    // return ambientLight;
+    var areaLight = new THREE.HemisphereLight( 0xffffff, 0x000000, 0.9 );
+    // var helper = new THREE.DirectionalLightHelper( areaLight, 15 );
+    // this.scene.add( helper );
+    return areaLight;
   }
 
   onScoreUpdate(score) {
@@ -355,7 +420,7 @@ export default class Engine extends EventTarget {
 
     this.cube.mesh.getWorldPosition(this.v);
     this.camera.position.setZ(this.v.z + CAMERA_DISTANCE);
-    this.camera.position.setX(this.v.x + CAMERA_LATERAL_OFFSET);
+    //this.camera.position.setX(this.v.x + CAMERA_LATERAL_OFFSET);
 
     // Should we make the camera bouncy?
     if (this.isEating) {

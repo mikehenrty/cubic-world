@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { getColorForSide } from '/js/Engine/Scene/Cube/static-helpers';
+import { getColorForSide } from '/browser/js/Engine/Scene/Cube/static-helpers';
 import {
   BOX_SIZE,
   HALF_BOX,
   BOARD_DEPTH,
   BOARD_WIDTH,
-} from '/js/Engine/constants';
+} from '/browser/js/Engine/constants';
 
 const RESET_COLOR = new THREE.Color('black');
 
@@ -20,9 +20,11 @@ export default class Squares {
     this.coordsToBufferIndex = {};
 
     this.vertices = [];
+    this.normals = [];
     this.colors = [];
 
     let vi = 0;
+    let ni = 0;
     let ci = 0;
 
 
@@ -40,6 +42,7 @@ export default class Squares {
 
         const faceColor = getColorForSide(sideNum);
         ci = this.setColorIndices(faceColor, ci);
+        ni = this.setNormalIndices(x, y, ni);
         vi = this.setVertexIndices(x, y, vi);
       }
     }
@@ -48,11 +51,16 @@ export default class Squares {
     const geometry = new THREE.BufferGeometry();
     geometry.name = 'SquaresGeo';
     geometry.setAttribute( 'position', this.getAttribute(this.vertices) );
+    geometry.setAttribute( 'normal', this.getAttribute(this.normals) );
     geometry.setAttribute( 'color', this.getAttribute(this.colors, true) );
 
-    const material = new THREE.MeshBasicMaterial({
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xdddddd,
       vertexColors: THREE.FaceColors,
-      side: THREE.FrontSide,
+      side: THREE.DoubleSide,
+      shininess: 100,
+      emissive: 0x30202,
+      specular: 0xffffff,
     });
 
     this.plane = new THREE.Mesh( geometry, material );
@@ -99,6 +107,39 @@ export default class Squares {
 
     // Correct for using pre-increment.
     return ci + 1;
+  }
+
+  setNormalIndices(x, y, ni) {
+    // Decrement to allow for using pre-increment.
+    --ni;
+
+    // Triangle Face 1.
+    this.normals[ ++ni ] = 0;
+    this.normals[ ++ni ] = 1;
+    this.normals[ ++ni ] = 0;
+
+    this.normals[ ++ni ] = 0;
+    this.normals[ ++ni ] = 1;
+    this.normals[ ++ni ] = 0;
+
+    this.normals[ ++ni ] = 0;
+    this.normals[ ++ni ] = 1;
+    this.normals[ ++ni ] = 0;
+
+    // Triangle Fac++e 
+    this.normals[ ++ni ] = 0;
+    this.normals[ ++ni ] = 1;
+    this.normals[ ++ni ] = 0;
+
+    this.normals[ ++ni ] = 0;
+    this.normals[ ++ni ] = 1;
+    this.normals[ ++ni ] = 0;
+
+    this.normals[ ++ni ] = 0;
+    this.normals[ ++ni ] = 1;
+    this.normals[ ++ni ] = 0;
+
+    return ni + 1;
   }
 
   setVertexIndices(x, y, vi) {

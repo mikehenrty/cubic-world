@@ -1,4 +1,4 @@
-import { CMD_PING, CMD_PONG } from '/../shared/message/PeerMessage.js';
+import { CMD_PING, CMD_PONG } from '/shared/message/PeerMessage.js';
 
 const SYNC_REPEATS = 10;
 const REPEAT_DELAY = 50;

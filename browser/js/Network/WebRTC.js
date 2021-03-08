@@ -1,5 +1,5 @@
-import { CMD_SIGNALING } from '/../shared/message/LobbyMessage';
-import PeerMessage from '/../shared/message/PeerMessage';
+import { CMD_SIGNALING } from '/shared/message/LobbyMessage';
+import PeerMessage from '/shared/message/PeerMessage';
 
 
 export const EVT_SIGNALING = CMD_SIGNALING;

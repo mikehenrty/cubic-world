@@ -12,7 +12,7 @@ import {
   SIDE_FIVE,
   SIDE_SIX,
   DIRECTIONS,
-} from '/js/Engine/constants';
+} from '/browser/js/Engine/constants';
 
 
 const PI_OVER_TWO = Math.PI / 2;
@@ -72,32 +72,32 @@ export function getMesh() {
 
   var materials = [
     // Right side.
-    new THREE.MeshBasicMaterial({
+    new THREE.MeshPhongMaterial({
       color: SIDE_COLORS[SIDE_FIVE],
     }),
 
     // Left side.
-    new THREE.MeshBasicMaterial({
+    new THREE.MeshPhongMaterial({
       color: SIDE_COLORS[SIDE_TWO],
     }),
 
     // Top side.
-    new THREE.MeshBasicMaterial({
+    new THREE.MeshPhongMaterial({
       color: SIDE_COLORS[SIDE_ONE],
     }),
 
     // Bottom side.
-    new THREE.MeshBasicMaterial({
+    new THREE.MeshPhongMaterial({
       color: SIDE_COLORS[SIDE_SIX],
     }),
 
     // Back side.
-    new THREE.MeshBasicMaterial({
+    new THREE.MeshPhongMaterial({
       color: SIDE_COLORS[SIDE_THREE],
     }),
 
     // Front side.
-    new THREE.MeshBasicMaterial({
+    new THREE.MeshPhongMaterial({
       color: SIDE_COLORS[SIDE_FOUR],
     }),
   ];

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {
   getAllQuaternionsForCube,
   getMoveOffset,
-} from '/js/Engine/Scene/Cube/static-helpers';
+} from '/browser/js/Engine/Scene/Cube/static-helpers';
 
 import {
   SIDE_TOP,
@@ -16,7 +16,7 @@ import {
   DIR_RIGHT,
   DIR_BACK,
   STARTING_ORIENTATION,
-} from '/js/Engine/constants';
+} from '/browser/js/Engine/constants';
 
 
 export default class CubeModel {
