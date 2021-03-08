@@ -55,7 +55,7 @@ export default class Squares {
     geometry.setAttribute( 'color', this.getAttribute(this.colors, true) );
 
     const material = new THREE.MeshPhongMaterial({
-      color: 0xffffff,
+      color: 0xdddddd,
       vertexColors: THREE.FaceColors,
       side: THREE.DoubleSide,
       shininess: 100,
