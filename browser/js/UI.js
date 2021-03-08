@@ -1,7 +1,7 @@
 import {
   CMD_ASK_TO_CONNECT,
   CMD_CONNECT_TO_PEER
-} from '/../shared/message/LobbyMessage.js'
+} from '/shared/message/LobbyMessage.js'
 
 
 export const EVT_START = 'Start';

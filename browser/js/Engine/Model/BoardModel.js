@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { BOARD_DEPTH, BOARD_WIDTH } from '/js/Engine/constants';
+import { BOARD_DEPTH, BOARD_WIDTH } from '/browser/js/Engine/constants';
 
 // We may not want to include 6 as an enemy side.
 const SIDE_ENEMIES = [1, 2, 3, 4, 5];

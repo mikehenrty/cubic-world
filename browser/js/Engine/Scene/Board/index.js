@@ -4,7 +4,7 @@ import {
   HALF_BOX,
   BOARD_DEPTH,
   BOARD_WIDTH,
-} from '/js/Engine/constants';
+} from '/browser/js/Engine/constants';
 import Squares from './Squares';
 import Grid from './Grid';
 

@@ -1,4 +1,4 @@
-import guid from '/../shared/guid';
+import guid from '/shared/guid';
 
 
 const STORAGE_PREFIX = 'CUBIC_'

@@ -9,7 +9,7 @@ import Cube, {
 } from './Scene/Cube';
 import Board from './Scene/Board';
 import Model from './Model';
-import Text from '/js/Text';
+import Text from '/browser/js/Text';
 import {
   DEBUG,
   ASPECT_RATIO,

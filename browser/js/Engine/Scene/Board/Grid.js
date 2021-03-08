@@ -5,7 +5,7 @@ import {
   BOARD_DEPTH,
   BOARD_WIDTH,
   LINE_COLOR,
-} from '/js/Engine/constants';
+} from '/browser/js/Engine/constants';
 
 
 // Where does this sit on the Y plane.

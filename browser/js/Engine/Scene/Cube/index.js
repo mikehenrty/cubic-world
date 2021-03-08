@@ -5,7 +5,7 @@ import {
   HALF_BOX,
   FLIP_DURATION,
   FAST_FLIP_DURATION
-} from '/js/Engine/constants';
+} from '/browser/js/Engine/constants';
 import {
   getMesh,
   getPivot,
