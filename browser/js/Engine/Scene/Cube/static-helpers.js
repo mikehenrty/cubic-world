@@ -72,32 +72,32 @@ export function getMesh() {
 
   var materials = [
     // Right side.
-    new THREE.MeshPhongMaterial({
+    new THREE.MeshStandardMaterial({
       color: SIDE_COLORS[SIDE_FIVE],
     }),
 
     // Left side.
-    new THREE.MeshPhongMaterial({
+    new THREE.MeshStandardMaterial({
       color: SIDE_COLORS[SIDE_TWO],
     }),
 
     // Top side.
-    new THREE.MeshPhongMaterial({
+    new THREE.MeshStandardMaterial({
       color: SIDE_COLORS[SIDE_ONE],
     }),
 
     // Bottom side.
-    new THREE.MeshPhongMaterial({
+    new THREE.MeshStandardMaterial({
       color: SIDE_COLORS[SIDE_SIX],
     }),
 
     // Back side.
-    new THREE.MeshPhongMaterial({
+    new THREE.MeshStandardMaterial({
       color: SIDE_COLORS[SIDE_THREE],
     }),
 
     // Front side.
-    new THREE.MeshPhongMaterial({
+    new THREE.MeshStandardMaterial({
       color: SIDE_COLORS[SIDE_FOUR],
     }),
   ];
@@ -105,6 +105,7 @@ export function getMesh() {
   // Make sure to position box above z-x plane.
   const mesh = new THREE.Mesh( geometry, materials );
   mesh.name = 'CubeMesh';
+  mesh.castShadow = true;
   return mesh;
 }
 
