@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import Stats from 'stats.js';
-import { RectAreaLightHelper } from './ReactAreaLightHelper';
+import { RectAreaLightHelper } from './RectAreaLightHelper';
 import Time from './controllers/Time';
 import Input from './controllers/Input';
 import Cube, {
