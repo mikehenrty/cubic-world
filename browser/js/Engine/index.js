@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 
+import Stats from 'stats.js';
 import { RectAreaLightHelper } from './ReactAreaLightHelper';
 import Time from './controllers/Time';
 import Input from './controllers/Input';
@@ -91,6 +92,10 @@ export default class Engine extends EventTarget {
 
     // Flag to move camera differently when animating onto colored square.
     this.isEating = false;
+
+    // FPS counter.
+    this.stats = new Stats();
+    this.stats.showPanel(0);
   }
 
   setPlayer(player) {
@@ -430,7 +435,7 @@ export default class Engine extends EventTarget {
       return;
     }
 
-    requestAnimationFrame( this.update );
+    this.stats.begin();
 
     // Stop the countdown refresh soon after game has started.
     if (this.time.startTime + 1000 > this.time.currentTime) {
@@ -469,6 +474,9 @@ export default class Engine extends EventTarget {
     this.renderer.render( this.scene, this.camera );
 
     //this.renderer.render( this.sceneHUD, this.HUDCamera );
+
+    this.stats.end();
+    requestAnimationFrame( this.update );
   }
 
   async start(delay) {
@@ -484,6 +492,7 @@ export default class Engine extends EventTarget {
     document.body.appendChild(this.renderer.domElement);
     this.renderer.domElement.style.transform = `scale(${ 1 / SCALE })`;
 
+    document.body.append(this.stats.dom);
     this.time.start(delay || 0);
     this.update();
   }
