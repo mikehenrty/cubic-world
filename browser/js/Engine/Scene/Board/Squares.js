@@ -32,11 +32,14 @@ export default class Squares {
       for ( let x = 0; x < BOARD_WIDTH; x++ ) {
 
         // Validate value on the board before adding geometry.
-        let sideNum = this.model.getBoardSquareValue(x, y);
+        let sideNum = this.model.getBoardSquareValue(x, y) || 0;
+
+        /* Used to not color blank squares, now we do.
         if (!sideNum) {
           sideNum = 1;
-          //continue;
+          continue;
         }
+        */
 
         // Track this square geo and color in case we want to change it later.
         this.setCoordToIndexMap(x, y, vi, ci);
@@ -55,15 +58,17 @@ export default class Squares {
     geometry.setAttribute( 'normal', this.getAttribute(this.normals) );
     geometry.setAttribute( 'color', this.getAttribute(this.colors, true) );
 
-    const material = new THREE.MeshStandardMaterial({
+    const material = new THREE.MeshPhysicalMaterial({
       color: 0xdddddd,
       vertexColors: THREE.FaceColors,
-      side: THREE.DoubleSide,
-      emissive: 0x30202,
+      side: THREE.FrontSide,
+      emissive: 0x050505,
+      roughness: 0.6,
+      metalness: 0.43,
     });
 
     this.plane = new THREE.Mesh( geometry, material );
-    this.plane.receiveShadow = true;
+    // this.plane.receiveShadow = true;
     this.plane.name = 'SquaresMesh';
   }
 

@@ -70,34 +70,41 @@ export function getMesh() {
   const geometry = new THREE.BoxGeometry(BOX_SIZE, BOX_SIZE, BOX_SIZE);
   geometry.name = 'CubeGeo';
 
+  const shininess = 7;
   var materials = [
     // Right side.
-    new THREE.MeshStandardMaterial({
+    new THREE.MeshPhongMaterial({
+      shininess,
       color: SIDE_COLORS[SIDE_FIVE],
     }),
 
     // Left side.
-    new THREE.MeshStandardMaterial({
+    new THREE.MeshPhongMaterial({
+      shininess,
       color: SIDE_COLORS[SIDE_TWO],
     }),
 
     // Top side.
-    new THREE.MeshStandardMaterial({
+    new THREE.MeshPhongMaterial({
+      shininess,
       color: SIDE_COLORS[SIDE_ONE],
     }),
 
     // Bottom side.
-    new THREE.MeshStandardMaterial({
+    new THREE.MeshPhongMaterial({
+      shininess,
       color: SIDE_COLORS[SIDE_SIX],
     }),
 
     // Back side.
-    new THREE.MeshStandardMaterial({
+    new THREE.MeshPhongMaterial({
+      shininess,
       color: SIDE_COLORS[SIDE_THREE],
     }),
 
     // Front side.
-    new THREE.MeshStandardMaterial({
+    new THREE.MeshPhongMaterial({
+      shininess,
       color: SIDE_COLORS[SIDE_FOUR],
     }),
   ];
@@ -105,7 +112,6 @@ export function getMesh() {
   // Make sure to position box above z-x plane.
   const mesh = new THREE.Mesh( geometry, materials );
   mesh.name = 'CubeMesh';
-  mesh.castShadow = true;
   return mesh;
 }
 

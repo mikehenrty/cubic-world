@@ -33,11 +33,11 @@ import {
 } from './constants';
 
 
-const CAMERA_DISTANCE = 300;
-const CAMERA_LATERAL_OFFSET = 150;
-const CAMERA_HEIGHT = 300;
+const CAMERA_DISTANCE = 250;
+const CAMERA_LATERAL_OFFSET = 120;
+const CAMERA_HEIGHT = 220;
 const CAMERA_LOOK_DISTANCE = 6 * BOX_SIZE;
-const SURROUND_LIGHT_OFFSET = 150;
+const SURROUND_LIGHT_OFFSET = 90;
 
 export const EVT_CUBE_MOVE = 'CubeMove';
 export const EVT_WIN = 'PlayerWin';
@@ -77,12 +77,12 @@ export default class Engine extends EventTarget {
     this.cubeOpponent.addEventListener(EVT_FINISH_MOVE,
                                        this.onMoveFinishOpponent.bind(this));
 
-    this.renderer = new THREE.WebGLRenderer();
+    this.renderer = new THREE.WebGLRenderer({
+      autoClear: false,
+      //antialias: true,
+    });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-    this.renderer.autoClear = false;
-    this.renderer.shadowMap.enabled;
-    this.renderer.shadowMap.Type = THREE.PCFSoftShadowMap;
 
     this.sceneHUD = this.getSceneHUD();
     this.HUDCamera = this.getHUDCamera();
@@ -119,25 +119,8 @@ export default class Engine extends EventTarget {
     this.scene.add( this.cube.getObject3D() );
     this.board = new Board( this.model, boardData );
     this.scene.add( this.board.getObject3D() );
-    
 
-    /*
-    let material = new THREE.MeshStandardMaterial({
-      color: 0x11111,
-      shininess: 8,
-      perPixel: true,
-      metal:true
-    });
-
-    var floorGeometry = new THREE.PlaneGeometry(10000, 10000, 1, 1);
-    var ground = new THREE.Mesh(floorGeometry, material);
-    ground.translateY(-10);
-    ground.rotation.x = -Math.PI/2
-    ground.receiveShadow = true;
-    this.scene.add(ground);
-
-    */
-
+    this.addGround();
     this.addLighting();
   }
 
@@ -260,66 +243,35 @@ export default class Engine extends EventTarget {
     return camera;
   }
 
+  addGround() {
+    let material = new THREE.MeshStandardMaterial({
+      color: 0x222222,
+    });
+
+    var floorGeometry = new THREE.PlaneGeometry(10000, 10000, 1, 1);
+    var ground = new THREE.Mesh(floorGeometry, material);
+    ground.translateY(-400);
+    ground.rotation.x = -Math.PI/2
+    this.scene.add(ground);
+  }
+
   addLighting() {
     // Get our 3 surrounding lights.
-    const intensity = 1;
-    this.lightRight = new THREE.SpotLight( 0xFFFFFF, intensity );
-    this.lightRight.castShadow = true;
-    this.lightRight.position.set(SURROUND_LIGHT_OFFSET, BOX_SIZE, HALF_BOX);
-    //this.lightRight.translateZ(100);
-    //this.lightRight.shadow.camera.position.set(this.lightRight.position);
-    
-    this.lightRight.target = this.cube.getObject3D();
-
-    
-  
-    //this.lightRight.shadow.mapSize.width = 1024;
-    //this.lightRight.shadow.mapSize.height = 1024;
-    this.lightRight.shadow.camera.visible = true;
-    //this.lightRight.shadowDarkness = 0.5;
-    this.lightRight.shadow.camera.near = 1;
-    this.lightRight.shadow.camera.far = 400;
-    /*
-    this.lightRight.shadow.camera.left = -10;
-    this.lightRight.shadow.camera.right = 10;
-    this.lightRight.shadow.camera.top = 10;
-    this.lightRight.shadow.camera.bottom = -10;
-    */
-    
-    //this.lightRight.shadow.camera.fov = 0.2;
-    //this.lightRight.shadow.camera.focus = ;
-    //this.lightRight.shadow.camera.setZ(100);
-
-    //debugger;
-    //this.lightRight.shadow.map.update( this.lightRight );
-
-    
-
-  
-
-
-   
-    this.scene.add( new THREE.CameraHelper( this.lightRight.shadow.camera ) );
-    this.scene.add( new THREE.SpotLightHelper( this.lightRight, 19 ) );
+    const intensity = 0.4;
+    this.lightRight = new THREE.PointLight( 0xFFFFFF, intensity );
+    this.lightRight.position.set(SURROUND_LIGHT_OFFSET, BOX_SIZE, 0);
     this.scene.add( this.lightRight );
-    this.lightRight.shadow.camera.updateProjectionMatrix();
-    this.lightRight.shadow.needsUpdate = true;
-    this.lightRight.shadow.camera.updateProjectionMatrix();
+    // this.scene.add( new THREE.PointLightHelper( this.lightRight, 19 ) );
 
-    /*
-
-    this.lightBack = new THREE.SpotLight( 0xFFFFFF, intensity );
-    this.lightBack.position.set(0, BOX_SIZE, SURROUND_LIGHT_OFFSET);
-    this.lightBack.castShadow = true;
+    this.lightBack = new THREE.PointLight( 0xFFFFFF, intensity );
+    this.lightBack.position.set(0, BOX_SIZE - 20, SURROUND_LIGHT_OFFSET);
     this.scene.add( this.lightBack );
-    // this.scene.add( new THREE.DirectionalLightHelper( this.lightBack , 15 ) );
+    // this.scene.add( new THREE.PointLightHelper( this.lightBack , 15 ) );
 
-    this.lightTop = new THREE.DirectionalLight( 0xFFFFFF, intensity );
+    this.lightTop = new THREE.PointLight( 0xFFFFFF, intensity );
     this.lightTop.position.set(0, SURROUND_LIGHT_OFFSET, HALF_BOX);
-    this.lightTop.castShadow = true;
     this.scene.add( this.lightTop );
-    // this.scene.add( new THREE.DirectionalLightHelper( this.lightTop , 15 ) );
-    */
+    // this.scene.add( new THREE.PointLightHelper( this.lightTop , 15 ) );
 
     // Add our goal post lights.
     const zPos = BOARD_DEPTH * BOX_SIZE;
@@ -341,24 +293,6 @@ export default class Engine extends EventTarget {
     this.scene.add( new RectAreaLightHelper( rectLight2 ) );
     this.scene.add( new RectAreaLightHelper( rectLight3 ) );
 
-
-    /*
-    var point = new THREE.PointLight( 0xffffff, 1, 1000 );
-    point.position.set( 200, 200, 200 );
-    this.cube.getObject3D().add( point );
-
-    var light3 = new THREE.PointLight( 0xffffff, 1, 1000 );
-    light3.position.set( -50, 50, -100 );
-    this.cube.getObject3D().add( light3 );
-
-    var light4 = new THREE.PointLight( 0xffffff, 1, 1000 );
-    light4.position.set( -50, 50, 100 );
-    this.cube.getObject3D().add( light4 );
-    */
-    // const light = new THREE.DirectionalLight(color, intensity);
-    // this.scene.add(light);
-    //
-
     /*
     for (let i = 0; i < 20; i++) {
       continue;
@@ -373,32 +307,30 @@ export default class Engine extends EventTarget {
     */
     
 
-    /*
-    for (let i = 0; i < 3; i++) {
-      var spotLight = new THREE.SpotLight( 0xffffff, 0.4, 700, Math.PI / 8, 0, 1 );
-      spotLight.position.set( 200, 500, -500 - ( 600 * i ));
-      // spotLight.shadow.mapSize.width = 0
-      // spotLight.shadow.mapSize.height = 0;
-      spotLight.shadow.mapSize.width = 1024;
-      spotLight.shadow.mapSize.height = 1024;
+    //this.scene.add(new THREE.AmbientLight( 0xffffff, 1 ));
+    this.scene.add(new THREE.HemisphereLight( 0xffffff, 0x000000, 1 ));
+  }
 
-      spotLight.shadow.camera.near = 10;
-      spotLight.shadow.camera.far = 3000;
-      spotLight.shadow.camera.fov = 1;
-      spotLight.target = this.cube.getObject3D();
-      this.scene.add( spotLight );
-      // this.scene.add( spotLight.target );
-
-      // var spotLightHelper = new THREE.SpotLightHelper( spotLight );
-      //this.scene.add( spotLightHelper );
-    }
-    */
-
-    // var ambientLight = new THREE.AmbientLight( 0x606060, 0.8 );
-    // return ambientLight;
-    //this.scene.add(new THREE.HemisphereLight( 0xffffff, 0x000000, 0.5 ));
-    // var helper = new THREE.DirectionalLightHelper( areaLight, 15 );
-    // this.scene.add( helper );
+  /**
+   * Playground function, never worked. Unused for now.
+   */
+  addShadows() {
+    this.lightRight.target = this.cube.getObject3D();
+    this.lightRight.castShadow = true;
+    
+    this.lightRight.target = this.cube.getObject3D();
+    this.lightRight.shadow.mapSize.width = 1024;
+    this.lightRight.shadow.mapSize.height = 1024;
+    this.lightRight.shadow.camera.visible = true;
+    this.lightRight.shadowDarkness = 0.5;
+    this.lightRight.shadow.camera.near = 1;
+    this.lightRight.shadow.camera.far = 400;
+    this.lightRight.shadow.camera.left = -10;
+    this.lightRight.shadow.camera.right = 10;
+    this.lightRight.shadow.camera.top = 10;
+    this.lightRight.shadow.camera.bottom = -10;
+    this.lightRight.shadow.camera.fov = 0.2;
+    this.scene.add( new THREE.CameraHelper( this.lightRight.shadow.camera ) );
   }
 
   onScoreUpdate(score) {
@@ -511,21 +443,31 @@ export default class Engine extends EventTarget {
     this.cubeOpponent.update(delta);
 
     this.cube.mesh.getWorldPosition(this.v);
-    this.camera.position.setZ(this.v.z + CAMERA_DISTANCE);
-    //this.camera.position.setX(this.v.x + CAMERA_LATERAL_OFFSET);
+    const { x, y, z } = this.v;
 
-    // Should we make the camera bouncy?
+    this.camera.position.setZ(z + CAMERA_DISTANCE);
+    this.camera.position.setX(x / 2 + CAMERA_LATERAL_OFFSET);
+
+    // Make camera bouncy when eating.
+    let lookAtY = 0;
     if (this.isEating) {
-      this.v.y = Math.round((this.v.y - HALF_BOX) / 1.5);
-    } else {
-      this.v.y = 0;
+      lookAtY = Math.round((y - HALF_BOX) / 1.2);
     }
-
-    this.cameraLookAt.addVectors(this.v, this.cameraOffset);
-    this.camera.lookAt(this.cameraLookAt);
+    
+    // Update our surround lights position to follow cube.
+    this.lightBack.position.setZ(z + SURROUND_LIGHT_OFFSET - 36);
+    this.lightBack.position.setX(x - 5);
+    this.lightRight.position.setZ(z);
+    this.lightRight.position.setX(x + SURROUND_LIGHT_OFFSET - HALF_BOX);
+    this.lightTop.position.setZ(z);
+    this.lightTop.position.setX(x);
+    
+    // this.cameraLookAt.addVectors(this.v, this.cameraOffset);
+    this.camera.lookAt(x, lookAtY, z);
 
     this.renderer.clear();
     this.renderer.render( this.scene, this.camera );
+
     //this.renderer.render( this.sceneHUD, this.HUDCamera );
   }
 

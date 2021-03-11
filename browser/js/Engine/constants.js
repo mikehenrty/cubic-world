@@ -7,7 +7,8 @@ export const IS_FIREFOX =
 
 const MAX_WIDTH = 900;
 
-export const SCALE = IS_FIREFOX ? 0.65 : 1;
+//export const SCALE = IS_FIREFOX ? 0.65 : 1;
+export const SCALE = 1;
 export const SCREEN_WIDTH = Math.min(window.innerWidth, MAX_WIDTH) * SCALE;
 export const SCREEN_HEIGHT = window.innerHeight * SCALE;
 export const ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
@@ -37,7 +38,7 @@ export const ORTHO_DEPTH = 1000;
 // Board constants.
 export const BOARD_DEPTH = 31;
 export const BOARD_WIDTH = 5
-export const LINE_COLOR = 0xbbbbbb;
+export const GRID_COLOR = 0x595959;
 
 // Cube constants.
 export const BOX_SIZE = 50;
@@ -63,11 +64,11 @@ export const SIDE_SIX = 6;
 export const SIDE_MINUS_ONE = -1;
 
 export const COLOR_BLACK = 'black';
-export const COLOR_RED = '#fa1616';
-export const COLOR_BLUE = '#1506e5';
-export const COLOR_GREEN = '#06e514';
+export const COLOR_RED = '#ff0000';
+export const COLOR_BLUE = '#0000ff';
+export const COLOR_GREEN = '#00ff00';
 export const COLOR_YELLOW = '#d6e506';
-export const COLOR_PURPLE = 'violet';
+export const COLOR_PURPLE = '#f100ff';
 
 export const DIR_AHEAD = 'AHEAD';
 export const DIR_LEFT = 'LEFT';
@@ -75,14 +76,15 @@ export const DIR_RIGHT = 'RIGHT';
 export const DIR_BACK = 'BACK';
 
 export const SIDE_COLORS = {
- '-1': COLOR_GREEN,
-  1: COLOR_YELLOW,
+ '-1': COLOR_PURPLE,
+  0: COLOR_BLACK,
+  1: COLOR_GREEN,
   2: COLOR_RED,
   3: COLOR_BLUE,
   // 4..6 are copied for now.
   4: COLOR_BLUE,
   5: COLOR_RED,
-  6: COLOR_YELLOW,
+  6: COLOR_GREEN,
 }
 
 export const SIDE_COLORS_OPPONENT = {
