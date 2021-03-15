@@ -32,14 +32,12 @@ export default class App {
 
     // If user came from an invite link, initiate "ask" flow.
     this.ui.addEventListener(EVT_INVITE, ({ detail }) => {
-      this.ui.setMsg('Connecting to your friend...');
       this.engine.weArePlayerOne();
       this.network.sendAsk(detail);
     });
 
     // ASK from UI is player initiated.
     this.ui.addEventListener(EVT_ASK, ({ detail }) => {
-      this.ui.setMsg(`Asking "${detail.name}"`);
       this.engine.weArePlayerOne();
       this.network.sendAsk(detail);
     });
@@ -51,14 +49,13 @@ export default class App {
 
     // Both players have agreed, initiatite Peer2Peer connection.
     this.ui.addEventListener(EVT_CONNECT, ({ detail }) => {
-      this.ui.setMsg('Connecting to ' + detail.name);
       this.engine.weArePlayerTwo();
       this.network.connectToPeer(detail.peerId);
     });
 
     // Peer to peer message is available, both players get this event.
     this.network.addEventListener(EVT_PEER_READY, ({ detail }) => {
-      this.ui.setMsg('Synchronizing clocks');
+      this.ui.onPeerSync();
       this.playerNum = detail.playerNum;
       if (this.playerNum === 1) {
         this.network.syncTimeWithPeer();
@@ -71,7 +68,6 @@ export default class App {
         console.error('Got sync event as second player, ignoring');
         return;
       }
-      this.ui.setMsg('Synced, preparing to start');
       this.engine.initWorld();
       this.network.startGame(this.engine.getBoardData());
     });
@@ -108,14 +104,15 @@ export default class App {
 
   async start() {
     try {
-      this.ui.init();
       await this.network.init(this.player.id);
+      this.ui.init();
 
       // TODO: remove this autostart.
-      this.ui.hide();
-      this.engine.start()
+      //this.ui.hide();
+      //this.engine.start()
     } catch(e) {
       console.error('could not connect', e);
+      this.ui.init();
       this.ui.setErrorMsg('ERROR: could not connect to lobby server');
 
       /*
