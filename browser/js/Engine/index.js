@@ -310,7 +310,6 @@ export default class Engine extends EventTarget {
       this.scene.add( pointLightHelper );
     }
     */
-    
 
     //this.scene.add(new THREE.AmbientLight( 0xffffff, 1 ));
     this.scene.add(new THREE.HemisphereLight( 0xffffff, 0x000000, 1 ));

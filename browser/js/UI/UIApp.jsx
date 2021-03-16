@@ -3,6 +3,8 @@ import { useEffect, useState, useRef, useMemo } from 'preact/hooks';
 
 import { EVT_SHOW, EVT_HIDE, EVT_PEER_LIST, EVT_ASKED_BY_PEER } from './index';
 
+import './UIApp.css';
+
 export default function UIApp({ UI, onStart, onAsk, onConfirm, onInviteLink }) {
   const [isHidden, setIsHidden] = useState(false);
   const [player, setPlayer] = useState(null);
@@ -99,36 +101,45 @@ export default function UIApp({ UI, onStart, onAsk, onConfirm, onInviteLink }) {
 
   return (
     <div id="UI" class={isHidden ? 'hide' : ''}>
-      <h1>Welcome to Cubic!</h1>
-      <p>Cubic is a multiplayer puzzle racing game.</p>
-      <div id="online">
-        <h3>Play Online</h3>
-        { player && ( <p>Your name is "<b>{player.name}</b>!"</p> )}
-        <p>{message}</p>
-        {player && (
-          <div>
-            <button class="link-button" onClick={onCopy}>Copy Invite Link</button>
-            <input class="peer-link" ref={linkInput} value={peerLink} />
-          </div>
-        )}
-        <p class="signature">Give this link to a friend and Play Now!</p>
-        <p style="margin-bottom: 0px; margin-top: 2rem;">Lobby</p>
-        <ul>
-          { Object.keys(opponents).length > 0 ? (
-            Object.keys(opponents).map(id => (
-              <li><button data-peer-id={id} onClick={onAskToPlay}>Play</button>
-              <span>{`vs. ${opponents[id]}`}</span></li>
-            ))
-          ) : (<li>No pontential opponents right now.</li>)}
-        </ul>
+      <div id="background-container">
+        <div id="bg-back"></div>
+        <div id="bg-top"></div>
+        <div id="bg-bottom"></div>
+        <div id="bg-left"></div>
+        <div id="bg-right"></div>
       </div>
-      <button id="play-offline" onClick={onStartOffline}>Practice Offline</button>
-      <p class="signature">
-        Hacked together by <a target="_blank" href="https://twitter.com/mikehenrty">mikehenrty</a>.
-      </p>
-      <p class="signature">
-        Souce code on <a href="https://github.com/mikehenrty/cubic-world/">GitHub</a>.
-      </p>
+      <div id="text-container">
+        <h1>Welcome to Cubic!</h1>
+        <p>Cubic is a multiplayer puzzle racing game.</p>
+        <div id="online">
+          <h3>Play Online</h3>
+          { player && ( <p>Your name is "<b>{player.name}</b>!"</p> )}
+          <p>{message}</p>
+          {player && (
+            <div>
+              <button class="link-button" onClick={onCopy}>Copy Invite Link</button>
+              <input class="peer-link" ref={linkInput} value={peerLink} />
+            </div>
+          )}
+          <p class="signature">Give this link to a friend and Play Now!</p>
+          <p style="margin-bottom: 0px; margin-top: 2rem;">Lobby</p>
+          <ul>
+            { Object.keys(opponents).length > 0 ? (
+              Object.keys(opponents).map(id => (
+                <li><button data-peer-id={id} onClick={onAskToPlay}>Play</button>
+                <span>{`vs. ${opponents[id]}`}</span></li>
+              ))
+            ) : (<li>No pontential opponents right now.</li>)}
+          </ul>
+        </div>
+        <button id="play-offline" onClick={onStartOffline}>Practice Offline</button>
+        <p class="signature">
+          Hacked together by <a target="_blank" href="https://twitter.com/mikehenrty">mikehenrty</a>.
+        </p>
+        <p class="signature">
+          Souce code on <a href="https://github.com/mikehenrty/cubic-world/">GitHub</a>.
+        </p>
+      </div>
     </div>
   );
 };
