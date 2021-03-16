@@ -110,6 +110,7 @@ export default function UIApp({ UI, onStart, onAsk, onConfirm, onInviteLink }) {
       </div>
       <div id="text-container">
         <h1>Welcome to Cubic!</h1>
+        <button id="play-offline" onClick={onStartOffline}>Practice Offline</button>
         <p>Cubic is a multiplayer puzzle racing game.</p>
         <div id="online">
           <h3>Play Online</h3>
@@ -132,7 +133,6 @@ export default function UIApp({ UI, onStart, onAsk, onConfirm, onInviteLink }) {
             ) : (<li>No pontential opponents right now.</li>)}
           </ul>
         </div>
-        <button id="play-offline" onClick={onStartOffline}>Practice Offline</button>
         <p class="signature">
           Hacked together by <a target="_blank" href="https://twitter.com/mikehenrty">mikehenrty</a>.
         </p>
