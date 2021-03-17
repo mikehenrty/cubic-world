@@ -101,17 +101,9 @@ export default function UIApp({ UI, onStart, onAsk, onConfirm, onInviteLink }) {
 
   return (
     <div id="UI" class={isHidden ? 'hide' : ''}>
-      <div id="background-container">
-        <div id="bg-back"></div>
-        <div id="bg-top"></div>
-        <div id="bg-bottom"></div>
-        <div id="bg-left"></div>
-        <div id="bg-right"></div>
-      </div>
       <div id="text-container">
         <h1>Welcome to Cubic!</h1>
-        <button id="play-offline" onClick={onStartOffline}>Practice Offline</button>
-        <p>Cubic is a multiplayer puzzle racing game.</p>
+        <button id="play-offline" onClick={onStartOffline}>Practice</button>
         <div id="online">
           <h3>Play Online</h3>
           { player && ( <p>Your name is "<b>{player.name}</b>!"</p> )}
@@ -139,6 +131,13 @@ export default function UIApp({ UI, onStart, onAsk, onConfirm, onInviteLink }) {
         <p class="signature">
           Souce code on <a href="https://github.com/mikehenrty/cubic-world/">GitHub</a>.
         </p>
+      </div>
+      <div id="background-container">
+        <div id="bg-back"></div>
+        <div id="bg-top"></div>
+        <div id="bg-bottom"></div>
+        <div id="bg-left"></div>
+        <div id="bg-right"></div>
       </div>
     </div>
   );
