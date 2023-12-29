@@ -7,21 +7,24 @@
   "scripts": {
     "clean": "rm -rf dist dist-server .parcel-cache",
     "build": "parcel build ./ --target=client --no-source-maps",
-    "build:server": "parcel build server/index.js --target=server",
+    "build:server": "parcel build server/index.js --target=server --no-scope-hoist",
     "start": "parcel './' --open --target=client --log-level verbose",
     "start:server": "yarn build:server && node dist/server/index.js",
     "deploy": "yarn clean && yarn build && gh-pages -d dist/browser"
   },
   "devDependencies": {
     "gh-pages": "^2.2.0",
-    "parcel": "^2.0.0-beta.1"
+    "parcel": "^2.10.3"
   },
   "dependencies": {
     "faker": "^4.1.0",
-    "preact": "^10.5.12",
+    "preact": "^10.19.3",
     "stats.js": "^0.17.0",
     "three": "^0.125.0",
     "ws": "^7.3.1"
+  },
+  "alias": {
+    "preact/jsx-dev-runtime": "preact/jsx-runtime"
   },
   "resolutions": {
     "node-forge": "^0.10.0"
@@ -41,7 +44,7 @@
     "server": {
       "context": "node",
       "engines": {
-        "node": ">=14.x"
+        "node": ">=21.x"
       }
     }
   }
